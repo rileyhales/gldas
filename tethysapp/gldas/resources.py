@@ -1,0 +1,31 @@
+def gldas_variables():
+    variables = {
+            'air temperature': 'Tair_f_tavg',
+            'green vegetation fraction': 'Greenness_tavg',
+            'latent heat flux': 'Qle_tavg',
+            'net downward longwave radiation': 'Lwnet_tavg',
+            'net downward shortwave radiation': 'Swnet_tavg',
+            'potential evapotranspiration': 'PotEvap_tavg',
+            'precipitation rate': 'Rainf_tavg',
+            'root zone soil moisture': 'RootMoist_tavg',
+            'sensible heat flux': 'Qh_tavg',
+            'snow cover': 'SnowCover_tavg',
+            'snow depth': 'SnowDepth_tavg',
+            'snow water equivalent': 'SWE_tavg',
+            'snowfall rate': 'Snowf_tavg',
+            'snowmelt': 'Qsm_tavg',
+            'soil heat flux': 'Qg_tavg',
+            'specific humidity': 'Qair_f_tavg',
+            'subsurface runoff amount': 'Qsb_tavg',
+            'surface albedo': 'Albedo_tavg',
+            'surface downward longwave radiation': 'LWdown_f_tavg',
+            'surface downward shortwave radiation': 'SWdown_f_tavg',
+            'surface pressure': 'Psurf_f_tavg',
+            'surface runoff': 'Qs_tavg',
+            'surface temperature': 'AvgSurfT_tavg',
+            'total canopy water storage': 'CanopInt_tavg',
+            'total evapotranspiration': 'Evap_tavg',
+            'wind speed': 'Wind_f_tavg',
+            'All Variables': 'all-vars'
+        }
+    return variables
