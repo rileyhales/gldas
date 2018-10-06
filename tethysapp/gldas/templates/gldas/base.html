@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
   <!-- styling for the leaflet draw plugin -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
-
+  <!-- styling generated for the app -->
   <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
 {% endblock %}
 
@@ -49,6 +49,10 @@
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.js"></script>
   <!-- script for using highcharts (display timeseries plot) -->
   <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+  <!-- Use this to export data from highcharts as csv, jpeg, etc -->
+  <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+  <!-- Use this to show loading functions and placeholders -->
+  <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
 
   <!-- scripts i wrote for using these resources -->
   <script src="{% static 'gldas/js/main.js' %}" type="text/javascript"></script>

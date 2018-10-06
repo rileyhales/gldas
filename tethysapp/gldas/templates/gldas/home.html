@@ -10,18 +10,20 @@
   </div>
 {% endblock %}
 
-{# Use the after_app_content block for modals #}
 {% block after_app_content %}
-  <!-- Example Modal -->
   <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h5 class="modal-title" id="help-modal-label">Example Modal</h5>
+          <h5 class="modal-title" id="help-modal-label">GLDAS Data Visualizer -- Suport</h5>
         </div>
         <div class="modal-body">
-          <p>The most recent, stable version of this code can be found on <a href = "https://github.com/rileyhales/">github</a></p>
+          <p>The GLDAS Data Visualizer tool was developed by <a target="_blank" href="https://rileyhales.com">Riley Hales</a> at the
+            <a target="_blank" href="https://worldwater.byu.edu">Hydroinformatics Lab</a> of <a target="_blank" href="https://byu.edu">
+              Brigham Young University's</a> Civil and Environmental Engineering Department.</p>
+          <p>The most recent, stable version of this code can be found on <a target="_blank" href="https://github.com/rileyhales/gldas">github</a></p>
+          <p>This app is made possible by Leaflet, Highcharts, NASA LDAS, BYU, Tethys Platform</p>
           </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
@@ -32,8 +34,8 @@
 {% endblock %}
 
 {% block app_content %}
-<div id="map" style="height:500px; width:100%"></div>
-<div id="highchart" style="height:200px; width:100%"></div>
+<div id="map" style="height:450px; width:100%;"></div>
+<div id="highchart" style="height:250px; width:100%"></div>
 {% endblock %}
 
 {% block app_actions %}

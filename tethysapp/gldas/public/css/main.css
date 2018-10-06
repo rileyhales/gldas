@@ -1,0 +1,16 @@
+#inner-app-content {
+    padding: 0 !important;
+}
+
+#app-content, #inner-app-content{
+    height: 100%;
+    padding: 0;
+}
+
+#app-actions {
+    display:none !important;
+}
+
+#app-navigation-items {
+    height: 800p !important;
+}

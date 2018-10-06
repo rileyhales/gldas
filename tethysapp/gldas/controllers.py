@@ -8,15 +8,18 @@ def home(request):
     """
     Controller for the app home page.
     """
-
     variables = gldas_variables()
+    options = [('All Variables', 'allvars')]
+    for key in sorted(variables.keys()):
+        tuple1 = (key, variables[key])
+        options.append(tuple1)
 
     select_input = SelectInput(
         display_text='Select Variable',
         name='select1',
         multiple=False,
         original=True,
-        options=variables.items(),
+        options=options,
         initial=['All Variables'],
     )
 

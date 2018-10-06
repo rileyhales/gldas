@@ -1,9 +1,9 @@
 // creating the map
 var map = L.map('map', {
-   zoom: 4,
+   zoom: 2,
    fullscreenControl: true,
    timeDimension: true,
-   center: [28.18,84.2],
+   center: [20, 0],
 });
 
 // create the basemap layers (default basemap is world imagery)
@@ -35,6 +35,7 @@ var drawControl = new L.Control.Draw({
         circlemarker:false,
         circle:false,
         polygon:false,
+        rectangle:false,
     },
 });
 map.addControl(drawControl);
@@ -48,35 +49,32 @@ map.on("draw:created", function (e) {
     layer.addTo(drawnItems);
 });
 
-
-// add a user defined variable layer, gets called onChange of SelectInput on home.html
-function newVarLayer(variable) {
+threddsURL = "http://127.0.0.1:7000/thredds/wms/testAll/Swnet_tavg.nc";
+function changeLayer(variable) {
     try {
-        map.removeLayer(timedLayer);
+        map.removeLayer(wmsLayer);
     }
     catch {
         console.log("no layers to remove")
     }
     finally {
-    dataURL = "https://tethys.byu.edu/thredds/wms/testAll/SaldasDataViewer/" + variable + ".nc"
+        wmsLayer = L.tileLayer.wms(threddsURL, {
+            layers: 'Swnet_tavg',
+            format: 'image/png',
+            transparent: true,
+            opacity: $("#slider1").val(),
+            styles: 'boxfill/prob',
+            legend: true,
+            });
 
-    wmsLayer = L.tileLayer.wms(dataURL, {
-        layers: variable,
-        format: 'image/png',
-        transparent: true,
-        opacity: $("#slider1").val(),
-        styles: 'boxfill/greyscale',
-        legend: true,
-        });
-
-    timedLayer = L.timeDimension.layer.wms(wmsLayer, {
-        updateTimeDimension: true,
-        name: 'TimeSeries',
-        }).addTo(map);
+        timedLayer = L.timeDimension.layer.wms(wmsLayer, {
+            updateTimeDimension: true,
+            name: 'TimeSeries',
+            }).addTo(map);
     }
 }
 
-// removes old controls and adds new ones. Must be called after newVarLayer
+// removes old controls and adds new ones. Must be called after changeLayer
 function updateControls() {
     try {
         map.removeControl(layer_controller);
@@ -93,7 +91,7 @@ function updateControls() {
         autoPlay: false,
         });
     data_layers = {
-        'Variable Layer': timedLayer,
+        'GLDAS Layer': timedLayer,
         }
     layer_controller = L.control.layers(basemaps, data_layers).addTo(map);
     map.addControl(sliderControl);
@@ -106,7 +104,7 @@ function removeData() {
         layer_controller.removeLayer(timedLayer);
         map.removeLayer(timedLayer)
         map.removeControl(sliderControl);
-        console.log("Variable layers cleared")
+        console.log("Variable layers cleared");
     }
     catch {
         console.log("No variable layers to remove")
@@ -123,7 +121,7 @@ $(document).ready(function() {
 
 //    Listener for the variable picker menu (selectinput gizmo)
     $("#select1").change(function () {
-        newVarLayer($('#select1').val());
+        changeLayer($('#select1').val());
         updateControls();
         });
 

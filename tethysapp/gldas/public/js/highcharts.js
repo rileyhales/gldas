@@ -1,3 +1,37 @@
+Highcharts.setOptions({
+    lang: {
+        downloadCSV: "Download CSV",
+        downloadJPEG: "Download JPEG image",
+        downloadPDF: "Download PDF document",
+        downloadPNG: "Download PNG image",
+        downloadSVG: "Download SVG vector image",
+        downloadXLS: "Download XLS",
+        loading: "Loading...",
+        noData: "No Timeseries Data Selected",
+    },
+});
+
+Highcharts.chart('highchart', {
+    title: {
+        align: "center",
+        text: "Your Chart Will Appear Here",
+    },
+    series: [{
+        data: [],
+    }],
+    chart: {
+        animation: true,
+        zoomType: 'x',
+    },
+    noData: {
+        style: {
+            fontWeight: 'bold',
+            fontSize: '15px',
+            color: '#303030'
+        }
+    },
+});
+
 $(document).ready(function() {
     // Ajax sends the coordinates of the user's drawing and gets back a plot of the data at the given point/area
     $("#generatePlot").click(function () {
@@ -32,17 +66,20 @@ $(document).ready(function() {
             method: 'POST',
             success: function(result) {
                 console.log(result);
-                Highcharts.chart('highchart', {
+                varChart = Highcharts.chart('highchart', {
                     title: {
                         align: "center",
-                        text: "Timeseries for " + $('#select1').val().toString(),
+                        text: "Timeseries for " + result['name'],
                     },
                     series: [{
                         data: result['values'],
+                        type: "line",
+                        name: result['name'],
                     }],
-                    legend: [{
-                        enabled: false,
-                    }],
+                    chart: {
+                        animation: true,
+                        zoomType: 'x',
+                    },
                 });
             },
         });
