@@ -53,25 +53,15 @@ $(document).ready(function() {
 
 //////////////////////// HIGHCHARTS CONTROLS ///////////////////////////////////////////////
 
+//  Generate a plot whenever the user draws a new point
+    map.on("draw:created", function() {
 
-    $("#generatePlot").click(function () {
-    // validate that the user has provided the right information
-        try {
-            coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
-        }
-        catch {
-            alert("There was a problem with your selection. Please check your variable/point choices and try again");
-        }
+        coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
         variable = $('#layers').val();
-        if(variable == "") {
-            alert("Please Select a variable before generating a timeseries.");
-            console.log("failed to generate timeseries: no variable selected")
-            return;
-        };
         data = {
             coords: coords,     // array or list in the format [[lat, lon], [lat, lon] ... etc
             variable: variable, // which of the variables available to get timeseries data for
-        };
+            };
 
         console.log(data)
 
@@ -85,11 +75,8 @@ $(document).ready(function() {
             success: function(result) {
                 console.log(result);
                 newHighchart(result);
-            },
+                },
+            });
         });
-    });
-
-
-
 
 });

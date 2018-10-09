@@ -1,9 +1,9 @@
 // creating the map
 var map = L.map('map', {
-   zoom: 2,
-   fullscreenControl: true,
-   timeDimension: true,
-   center: [20, 0],
+    zoom: 2,
+    fullscreenControl: true,
+    timeDimension: true,
+    center: [20, 0],
 });
 
 
@@ -52,6 +52,7 @@ function newLayer(variable, color) {
         layers: variable,
         format: 'image/png',
         transparent: true,
+        BGCOLOR:'0x000000',
         opacity: $("#opacity").val(),
         styles: 'boxfill/' + color,
         legend: true,
@@ -110,22 +111,4 @@ function updateMap() {
     rmControls();
     newControls();
     getLegend(variable, color);
-}
-
-
-// remove layers and related controls
-function removeData() {
-    try {
-        layer_controller.removeLayer(timedLayer);
-        map.removeLayer(timedLayer)
-        map.removeControl(sliderControl);
-        console.log("Variable layers cleared");
-    }
-    catch {
-        console.log("No variable layers to remove")
-    }
-    finally {
-        drawnItems.clearLayers();
-        console.log("Drawn items cleared");
-    }
 }
