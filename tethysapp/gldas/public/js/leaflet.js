@@ -6,6 +6,7 @@ var map = L.map('map', {
    center: [20, 0],
 });
 
+
 // create the basemap layers (default basemap is world imagery)
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
 var Esri_WorldTerrain = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {maxZoom: 13});
@@ -13,13 +14,7 @@ var openStreetMap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
    name: 'openStreetMap',
     });
-basemaps = {
-    "ESRI Imagery": Esri_WorldImagery,
-    "ESRI Terrain": Esri_WorldTerrain,
-    "OpenStreetMap": openStreetMap,
-}
 
-layer_controller = L.control.layers(basemaps).addTo(map);
 
 // Add controls for user drawings
 var drawnItems = new L.FeatureGroup();      // FeatureGroup is to store editable layers
@@ -40,6 +35,7 @@ var drawControl = new L.Control.Draw({
 });
 map.addControl(drawControl);
 
+
 // Listeners that control what happens when the user draws things on the map
 map.on("draw:drawstart ", function (e) {
     drawnItems.clearLayers();
@@ -49,41 +45,37 @@ map.on("draw:created", function (e) {
     layer.addTo(drawnItems);
 });
 
-threddsURL = "http://127.0.0.1:7000/thredds/wms/testAll/Swnet_tavg.nc";
-function changeLayer(variable) {
-    try {
-        map.removeLayer(wmsLayer);
-    }
-    catch {
-        console.log("no layers to remove")
-    }
-    finally {
-        wmsLayer = L.tileLayer.wms(threddsURL, {
-            layers: 'Swnet_tavg',
-            format: 'image/png',
-            transparent: true,
-            opacity: $("#slider1").val(),
-            styles: 'boxfill/prob',
-            legend: true,
-            });
 
-        timedLayer = L.timeDimension.layer.wms(wmsLayer, {
-            updateTimeDimension: true,
-            name: 'TimeSeries',
-            }).addTo(map);
-    }
+function newLayer(variable, color) {
+    url = thredds_wms_url + variable + ".nc"
+    wmsLayer = L.tileLayer.wms(url, {
+        layers: variable,
+        format: 'image/png',
+        transparent: true,
+        opacity: $("#opacity").val(),
+        styles: 'boxfill/' + color,
+        legend: true,
+        colorscalerange: '215,325'
+        });
+
+    timedLayer = L.timeDimension.layer.wms(wmsLayer, {
+        updateTimeDimension: true,
+        name: 'TimeSeries',
+        }).addTo(map);
 }
 
+
+function getLegend(variable, color) {
+    url = thredds_wms_url + variable + ".nc"
+    legendUrl = url + "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color;
+    legendUrl += "&COLORSCALERANGE=215,325"
+    lookup = '<img src="' + legendUrl + '" alt="legend" style="width:100%; float:right;">'
+    document.getElementById("legend").innerHTML = lookup;
+}
+
+
 // removes old controls and adds new ones. Must be called after changeLayer
-function updateControls() {
-    try {
-        map.removeControl(layer_controller);
-        map.removeControl(sliderControl);
-        }
-    catch {
-        console.log("no controls to remove")
-    }
-    finally {
+function newControls(basemaps) {
     sliderControl = L.control.timeDimension({
         position: "bottomleft",
         layer: timedLayer,
@@ -93,10 +85,33 @@ function updateControls() {
     data_layers = {
         'GLDAS Layer': timedLayer,
         }
+    basemaps = {
+    "ESRI Imagery": Esri_WorldImagery,
+    "ESRI Terrain": Esri_WorldTerrain,
+    "OpenStreetMap": openStreetMap,
+        }
     layer_controller = L.control.layers(basemaps, data_layers).addTo(map);
     map.addControl(sliderControl);
-    }
 }
+
+
+function rmControls() {
+    layer_controller.removeLayer(timedLayer);
+    map.removeControl(layer_controller)
+    map.removeControl(sliderControl);
+}
+
+
+function updateMap() {
+    variable = $('#layers').val();
+    color= $('#colors').val();
+    map.removeLayer(wmsLayer);
+    newLayer(variable, color);
+    rmControls();
+    newControls();
+    getLegend(variable, color);
+}
+
 
 // remove layers and related controls
 function removeData() {
@@ -114,30 +129,3 @@ function removeData() {
         console.log("Drawn items cleared");
     }
 }
-
-
-// JQuery and AJAX Listeners/Controllers to let the user manipulate the map
-$(document).ready(function() {
-
-//    Listener for the variable picker menu (selectinput gizmo)
-    $("#select1").change(function () {
-        changeLayer($('#select1').val());
-        updateControls();
-        });
-
-//    Listener for the opacity select slider (rangeslider gizmo)
-    $("#slider1").change(function () {
-        try {
-            timedLayer.setOpacity($('#slider1').val());
-        }
-        catch {
-            console.log("No layer opacity to change")
-        }
-        });
-
-//    Listener for the remove layers button (html button)
-    $("#removal").click(function () {
-        removeData()
-        });
-
-});

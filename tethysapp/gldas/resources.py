@@ -1,4 +1,7 @@
 def gldas_variables():
+    """
+    List of the plottable variables from the GLDAS 2.1 datasets used
+    """
     variables = {
         'Air Temperature': 'Tair_f_inst',
         # 'Surface Albedo': 'Albedo_inst',
@@ -34,3 +37,22 @@ def gldas_variables():
         # 'Time': 'time',
         }
     return variables
+
+
+def wms_colors():
+    color_opts = [
+        # ('Probability', 'prob'),
+        ('Red-Blue', 'redblue'),
+        # ('White-Blue', whiteblue'),
+        ('NetCDF Viewer', 'ncview'),
+        ('SST-36', 'sst_36'),
+        ('Greyscale', 'greyscale'),
+        ('OCCAM', 'occam'),
+        ('OCCAM Pastel', 'occam_pastel-30'),
+        ('Rainbox', 'rainbow'),
+        # ('Grace', 'grace'),
+        ('ALG', 'alg'),
+        ('ALG 2', 'alg2'),
+        ('Ferret', 'ferret'),
+        ]
+    return color_opts
