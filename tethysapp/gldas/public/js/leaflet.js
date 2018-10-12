@@ -47,7 +47,8 @@ map.on("draw:created", function (e) {
 
 
 function newLayer(variable, color) {
-    url = thredds_wms_url + variable + ".nc"
+//    url = thredds_wms_url + variable + ".nc"
+    url = thredds_wms_url + 'aggregate.ncml'
     wmsLayer = L.tileLayer.wms(url, {
         layers: variable,
         format: 'image/png',
@@ -67,10 +68,11 @@ function newLayer(variable, color) {
 
 
 function getLegend(variable, color) {
-    url = thredds_wms_url + variable + ".nc"
-    legendUrl = url + "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color;
-    legendUrl += "&COLORSCALERANGE=215,325"
-    lookup = '<img src="' + legendUrl + '" alt="legend" style="width:100%; float:right;">'
+//    url = thredds_wms_url + variable + ".nc"
+    url = thredds_wms_url + 'aggregate.ncml'
+    url += "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color;
+    url += "&COLORSCALERANGE=215,325"
+    lookup = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">'
     document.getElementById("legend").innerHTML = lookup;
 }
 

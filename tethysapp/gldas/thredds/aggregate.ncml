@@ -1,0 +1,16 @@
+<!--
+    Use this file on the thredds server to collect variable data from all nc files in a directory.
+    Reference this .ncml file on the thredds server when making wms calls from inside the application.
+    Aggregating datasets instead of using preprocessed files makes it takes longer to extract timeseries values.
+ -->
+
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+    <variable name="time" type="int" shape="time">
+        <attribute name="units" value="months since 2000-01-01 00:00"/>
+        <attribute name="_CoordinateAxisType" value="Time" />
+            <values start="0" increment="1" />
+    </variable>
+    <aggregation dimName="time" type="joinExisting" recheckEvery="5 min">
+        <scan location="raw_monthly/" />
+    </aggregation>
+</netcdf>

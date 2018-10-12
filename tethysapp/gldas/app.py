@@ -1,5 +1,10 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 
+# todo: make a global variable for base thredds url and the path to the data. needs to work in python, js, html
+# todo: make the legend rescale itself automatically based on max/min values
+# todo: fix the appearance of the legend on the right side of the map
+# todo: preprocess a bunch of multi-year datasets and see how big they are
+# todo: on change commands for the timeseries that will change the paths, update the map
 
 class Gldas(TethysAppBase):
     """
@@ -38,6 +43,16 @@ class Gldas(TethysAppBase):
                 controller='gldas.ajaxhandlers.generatePlot'
             ),
 
+        # url map for api calls
+            UrlMap(
+                name='tsPlotValues',
+                url='gldas/api/tsPlotValues',
+                controller='gldas.api.tsPlotValues',
+            ),
+            UrlMap(
+                name='getTimes',
+                url='gldas/api/getTimes',
+                controller='gldas.api.getTimes',
+            ),
         )
-
         return url_maps

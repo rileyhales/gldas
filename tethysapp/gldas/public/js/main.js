@@ -13,15 +13,20 @@ $.ajaxSetup({
 });
 
 thredds_wms_url = "http://127.0.0.1:7000/thredds/wms/testAll/";
+thredds_http_url = "http://127.0.0.1:7000/thredds/fileServer/testAll/";
 
-
+//  Lets the user download the netcdf currently being displayed
+function downloadNetCDF(){
+    variable = $('#layers').val();
+    link = thredds_http_url + variable + '.nc';
+    return window.location=link;
+}
 
 // JQuery and AJAX Listeners/Controllers to let the user manipulate the map
 $(document).ready(function() {
 
 
 //////////////////////// LEAFLET CONTROLS ///////////////////////////////////////////////
-
 
 //    Show the first layer from the list on load
     variable = $('#layers').val();
@@ -43,11 +48,6 @@ $(document).ready(function() {
 //    Listener for the opacity select slider (rangeslider gizmo)
     $("#opacity").change(function () {
         timedLayer.setOpacity($('#opacity').val());
-        });
-
-//    Listener for the remove layers button (html button)
-    $("#removal").click(function () {
-        removeData()
         });
 
 
@@ -78,5 +78,15 @@ $(document).ready(function() {
                 },
             });
         });
+
+
+//////////////////////// LEAFLET CONTROLS ///////////////////////////////////////////////
+
+//  Control the Download Button
+    $("#download").click(function () {
+        downloadNetCDF();
+        });
+
+
 
 });

@@ -4,17 +4,16 @@ import netCDF4, numpy, datetime, os
 def ts_plot(data):
     """
     Description: generates a timeseries for a given point and given variable defined by the user.
-    Arguments: A dictionary object from the AJAX-ed JSON object that contains, the type of data, coordinates,
-        and variable.
+    Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
     Author: Riley Hales
     Dependencies: netcdf4, numpy, datetime, random
-    Last Updated: Sept 26 2018
+    Last Updated: Oct 11 2018
     """
     values = []
     variable = str(data['variable'])
     coords = data['coords']
 
-    dataset_url = os.path.join('/home/rchales/thredds/gldas', str(variable) + '.nc')
+    dataset_url = os.path.join('/home/rchales/thredds/gldas/preprocessed_ts', str(variable) + '.nc')
     dataset = netCDF4.Dataset(dataset_url, 'r')
 
     # find the point of data array that corresponds to the user's choice
@@ -41,5 +40,36 @@ def ts_plot(data):
         values.append((time, val))
 
     dataset.close()
+
+    return values
+
+def ts_plot_agg(data):
+    """
+    Description: generates a timeseries for a given point and given variable from non-preprocessed nc files
+    Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
+    Author: Riley Hales
+    Dependencies: netcdf4, numpy, datetime, random
+    Last Updated: Oct 11 2018
+    """
+    values = []
+    variable = str(data['variable'])
+    coords = data['coords']
+
+    data_dir = '/home/rchales/thredds/gldas/raw_data/'
+    files = os.listdir(data_dir)
+    dataset = netCDF4.Dataset(data_dir + files[0], 'r')
+    nc_lons = dataset['lon'][:]
+    nc_lats = dataset['lat'][:]
+    adj_lon_ind = (numpy.abs(nc_lons - coords[0])).argmin()
+    adj_lat_ind = (numpy.abs(nc_lats - coords[1])).argmin()
+    dataset.close()
+
+    time = 1
+    for nc in files:
+        dataset = netCDF4.Dataset(data_dir + nc, 'r')
+        val = float(dataset[variable][0, adj_lat_ind, adj_lon_ind].data)
+        values.append((time, val))
+        time += 1
+        dataset.close()
 
     return values
