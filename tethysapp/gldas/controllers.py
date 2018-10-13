@@ -31,7 +31,7 @@ def home(request):
     )
 
     times = SelectInput(
-        display_text='Time Intervals',
+        display_text='Time Interval',
         name='times',
         multiple=False,
         original=True,

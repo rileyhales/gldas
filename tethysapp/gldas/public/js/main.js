@@ -12,28 +12,48 @@ $.ajaxSetup({
     }
 });
 
-thredds_wms_url = "http://127.0.0.1:7000/thredds/wms/testAll/";
-thredds_http_url = "http://127.0.0.1:7000/thredds/fileServer/testAll/";
-
-//  Lets the user download the netcdf currently being displayed
-function downloadNetCDF(){
+//  Sets the correct urls based on the time period
+function setLinks() {
+    time = $("#times").val();
     variable = $('#layers').val();
-    link = thredds_http_url + variable + '.nc';
-    return window.location=link;
+    thredds_base = 'http://127.0.0.1:7000/thredds/'
+    data_dir = '/home/rchales/thredds/gldas/'
+    thredds_wms = thredds_base + 'wms/testAll/';
+//  If you choose to show all data
+    if (time == 'all') {
+        thredds_wms += 'alltimes.ncml';
+    }
+//  Individual options for selecting a preprocessed chunk of time
+    else if (time == '2000-2009') {
+        thredds_wms += 'preprocessed_yrs/2000-2009/' + variable + '.nc';
+    }
+//  This should take care of selecting single year intervals
+    else {
+        thredds_wms += time + '.ncml';
+    }
+    return thredds_wms, time
 }
+
 
 // JQuery and AJAX Listeners/Controllers to let the user manipulate the map
 $(document).ready(function() {
 
-
-//////////////////////// LEAFLET CONTROLS ///////////////////////////////////////////////
-
-//    Show the first layer from the list on load
+//  Load initial map data as soon as the page is ready
     variable = $('#layers').val();
     color= $('#colors').val();
+    setLinks();
     newLayer(variable, color);
     getLegend(variable, color);
     newControls();
+
+//////////////////////// GENERAL CONTROLS ///////////////////////////////////////////////
+
+    $("#times").change(function() {
+        setLinks();
+        updateMap();
+    });
+
+//////////////////////// LEAFLET CONTROLS ///////////////////////////////////////////////
 
 //    Listener for the variable picker menu (selectinput gizmo)
     $("#layers").change(function () {
@@ -50,7 +70,6 @@ $(document).ready(function() {
         timedLayer.setOpacity($('#opacity').val());
         });
 
-
 //////////////////////// HIGHCHARTS CONTROLS ///////////////////////////////////////////////
 
 //  Generate a plot whenever the user draws a new point
@@ -59,8 +78,9 @@ $(document).ready(function() {
         coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
         variable = $('#layers').val();
         data = {
-            coords: coords,     // array or list in the format [[lat, lon], [lat, lon] ... etc
-            variable: variable, // which of the variables available to get timeseries data for
+            coords: coords,         // array or list in the format [[lat, lon], [lat, lon] ... etc
+            variable: variable,     // which of the variables available to get timeseries data for
+            time: time,             // the timestep of data chosen
             };
 
         console.log(data)
@@ -78,15 +98,6 @@ $(document).ready(function() {
                 },
             });
         });
-
-
-//////////////////////// LEAFLET CONTROLS ///////////////////////////////////////////////
-
-//  Control the Download Button
-    $("#download").click(function () {
-        downloadNetCDF();
-        });
-
 
 
 });

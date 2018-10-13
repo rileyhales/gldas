@@ -65,8 +65,8 @@ def get_times():
     """
     Time intervals of GLDAS data
     """
-    import os
     times = [
+        ('All Available Times', 'alltimes'),
         (2000, 2000),
         (2001, 2001),
         (2002, 2002),
@@ -87,9 +87,4 @@ def get_times():
         (2017, 2017),
         (2018, 2018),
     ]
-    dir = '/home/rchales/thredds/gldas/preprocessed_yrs'
-    years = os.listdir(dir)
-    years.sort()
-    for year in years:
-        times.append((year, year))
     return times
