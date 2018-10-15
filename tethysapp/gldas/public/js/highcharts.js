@@ -7,13 +7,13 @@ Highcharts.setOptions({
         downloadPNG: "Download PNG image",
         downloadSVG: "Download SVG vector image",
         downloadXLS: "Download XLS",
-        loading: "Loading...",
-        noData: "No Timeseries Data Selected",
+        loading: "Loading timeseries, please wait...",
+        noData: ""
     },
 });
 
 // Place holder chart
-Highcharts.chart('highchart', {
+chart = Highcharts.chart('highchart', {
     title: {
         align: "center",
         text: "Your Chart Will Appear Here",

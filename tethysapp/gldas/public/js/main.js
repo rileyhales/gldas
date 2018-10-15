@@ -13,26 +13,24 @@ $.ajaxSetup({
 });
 
 //  Sets the correct urls based on the time period
-function setLinks() {
-    time = $("#times").val();
-    variable = $('#layers').val();
+function setLinks(time, variable) {
     thredds_base = 'http://127.0.0.1:7000/thredds/'
-    data_dir = '/home/rchales/thredds/gldas/'
     thredds_wms = thredds_base + 'wms/testAll/';
+    thredds_wms += time + '.ncml';
+
 //  If you choose to show all data
     if (time == 'all') {
         thredds_wms += 'alltimes.ncml';
     }
-//  Individual options for selecting a preprocessed chunk of time
-    else if (time == '2000-2009') {
-        thredds_wms += 'preprocessed_yrs/2000-2009/' + variable + '.nc';
-    }
 //  This should take care of selecting single year intervals
-    else {
-        thredds_wms += time + '.ncml';
-    }
     return thredds_wms, time
 }
+
+
+
+
+
+
 
 
 // JQuery and AJAX Listeners/Controllers to let the user manipulate the map
@@ -40,8 +38,9 @@ $(document).ready(function() {
 
 //  Load initial map data as soon as the page is ready
     variable = $('#layers').val();
+    time = $("#times").val();
     color= $('#colors').val();
-    setLinks();
+    setLinks(time, variable);
     newLayer(variable, color);
     getLegend(variable, color);
     newControls();
@@ -49,7 +48,9 @@ $(document).ready(function() {
 //////////////////////// GENERAL CONTROLS ///////////////////////////////////////////////
 
     $("#times").change(function() {
-        setLinks();
+        time = $("#times").val();
+        variable = $('#layers').val();
+        setLinks(time, variable);
         updateMap();
     });
 
@@ -74,6 +75,8 @@ $(document).ready(function() {
 
 //  Generate a plot whenever the user draws a new point
     map.on("draw:created", function() {
+        chart.hideNoData();
+        chart.showLoading();
 
         coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
         variable = $('#layers').val();
@@ -82,8 +85,6 @@ $(document).ready(function() {
             variable: variable,     // which of the variables available to get timeseries data for
             time: time,             // the timestep of data chosen
             };
-
-        console.log(data)
 
     // Ajax script to send the data for processing
         $.ajax({

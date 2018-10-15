@@ -3,6 +3,17 @@ var map = L.map('map', {
     zoom: 2,
     fullscreenControl: true,
     timeDimension: true,
+    timeDimensionControl: true,
+    timeDimensionControlOptions: {
+        position: "bottomleft",
+        autoPlay: true,
+        loopButton: true,
+        backwardButton: true,
+        forwardButton: true,
+        minSpeed: 1,
+        maxSpeed: 6,
+        speedStep: 1,
+    },
     center: [20, 0],
 });
 
@@ -55,14 +66,35 @@ function newLayer(variable, color) {
         BGCOLOR:'0x000000',
         opacity: $("#opacity").val(),
         styles: 'boxfill/' + color,
-        legend: true,
         colorscalerange: '215,325'
         });
 
     timedLayer = L.timeDimension.layer.wms(wmsLayer, {
-        updateTimeDimension: true,
         name: 'TimeSeries',
+        updateTimeDimension: true,
+        cache: 15,
         }).addTo(map);
+}
+
+
+// removes old controls and adds new ones. Must be called after changeLayer
+function newControls(basemaps) {
+    data_layers = {
+        'GLDAS Layer': timedLayer,
+        }
+    basemaps = {
+        "ESRI Imagery": Esri_WorldImagery,
+        "ESRI Terrain": Esri_WorldTerrain,
+        "OpenStreetMap": openStreetMap,
+        }
+    lyrControls = L.control.layers(basemaps, data_layers).addTo(map);
+}
+
+
+function clearmap() {
+    lyrControls.removeLayer(timedLayer);
+    map.removeLayer(wmsLayer);
+    map.removeControl(lyrControls)
 }
 
 
@@ -74,39 +106,10 @@ function getLegend(variable, color) {
 }
 
 
-// removes old controls and adds new ones. Must be called after changeLayer
-function newControls(basemaps) {
-    sliderControl = L.control.timeDimension({
-        position: "bottomleft",
-        layer: timedLayer,
-        range: true,
-        autoPlay: false,
-        });
-    data_layers = {
-        'GLDAS Layer': timedLayer,
-        }
-    basemaps = {
-    "ESRI Imagery": Esri_WorldImagery,
-    "ESRI Terrain": Esri_WorldTerrain,
-    "OpenStreetMap": openStreetMap,
-        }
-    layer_controller = L.control.layers(basemaps, data_layers).addTo(map);
-    map.addControl(sliderControl);
-}
-
-
-function rmControls() {
-    layer_controller.removeLayer(timedLayer);
-    map.removeControl(layer_controller)
-    map.removeControl(sliderControl);
-}
-
-
 function updateMap() {
     variable = $('#layers').val();
     color= $('#colors').val();
-    rmControls();
-    map.removeLayer(wmsLayer);
+    clearmap();
     newLayer(variable, color);
     newControls();
     getLegend(variable, color);
