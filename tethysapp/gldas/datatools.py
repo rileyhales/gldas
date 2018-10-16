@@ -19,12 +19,10 @@ def ts_plot(data):
     if tperiod == 'alltimes':
         path = os.path.join(data_dir, 'raw')
         files = os.listdir(path)
-        print files
     else:
         path = os.path.join(data_dir, 'raw')
         allfiles = os.listdir(path)
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
-        print files
 
     # find the point of data array that corresponds to the user's choice
     dataset = netCDF4.Dataset(path + '/' + str(files[0]), 'r')

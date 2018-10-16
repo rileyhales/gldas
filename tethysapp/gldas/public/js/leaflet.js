@@ -3,6 +3,7 @@ var map = L.map('map', {
     zoom: 2,
     fullscreenControl: true,
     timeDimension: true,
+    timeDimensionOptions: 10000,
     timeDimensionControl: true,
     timeDimensionControlOptions: {
         position: "bottomleft",
@@ -10,6 +11,7 @@ var map = L.map('map', {
         loopButton: true,
         backwardButton: true,
         forwardButton: true,
+        timeSliderDragUpdate: true,
         minSpeed: 1,
         maxSpeed: 6,
         speedStep: 1,
@@ -71,7 +73,9 @@ function newLayer(variable, color) {
 
     timedLayer = L.timeDimension.layer.wms(wmsLayer, {
         name: 'TimeSeries',
+        requestTimefromCapabilities: true,
         updateTimeDimension: true,
+        updateTimeDimensionMode: 'replace',
         cache: 15,
         }).addTo(map);
 }
@@ -94,6 +98,7 @@ function newControls(basemaps) {
 function clearmap() {
     lyrControls.removeLayer(timedLayer);
     map.removeLayer(wmsLayer);
+    map.removeLayer(timedLayer)
     map.removeControl(lyrControls)
 }
 
@@ -108,6 +113,7 @@ function getLegend(variable, color) {
 
 function updateMap() {
     variable = $('#layers').val();
+    time = $("#times").val();
     color= $('#colors').val();
     clearmap();
     newLayer(variable, color);

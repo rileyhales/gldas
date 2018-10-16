@@ -14,7 +14,7 @@ $.ajaxSetup({
 
 //  Sets the correct urls based on the time period
 function setLinks(time, variable) {
-    thredds_base = 'http://127.0.0.1:7000/thredds/'
+    thredds_base = 'http://127.0.0.1:7000/thredds/';
     thredds_wms = thredds_base + 'wms/testAll/';
     thredds_wms += time + '.ncml';
 
@@ -25,9 +25,6 @@ function setLinks(time, variable) {
 //  This should take care of selecting single year intervals
     return thredds_wms, time
 }
-
-
-
 
 
 
