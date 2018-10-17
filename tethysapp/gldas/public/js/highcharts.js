@@ -39,7 +39,17 @@ function newHighchart(data) {
     chart = Highcharts.chart('highchart', {
         title: {
             align: "center",
-            text: "Timeseries for " + data['name'],
+            text: data['name'] + ' v Time',
+        },
+        xAxis: {
+            type: 'datetime',
+            title: {text: "Time"},
+            labels: {
+                format: '{value:%m %Y}'
+            },
+        },
+        yAxis: {
+            title: {text: data['units']}
         },
         series: [{
             data: data['values'],

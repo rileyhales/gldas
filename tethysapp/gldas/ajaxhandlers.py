@@ -12,7 +12,9 @@ def generatePlot(request):
 
     data = ast.literal_eval(request.body)
     response_object = {}
-    response_object['values'] = ts_plot(data)
+    plot_items = ts_plot(data)
+    response_object['units'] = plot_items[0]
+    response_object['values'] = plot_items[1]
     variables = gldas_variables()
     for key in variables:
         if variables[key] == data['variable']:

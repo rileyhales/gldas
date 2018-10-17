@@ -77,6 +77,7 @@ $(document).ready(function() {
 
         coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
         variable = $('#layers').val();
+        time = $("#times").val();
         data = {
             coords: coords,         // array or list in the format [[lat, lon], [lat, lon] ... etc
             variable: variable,     // which of the variables available to get timeseries data for

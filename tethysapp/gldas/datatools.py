@@ -1,4 +1,4 @@
-import netCDF4, numpy, datetime, os
+import netCDF4, numpy, datetime, os, calendar
 
 # generates the plotable points based on the user inputs
 def ts_plot(data):
@@ -10,6 +10,7 @@ def ts_plot(data):
     Last Updated: Oct 11 2018
     """
     values = []
+    timelist = []
     variable = str(data['variable'])
     coords = data['coords']
     tperiod = data['time']
@@ -19,42 +20,35 @@ def ts_plot(data):
     if tperiod == 'alltimes':
         path = os.path.join(data_dir, 'raw')
         files = os.listdir(path)
+        files.sort()
     else:
         path = os.path.join(data_dir, 'raw')
         allfiles = os.listdir(path)
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
+        files.sort()
 
-    # find the point of data array that corresponds to the user's choice
+    # find the point of data array that corresponds to the user's choice, get the units of that variable
     dataset = netCDF4.Dataset(path + '/' + str(files[0]), 'r')
     nc_lons = dataset['lon'][:]
     nc_lats = dataset['lat'][:]
     adj_lon_ind = (numpy.abs(nc_lons - coords[0])).argmin()
     adj_lat_ind = (numpy.abs(nc_lats - coords[1])).argmin()
+    units = dataset[variable].__dict__['units']
     dataset.close()
 
-    tstep = 0
+    # extract values at each timestep
     for nc in files:
+        # set the time value for each file
         dataset = netCDF4.Dataset(path + '/' + nc, 'r')
-        val = float(dataset[variable][0, adj_lat_ind, adj_lon_ind].data)
-        values.append((tstep, val))
-        tstep += 1
+        t_value = (dataset['time'].__dict__['begin_date'])
+        t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
+        t_step = calendar.timegm(t_step.utctimetuple()) * 1000
+        for time, var in enumerate(dataset['time'][:]):
+            # get the value at the point
+            val = float(dataset[variable][0, adj_lat_ind, adj_lon_ind].data)
+            values.append((t_step, val))
         dataset.close()
 
-    # elif is_agg == False:
-    #     tstep = 0
-    #     for time, var in enumerate(dataset['time'][:]):
-    #         val = float(dataset[variable][adj_lat_ind, adj_lon_ind, time].data)
-    #         values.append((tstep, val))
-    #         tstep += 1
-    #     dataset.close()
-    # timestep management
-    # t_start = dataset['time'].__dict__['begin_date']
-    # t_start = datetime.datetime.strptime(t_start, "%Y%m%d")
-    # t_step = int(dataset['time'].__dict__['time_increment'])
-    # for time, var in enumerate(dataset['time'][:]):
-    #     val = float(dataset[variable][adj_lat_ind, adj_lon_ind, time].data)
-    #     t_current = t_start + datetime.timedelta(days=t_step * time)
-    #     timestamp = str(datetime.datetime.strftime(t_current, "%Y-%m-%d"))
-    #     values.append((timestamp, val))
+    return_items = [units, values]
 
-    return values
+    return return_items
