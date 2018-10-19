@@ -8,7 +8,7 @@ Highcharts.setOptions({
         downloadSVG: "Download SVG vector image",
         downloadXLS: "Download XLS",
         loading: "Loading timeseries, please wait...",
-        noData: ""
+        noData: "No Data Selected"
     },
 });
 
@@ -44,9 +44,6 @@ function newHighchart(data) {
         xAxis: {
             type: 'datetime',
             title: {text: "Time"},
-            labels: {
-                format: '{value:%m %Y}'
-            },
         },
         yAxis: {
             title: {text: data['units']}
@@ -55,6 +52,9 @@ function newHighchart(data) {
             data: data['values'],
             type: "line",
             name: data['name'],
+            tooltip: {
+                xDateFormat: '%A, %b %e, %Y',
+            },
         }],
         chart: {
             animation: true,

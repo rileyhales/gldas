@@ -5,7 +5,7 @@
 {% load staticfiles %}
 
 {% block header_buttons %}
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
+<div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
     <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
   </div>
 {% endblock %}
@@ -54,9 +54,6 @@
   {% gizmo range_slider  opacity %}
   <!--<a id="generatePlot" class="btn btn-default" role="button">Timeseries Plot</a>-->
   <!--<a id="removal" class="btn btn-default" role="button">Clear Data</a>-->
-  <p>GLDAS data can be viewed in year or decade increments. App performance may vary based on your interval choice.</p>
-  <div id="download-opts" align="center">
-    <!--<a id="download" class="btn btn-default" role="button" onclick="downloadNetCDF();">Download GLDAS Data (NetCDF)</a>-->
-  </div>
+  <p>GLDAS data can be viewed in 1-year increments. App performance may vary based on your interval and variable choice.</p>
 
 {% endblock %}

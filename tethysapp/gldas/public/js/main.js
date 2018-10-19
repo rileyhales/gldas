@@ -36,11 +36,11 @@ $(document).ready(function() {
 //  Load initial map data as soon as the page is ready
     variable = $('#layers').val();
     time = $("#times").val();
-    color= $('#colors').val();
+    color = $('#colors').val();
     setLinks(time, variable);
     newLayer(variable, color);
-    getLegend(variable, color);
     newControls();
+    getLegend(variable, color);
 
 //////////////////////// GENERAL CONTROLS ///////////////////////////////////////////////
 

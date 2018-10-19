@@ -98,15 +98,14 @@ function newControls(basemaps) {
 function clearmap() {
     lyrControls.removeLayer(timedLayer);
     map.removeLayer(wmsLayer);
-    map.removeLayer(timedLayer)
-    map.removeControl(lyrControls)
+    map.removeLayer(timedLayer);
+    map.removeControl(lyrControls);
 }
 
 
 function getLegend(variable, color) {
-    url = thredds_wms
-    url += "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color + "&COLORSCALERANGE=215,325";
-    lookup = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">'
+    url = thredds_wms + "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color + "&COLORSCALERANGE=215,325";
+    lookup = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
     document.getElementById("legend").innerHTML = lookup;
 }
 
