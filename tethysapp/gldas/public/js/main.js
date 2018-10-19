@@ -27,9 +27,6 @@ function setLinks(time, variable) {
 }
 
 
-
-
-
 // JQuery and AJAX Listeners/Controllers to let the user manipulate the map
 $(document).ready(function() {
 
@@ -40,7 +37,7 @@ $(document).ready(function() {
     setLinks(time, variable);
     newLayer(variable, color);
     newControls();
-    getLegend(variable, color);
+    legend.addTo(map);
 
 //////////////////////// GENERAL CONTROLS ///////////////////////////////////////////////
 

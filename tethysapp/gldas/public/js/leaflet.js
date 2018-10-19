@@ -59,6 +59,16 @@ map.on("draw:created", function (e) {
 });
 
 
+var legend = L.control({position:'topright'});
+legend.onAdd = function(map) {
+    var div = L.DomUtil.create('div', 'legend');
+    url = thredds_wms + "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color + "&COLORSCALERANGE=215,325";
+    lookup = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
+    div.innerHTML = lookup;
+    return div
+};
+
+
 function newLayer(variable, color) {
     url = thredds_wms;
     wmsLayer = L.tileLayer.wms(url, {
@@ -68,7 +78,7 @@ function newLayer(variable, color) {
         BGCOLOR:'0x000000',
         opacity: $("#opacity").val(),
         styles: 'boxfill/' + color,
-        colorscalerange: '215,325'
+        colorscalerange: '215,325',
         });
 
     timedLayer = L.timeDimension.layer.wms(wmsLayer, {
@@ -103,13 +113,6 @@ function clearmap() {
 }
 
 
-function getLegend(variable, color) {
-    url = thredds_wms + "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color + "&COLORSCALERANGE=215,325";
-    lookup = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
-    document.getElementById("legend").innerHTML = lookup;
-}
-
-
 function updateMap() {
     variable = $('#layers').val();
     time = $("#times").val();
@@ -117,5 +120,5 @@ function updateMap() {
     clearmap();
     newLayer(variable, color);
     newControls();
-    getLegend(variable, color);
+    legend.addTo(map);
 }
