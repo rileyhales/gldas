@@ -35,6 +35,7 @@ $(document).ready(function() {
     time = $("#times").val();
     color = $('#colors').val();
     setLinks(time, variable);
+    getBounds();
     newLayer(variable, color);
     newControls();
     legend.addTo(map);
@@ -52,6 +53,7 @@ $(document).ready(function() {
 
 //    Listener for the variable picker menu (selectinput gizmo)
     $("#layers").change(function () {
+        getBounds();
         updateMap();
         });
 
@@ -69,30 +71,7 @@ $(document).ready(function() {
 
 //  Generate a plot whenever the user draws a new point
     map.on("draw:created", function() {
-        chart.hideNoData();
-        chart.showLoading();
-
-        coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
-        variable = $('#layers').val();
-        time = $("#times").val();
-        data = {
-            coords: coords,         // array or list in the format [[lat, lon], [lat, lon] ... etc
-            variable: variable,     // which of the variables available to get timeseries data for
-            time: time,             // the timestep of data chosen
-            };
-
-    // Ajax script to send the data for processing
-        $.ajax({
-            url:'/apps/gldas/generatePlot/',
-            data: JSON.stringify(data),
-            dataType: 'json',
-            contentType: "application/json",
-            method: 'POST',
-            success: function(result) {
-                console.log(result);
-                newHighchart(result);
-                },
-            });
+        newChart();
         });
 
 

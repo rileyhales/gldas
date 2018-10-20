@@ -38,7 +38,12 @@ class Gldas(TethysAppBase):
             UrlMap(
                 name='generatePlot',
                 url='gldas/generatePlot',
-                controller='gldas.ajaxhandlers.generatePlot'
+                controller='gldas.ajaxhandlers.generatePlot',
+            ),
+            UrlMap(
+                name='getBounds',
+                url='gldas/getBounds',
+                controller='gldas.ajaxhandlers.getBounds',
             ),
 
         # url map for api calls
