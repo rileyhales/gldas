@@ -13,17 +13,16 @@ $.ajaxSetup({
 });
 
 //  Sets the correct urls based on the time period
-function setLinks(time, variable) {
+function setParams(time, variable) {
+//  Sets the links to data
     thredds_base = 'http://127.0.0.1:7000/thredds/';
-    thredds_wms = thredds_base + 'wms/testAll/';
-    thredds_wms += time + '.ncml';
+    thredds_wms = thredds_base + 'wms/testAll/' + time + '.ncml';
 
-//  If you choose to show all data
-    if (time == 'all') {
-        thredds_wms += 'alltimes.ncml';
-    }
-//  This should take care of selecting single year intervals
-    return thredds_wms, time
+//  Gets the correct bounds for the time, variable, color combination
+    min_bnd = boundaries[time][variable][0];
+    max_bnd = boundaries[time][variable][1];
+
+    return thredds_wms, min_bnd, max_bnd
 }
 
 
@@ -34,8 +33,8 @@ $(document).ready(function() {
     variable = $('#layers').val();
     time = $("#times").val();
     color = $('#colors').val();
-    setLinks(time, variable);
-    getBounds();
+    setParams(time, variable);
+//    getBounds();
     newLayer(variable, color);
     newControls();
     legend.addTo(map);
@@ -45,7 +44,7 @@ $(document).ready(function() {
     $("#times").change(function() {
         time = $("#times").val();
         variable = $('#layers').val();
-        setLinks(time, variable);
+        setParams(time, variable);
         updateMap();
     });
 
@@ -53,7 +52,7 @@ $(document).ready(function() {
 
 //    Listener for the variable picker menu (selectinput gizmo)
     $("#layers").change(function () {
-        getBounds();
+//        getBounds();
         updateMap();
         });
 

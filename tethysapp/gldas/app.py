@@ -1,8 +1,6 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 
 # todo: make a global variable for base thredds url and the path to the data. needs to work in python, js, html
-# todo: make the legend rescale itself automatically based on max/min values
-# todo: fix the appearance of the legend on the right side of the map
 
 class Gldas(TethysAppBase):
     """

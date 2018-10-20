@@ -62,7 +62,7 @@ map.on("draw:created", function (e) {
 var legend = L.control({position:'topright'});
 legend.onAdd = function(map) {
     var div = L.DomUtil.create('div', 'legend');
-    url = thredds_wms + "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color + "&COLORSCALERANGE=" + data_min + ',' + data_max;
+    url = thredds_wms + "?REQUEST=GetLegendGraphic&LAYER=" + variable + "&PALETTE=" + color + "&COLORSCALERANGE=" + boundaries[time][variable][0] + ',' + boundaries[time][variable][1];
     lookup = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
     div.innerHTML = lookup;
     return div
@@ -78,7 +78,7 @@ function newLayer(variable, color) {
         BGCOLOR:'0x000000',
         opacity: $("#opacity").val(),
         styles: 'boxfill/' + color,
-        colorscalerange: data_min + ',' + data_max,
+        colorscalerange: min_bnd + ',' + max_bnd,
         });
 
     timedLayer = L.timeDimension.layer.wms(wmsLayer, {

@@ -26,6 +26,8 @@ def generatePlot(request):
 def getBounds(request):
     """
     Dynamically defines exact boundaries for the legend and wms so that they are synchronized
+    This was substituted for statically defined values to improve performance on the most common values.
+    Will be reimplemented when the app supports custom time values
     Requires netcdf4, os, ast, math
     """
 
