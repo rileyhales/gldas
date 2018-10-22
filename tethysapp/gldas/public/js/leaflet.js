@@ -1,9 +1,9 @@
 // creating the map
 var map = L.map('map', {
-    zoom: 2,
-    fullscreenControl: true,
+    zoom: 1.25,
+    minZoom: 1.25,
+    maxBounds: L.latLngBounds(L.latLng(-90.0,-180.0), L.latLng(90.0,180.0)),
     timeDimension: true,
-    timeDimensionOptions: 10000,
     timeDimensionControl: true,
     timeDimensionControlOptions: {
         position: "bottomleft",
@@ -21,8 +21,8 @@ var map = L.map('map', {
 
 
 // create the basemap layers (default basemap is world imagery)
-var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}').addTo(map);
-var Esri_WorldTerrain = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {maxZoom: 13});
+var Esri_WorldTerrain = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {maxZoom: 13}).addTo(map);
+var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
 var openStreetMap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
    name: 'openStreetMap',

@@ -3,13 +3,20 @@ function newChart() {
     chart.showLoading();
 
     coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
+    if (coords[0] < -180) {
+        coords[0] += 360;
+    }
+    else if(coords[0] > 180) {
+        coords[0] -= 360;
+    }
     variable = $('#layers').val();
     time = $("#times").val();
     data = {
-        coords: coords,         // array or list in the format [[lat, lon], [lat, lon] ... etc
-        variable: variable,     // which of the variables available to get timeseries data for
-        time: time,             // the timestep of data chosen
+        coords: coords,         // list in the format [lat, lon]
+        variable: variable,     // shortcode name of the variable
+        time: time,             // the time interval
         };
+    console.log(data);
 
 // Ajax script to send the data for processing
     $.ajax({

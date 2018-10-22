@@ -1,10 +1,5 @@
 #inner-app-content {
-    padding: 0 !important;
-}
-
-#app-content, #inner-app-content{
-    height: 100%;
-    padding: 0;
+    padding: 1% !important;
 }
 
 #app-actions {
@@ -12,5 +7,16 @@
 }
 
 #app-navigation-items {
-    height: 800p !important;
+    height:100% !important;
+}
+
+#map {
+    height:425px;
+    width:100%;
+    margin: auto;
+}
+
+#highchart {
+    height:275px;
+    width:100%;
 }

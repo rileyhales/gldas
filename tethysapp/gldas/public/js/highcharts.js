@@ -24,6 +24,9 @@ chart = Highcharts.chart('highchart', {
     chart: {
         animation: true,
         zoomType: 'x',
+        borderColor: '#000000',
+        borderWidth: 2,
+        type: 'area',
     },
     noData: {
         style: {
@@ -59,6 +62,11 @@ function newHighchart(data) {
         chart: {
             animation: true,
             zoomType: 'x',
+            borderColor: '#000000',
+            borderWidth: 2,
+            type: 'area',
+
         },
+
     });
 }
