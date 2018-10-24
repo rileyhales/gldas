@@ -41,10 +41,10 @@ def home(request):
     opacity = RangeSlider(
         display_text='Layer Opacity',
         name='opacity',
-        min=0,
+        min=.5,
         max=1,
         step=.05,
-        initial=.7,
+        initial=.75,
     )
 
     context = {

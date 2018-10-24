@@ -1,6 +1,10 @@
-function newChart() {
+function getChart() {
     chart.hideNoData();
     chart.showLoading();
+
+    if (drawnItems._layers == '') {
+        return
+    }
 
     coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
     if (coords[0] < -180) {

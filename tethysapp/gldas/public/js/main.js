@@ -34,7 +34,6 @@ $(document).ready(function() {
     time = $("#times").val();
     color = $('#colors').val();
     setParams(time, variable);
-//    getBounds();
     newLayer(variable, color);
     newControls();
     legend.addTo(map);
@@ -42,18 +41,16 @@ $(document).ready(function() {
 //////////////////////// GENERAL CONTROLS ///////////////////////////////////////////////
 
     $("#times").change(function() {
-        time = $("#times").val();
-        variable = $('#layers').val();
-        setParams(time, variable);
         updateMap();
+        getChart();
     });
 
 //////////////////////// LEAFLET CONTROLS ///////////////////////////////////////////////
 
 //    Listener for the variable picker menu (selectinput gizmo)
     $("#layers").change(function () {
-//        getBounds();
         updateMap();
+        getChart();
         });
 
 //    Listener for the color changer
@@ -70,7 +67,7 @@ $(document).ready(function() {
 
 //  Generate a plot whenever the user draws a new point
     map.on("draw:created", function() {
-        newChart();
+        getChart();
         });
 
 

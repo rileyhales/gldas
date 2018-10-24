@@ -1,6 +1,7 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
+from tethys_sdk.app_settings import CustomSetting
 
-# todo: make a global variable for base thredds url and the path to the data. needs to work in python, js, html
+# todo: make the custom setting get passed to the rest of python, js, html
 
 class Gldas(TethysAppBase):
     """
@@ -57,3 +58,20 @@ class Gldas(TethysAppBase):
             ),
         )
         return url_maps
+
+    def custom_settings(self):
+        CustomSettings = (
+            CustomSetting(
+                name='Local Thredds Folder Path',
+                type=CustomSetting.TYPE_STRING,
+                description="Path to app's data in the folder mounted by Thredds",
+                required=False,
+            ),
+            CustomSetting(
+                name='Thredds URL',
+                type=CustomSetting.TYPE_STRING,
+                description="URL to the Thredds catalog (e.g. tethys.byu.edu/thredds/)",
+                required=False,
+            ),
+        )
+        return CustomSettings
