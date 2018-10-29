@@ -88,3 +88,18 @@ def get_times():
         ('All Available Times', 'alltimes'),
     ]
     return times
+
+def get_zooms():
+    """
+    List of places to zoom to and their [lat, long, zoom]
+    """
+    zooms = [
+        ('Full Extent', 'Full Extent'),
+        ('North America', 'North America'),
+        ('South America', 'South America'),
+        ('Europe', 'Europe'),
+        ('Africa', 'Africa'),
+        ('Asia', 'Asia'),
+        ('Australia', 'Australia'),
+    ]
+    return zooms

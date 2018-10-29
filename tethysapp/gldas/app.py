@@ -64,11 +64,11 @@ class Gldas(TethysAppBase):
             CustomSetting(
                 name='Local Thredds Folder Path',
                 type=CustomSetting.TYPE_STRING,
-                description="Path to app's data in the folder mounted by Thredds",
+                description="Path to data in the folder mounted by Thredds",
                 required=False,
             ),
             CustomSetting(
-                name='Thredds URL',
+                name='Thredds Base URL',
                 type=CustomSetting.TYPE_STRING,
                 description="URL to the Thredds catalog (e.g. tethys.byu.edu/thredds/)",
                 required=False,

@@ -1,7 +1,8 @@
 // creating the map
 var map = L.map('map', {
-    zoom: 1.25,
+    zoom: 2,
     minZoom: 1.25,
+    boxZoom: true,
     maxBounds: L.latLngBounds(L.latLng(-90.0,-180.0), L.latLng(90.0,180.0)),
     timeDimension: true,
     timeDimensionControl: true,
@@ -73,6 +74,8 @@ function newLayer(variable, color) {
     url = thredds_wms;
     wmsLayer = L.tileLayer.wms(url, {
         layers: variable,
+        useCache: true,
+        crossOrigin: true,
         format: 'image/png',
         transparent: true,
         BGCOLOR:'0x000000',
@@ -110,6 +113,12 @@ function clearmap() {
     map.removeLayer(wmsLayer);
     map.removeLayer(timedLayer);
     map.removeControl(lyrControls);
+}
+
+
+function zoomMap(zoomLocation) {
+    map.setZoom(zoomOpts[zoomLocation][2])
+    map.panTo(L.latLng(zoomOpts[zoomLocation][0], zoomOpts[zoomLocation][1]));
 }
 
 

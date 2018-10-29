@@ -26,8 +26,10 @@ function setParams(time, variable) {
 }
 
 
-// JQuery and AJAX Listeners/Controllers to let the user manipulate the map
+// Listeners/Controllers to let the user manipulate the map
 $(document).ready(function() {
+
+/////////////////////////////////////////////////////////////////////////////// GENERAL CONTROLS
 
 //  Load initial map data as soon as the page is ready
     variable = $('#layers').val();
@@ -38,32 +40,36 @@ $(document).ready(function() {
     newControls();
     legend.addTo(map);
 
-//////////////////////// GENERAL CONTROLS ///////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////// LEAFLET CONTROLS
 
-    $("#times").change(function() {
-        updateMap();
-        getChart();
-    });
-
-//////////////////////// LEAFLET CONTROLS ///////////////////////////////////////////////
-
-//    Listener for the variable picker menu (selectinput gizmo)
+//  Listener for the variable picker menu (selectinput gizmo)
     $("#layers").change(function () {
         updateMap();
         getChart();
         });
 
-//    Listener for the color changer
+//  Listener for the color changer
     $("#colors").change(function () {
         updateMap();
         });
 
-//    Listener for the opacity select slider (rangeslider gizmo)
+//  Listener for the time selection menu
+    $("#times").change(function() {
+        updateMap();
+        getChart();
+    });
+
+//  Listener for the opacity select slider (rangeslider gizmo)
     $("#opacity").change(function () {
         timedLayer.setOpacity($('#opacity').val());
         });
 
-//////////////////////// HIGHCHARTS CONTROLS ///////////////////////////////////////////////
+//  Listener for changing zooms
+    $("#zooms").change(function() {
+        zoomMap($('#zooms').val());
+    });
+
+/////////////////////////////////////////////////////////////////////////////// HIGHCHARTS CONTROLS
 
 //  Generate a plot whenever the user draws a new point
     map.on("draw:created", function() {

@@ -1,4 +1,3 @@
-
 boundaries = {
     2000: {'Tair_f_inst': [227, 314], 'Albedo_inst': [4, 83], 'AvgSurfT_inst': [222, 316], 'CanopInt_inst': [0, 1],
            'ECanop_tavg': [0, 107], 'ESoil_tavg': [0, 139], 'Evap_tavg': [-1, 1], 'LWdown_f_tavg': [112, 465],
@@ -160,4 +159,15 @@ boundaries = {
            'SWE_inst': [0, 121743], 'SoilTMP0_10cm_inst': [232, 319], 'SWdown_f_tavg': [0, 398],
            'SnowDepth_inst': [0, 305], 'Snowf_tavg': [0, 1], 'Swnet_tavg': [0, 347], 'Tveg_tavg': [0, 167],
            'Wind_f_inst': [0, 17]},
+}
+
+zoomOpts = {
+//  Location to Zoom: [lat, lon, zoom]
+    'Full Extent': [20, 0, 1.25],
+    'North America': [45, -100, 3],
+    'South America': [-15, -61, 3],
+    'Europe': [49, 10, 3],
+    'Africa': [6, 14, 3],
+    'Asia': [53, 90, 3],
+    'Australia': [-25, 134, 4],
 }

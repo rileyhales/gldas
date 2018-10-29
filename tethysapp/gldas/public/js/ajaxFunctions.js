@@ -1,4 +1,5 @@
 function getChart() {
+//  If there is no point selected then exit
     if (drawnItems._layers == '') {
         return
     }
@@ -6,6 +7,7 @@ function getChart() {
     chart.hideNoData();
     chart.showLoading();
 
+//  Compatibility if user picks something out of normal bounds
     coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
     if (coords[0] < -180) {
         coords[0] += 360;
@@ -22,7 +24,6 @@ function getChart() {
         };
     console.log(data);
 
-// Ajax script to send the data for processing
     $.ajax({
         url:'/apps/gldas/generatePlot/',
         data: JSON.stringify(data),
@@ -34,7 +35,6 @@ function getChart() {
             newHighchart(result);
             },
         });
-
 }
 
 
