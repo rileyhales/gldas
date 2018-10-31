@@ -13,7 +13,7 @@ class Gldas(TethysAppBase):
     root_url = 'gldas'
     color = '#ace9e7'
     description = 'Visualizes GLDAS data through maps and charts'
-    tags = '&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;teries&quot;'
+    tags = '&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;tseries&quot;'
     enable_feedback = False
     feedback_emails = []
 
@@ -67,16 +67,16 @@ class Gldas(TethysAppBase):
             CustomSetting(
                 name='Local Thredds Folder Path',
                 type=CustomSetting.TYPE_STRING,
-                description="Path to data in the folder mounted by Thredds",
+                description="Path to data in the folder mounted by Thredds (e.g. /home/thredds/myData/)",
                 required=True,
                 # /home/rchales/thredds/gldas/
             ),
             CustomSetting(
-                name='Thredds Base URL',
+                name='Thredds WMS URL',
                 type=CustomSetting.TYPE_STRING,
-                description="URL to the Thredds catalog (e.g. tethys.byu.edu/thredds/)",
+                description="URL to the folder with your data on the thredds server (e.g. tethys.byu.edu/thredds/myDataFolder/)",
                 required=True,
-                # http://127.0.0.1:7000/thredds/
+                # http://127.0.0.1:7000/thredds/wms/testAll/
             ),
         )
         return CustomSettings

@@ -18,7 +18,7 @@ paths = getPaths();     // found in ajaxFunctions.js
 function setParams(paths, time, variable) {
 //  Sets the links to data
     thredds_base = paths['thredds_base_url'];
-    thredds_wms = thredds_base + 'wms/testAll/' + time + '.ncml';
+    thredds_wms = thredds_base + time + '.ncml';
 
 //  Gets the correct bounds for the time, variable, color combination
     min_bnd = boundaries[time][variable][0];
