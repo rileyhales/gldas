@@ -64,3 +64,20 @@ function getBounds() {
     return data_min, data_max
 }
 
+function getPaths() {
+    $.ajax({
+        async: false,
+        url:'/apps/gldas/getPaths/',
+        data: 'give me ur paths',
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'POST',
+        success: function(result) {
+            console.log(result);
+            paths = result
+            return paths
+            },
+        });
+
+    return paths
+}

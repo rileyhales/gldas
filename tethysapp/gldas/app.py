@@ -1,8 +1,6 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import CustomSetting
 
-# todo: make the custom setting get passed to the rest of python, js, html
-
 class Gldas(TethysAppBase):
     """
     Tethys app class for GLDAS Data Visualizer.
@@ -44,6 +42,11 @@ class Gldas(TethysAppBase):
                 url='gldas/getBounds',
                 controller='gldas.ajaxhandlers.getBounds',
             ),
+            UrlMap(
+                name='getPaths',
+                url='gldas/getPaths',
+                controller='gldas.ajaxhandlers.getPaths'
+            ),
 
         # url map for api calls
             UrlMap(
@@ -65,13 +68,15 @@ class Gldas(TethysAppBase):
                 name='Local Thredds Folder Path',
                 type=CustomSetting.TYPE_STRING,
                 description="Path to data in the folder mounted by Thredds",
-                required=False,
+                required=True,
+                # /home/rchales/thredds/gldas/
             ),
             CustomSetting(
                 name='Thredds Base URL',
                 type=CustomSetting.TYPE_STRING,
                 description="URL to the Thredds catalog (e.g. tethys.byu.edu/thredds/)",
-                required=False,
+                required=True,
+                # http://127.0.0.1:7000/thredds/
             ),
         )
         return CustomSettings

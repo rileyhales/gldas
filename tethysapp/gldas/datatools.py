@@ -1,3 +1,4 @@
+from .resources import get_paths
 import netCDF4, numpy, datetime, os, calendar
 
 # generates the plotable points based on the user inputs
@@ -10,12 +11,12 @@ def ts_plot(data):
     Last Updated: Oct 11 2018
     """
     values = []
-    timelist = []
     variable = str(data['variable'])
     coords = data['coords']
     tperiod = data['time']
 
-    data_dir = '/home/rchales/thredds/gldas/'
+    paths = get_paths()
+    data_dir = paths['thredds_data_dir']
 
     if tperiod == 'alltimes':
         path = os.path.join(data_dir, 'raw')

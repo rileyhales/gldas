@@ -127,7 +127,7 @@ function updateMap() {
     time = $("#times").val();
     color= $('#colors').val();
     clearmap();
-    setParams(time, variable);
+    setParams(paths, time, variable);
     newLayer(variable, color);
     newControls();
     legend.addTo(map);

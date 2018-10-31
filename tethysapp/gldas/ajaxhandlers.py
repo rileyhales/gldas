@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .datatools import ts_plot
-from .resources import gldas_variables
+from .resources import gldas_variables, get_paths
 import ast, math, netCDF4, os      # ast can convert stringified json data back to a python dictionary
+
 
 @login_required()
 def generatePlot(request):
@@ -23,6 +24,7 @@ def generatePlot(request):
     response_object['name'] = name
     return JsonResponse(response_object)
 
+
 def getBounds(request):
     """
     Dynamically defines exact boundaries for the legend and wms so that they are synchronized
@@ -30,8 +32,9 @@ def getBounds(request):
     Will be reimplemented when the app supports custom time values
     Requires netcdf4, os, ast, math
     """
-
-    data_dir = '/home/rchales/thredds/gldas/'
+    paths = get_paths()
+    thredds_data_dir = paths['thredds_data_dir']
+    # data_dir = '/home/rchales/thredds/gldas/'
 
     data = ast.literal_eval(request.body)
     print data
@@ -40,11 +43,11 @@ def getBounds(request):
     response_object = {}
 
     if time == 'alltimes':
-        path = os.path.join(data_dir, 'raw')
+        path = os.path.join(thredds_data_dir, 'raw')
         files = os.listdir(path)
         files.sort()
     else:
-        path = os.path.join(data_dir, 'raw')
+        path = os.path.join(thredds_data_dir, 'raw')
         allfiles = os.listdir(path)
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(time))]
         files.sort()
@@ -63,3 +66,12 @@ def getBounds(request):
     response_object['maximum'] = math.ceil(maximum)
 
     return JsonResponse(response_object)
+
+
+def getPaths(request):
+    """
+    returns the paths to the data/thredds services taken from the custom settings and gives it to the javascript
+    """
+    paths = get_paths()
+
+    return JsonResponse(paths)
