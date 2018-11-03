@@ -17,7 +17,7 @@ paths = getPaths();     // found in ajaxFunctions.js
 //  Sets the correct urls based on the time period
 function setParams(paths, time, variable) {
 //  Sets the links to data
-    thredds_base = paths['thredds_base_url'];
+    thredds_base = paths['thredds_wms_url'];
     thredds_wms = thredds_base + time + '.ncml';
 
 //  Gets the correct bounds for the time, variable, color combination

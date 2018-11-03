@@ -110,12 +110,12 @@ def get_zooms():
 def get_paths():
     app_workspace = Gldas.get_app_workspace()
     app_wksp_path = os.path.join(app_workspace.path, '')
-    thredds_base_url = Gldas.get_custom_setting("Thredds Base URL")
+    thredds_wms_url = Gldas.get_custom_setting("Thredds WMS URL")
     thredds_data_dir = Gldas.get_custom_setting("Local Thredds Folder Path")
 
     paths = {
         'app_wksp_path': app_wksp_path,
-        'thredds_base_url': thredds_base_url,
+        'thredds_wms_url': thredds_wms_url,
         'thredds_data_dir': thredds_data_dir,
     }
 

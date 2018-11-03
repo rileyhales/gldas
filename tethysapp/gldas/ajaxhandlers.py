@@ -34,7 +34,6 @@ def getBounds(request):
     """
     paths = get_paths()
     thredds_data_dir = paths['thredds_data_dir']
-    # data_dir = '/home/rchales/thredds/gldas/'
 
     data = ast.literal_eval(request.body)
     print data

@@ -95,7 +95,7 @@ function newLayer(variable, color) {
 
 
 // removes old controls and adds new ones. Must be called after changeLayer
-function newControls(basemaps) {
+function newControls() {
     data_layers = {
         'GLDAS Layer': timedLayer,
         }

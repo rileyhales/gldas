@@ -42,7 +42,7 @@
           <p>The most recent, stable version of this code can be found on <a target="_blank" href="https://github.com/rileyhales/gldas">github</a></p>
           <p>This app is made possible by: Leaflet, Highcharts, NASA GLDAS, BYU, Tethys Platform</p>
           <p>Basemap imagery provided by: ESRI, Open Street Map</p>
-          <p>You are using version 1.1 last updated Oct 24 2018</p>
+          <p>You are using version 1.1.1 last updated Oct 31 2018</p>
           </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
@@ -50,6 +50,28 @@
       </div>
     </div>
   </div>
+
+
+  <div class="modal fade" id="stats-modal" tabindex="-1" role="dialog" aria-labelledby="stats-modal-label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="stats-modal-label">App Usage Statistics</h5>
+        </div>
+        <div class="modal-body">
+          <p>The total number of users is:</p>
+          <p>The app has been used in ____ countries</p>
+          <p></p>
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 {% endblock %}
 
 {% block content_dependent_styles %}
@@ -62,6 +84,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
   <!-- styling generated for the app -->
   <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
+  <!-- Font Awesome for some icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block scripts %}
@@ -85,7 +109,6 @@
   <!-- Use this to show loading functions and placeholders -->
   <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
   <!-- Use this to cache tile layers for improved map loading performance -- Minimal Compatibility with Timeseries-->
-  <!--<script src="https://unpkg.com/leaflet@^1.0.0/dist/leaflet-src.js"></script>-->
   <!--<script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>-->
   <!--<script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>-->
 

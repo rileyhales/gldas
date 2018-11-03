@@ -59,6 +59,13 @@ class Gldas(TethysAppBase):
                 url='gldas/api/getTimes',
                 controller='gldas.api.getTimes',
             ),
+
+            # url map for sharing google analytics data
+            UrlMap(
+                name='GAstats',
+                url='gldas/GAstats',
+                controller='gldas.googleAnalytics.GAstats'
+            )
         )
         return url_maps
 
