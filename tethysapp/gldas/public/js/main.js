@@ -59,7 +59,7 @@ $(document).ready(function() {
     $("#times").change(function() {
         updateMap();
         getChart();
-    });
+        });
 
 //  Listener for the opacity select slider (rangeslider gizmo)
     $("#opacity").change(function () {
@@ -69,7 +69,7 @@ $(document).ready(function() {
 //  Listener for changing zooms
     $("#zooms").change(function() {
         zoomMap($('#zooms').val());
-    });
+        });
 
 /////////////////////////////////////////////////////////////////////////////// HIGHCHARTS CONTROLS
 
@@ -78,5 +78,10 @@ $(document).ready(function() {
         getChart();
         });
 
+/////////////////////////////////////////////////////////////////////////////// JQUERY LISTENER
+
+    $("#stats-button").on("click", function() {
+        getGAstats();
+        });
 
 });

@@ -82,6 +82,6 @@ def GAstats(request):       # request required
 
     pprint.pprint(results)
     print('View (Profile):', results.get('profileInfo').get('profileName'))
-    print('Total Sessions:', results.get('rows')[0][0])
+    print('Total Users:', results.get('rows')[0][0])
 
     return JsonResponse(results)

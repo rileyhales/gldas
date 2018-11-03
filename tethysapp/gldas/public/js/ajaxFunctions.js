@@ -81,3 +81,19 @@ function getPaths() {
 
     return paths
 }
+
+function getGAstats() {
+    $.ajax({
+        async: false,
+        url:'/apps/gldas/GAstats/',
+        data: 'give me teh statz',
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'POST',
+        success: function(result) {
+            GAstats = result;
+            $("#num-users").text('The total number of users is: ' + GAstats['rows'][0][0]);
+            },
+        });
+
+}
