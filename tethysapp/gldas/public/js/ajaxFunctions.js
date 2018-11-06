@@ -22,8 +22,6 @@ function getChart() {
         variable: variable,     // shortcode name of the variable
         time: time,             // the time interval
         };
-    console.log(data);
-
     $.ajax({
         url:'/apps/gldas/generatePlot/',
         data: JSON.stringify(data),
@@ -31,7 +29,6 @@ function getChart() {
         contentType: "application/json",
         method: 'POST',
         success: function(result) {
-            console.log(result);
             newHighchart(result);
             },
         });
@@ -64,35 +61,38 @@ function getBounds() {
     return data_min, data_max
 }
 
-function getPaths() {
+function getConfigs() {
     $.ajax({
         async: false,
-        url:'/apps/gldas/getPaths/',
-        data: 'give me ur paths',
+        url:'/apps/gldas/getConfigs/',
+        data: 'give me ur datuz',
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'POST',
+        success: function(result) {
+            configs = result
+            return configs
+            },
+        });
+
+    return configs
+}
+
+function getGAstats() {
+    data = {metrics: $("#metrics").val(),}
+    console.log(data);
+
+    $.ajax({
+        async: true,
+        url:'/apps/gldas/GAstats/',
+        data: JSON.stringify(data),
         dataType: 'json',
         contentType: "application/json",
         method: 'POST',
         success: function(result) {
             console.log(result);
-            paths = result
-            return paths
-            },
-        });
-
-    return paths
-}
-
-function getGAstats() {
-    $.ajax({
-        async: false,
-        url:'/apps/gldas/GAstats/',
-        data: 'give me teh statz',
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'POST',
-        success: function(result) {
-            GAstats = result;
-            $("#num-users").text('The total number of users is: ' + GAstats['rows'][0][0]);
+            result = JSON.stringify(result)
+            $("#metrics-results").text(result);
             },
         });
 

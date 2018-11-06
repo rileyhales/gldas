@@ -1,5 +1,7 @@
 {% extends "tethys_apps/app_base.html" %}
 
+{% load tethys_gizmos staticfiles %}
+{% load tethys_gizmos %}
 {% load staticfiles %}
 
 {% block title %}{{ tethys_app.name }}{% endblock %}
@@ -25,53 +27,60 @@
 <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
     <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
   </div>
+
+<div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="App Statistics">
+  <a data-toggle="modal" data-target="#stats-modal"><span class="fa fa-bar-chart"></span></a>
+</div>
 {% endblock %}
 
 {% block after_app_content %}
-  <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h5 class="modal-title" id="help-modal-label">GLDAS Data Visualizer -- Support</h5>
+<div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h5 class="modal-title" id="help-modal-label">GLDAS Data Visualizer -- Support</h5>
+      </div>
+      <div class="modal-body">
+        <p>The GLDAS Data Visualizer tool was developed by <a target="_blank" href="https://rileyhales.com">Riley Hales</a> at the
+          <a target="_blank" href="https://worldwater.byu.edu">Hydroinformatics Lab</a> of <a target="_blank" href="https://byu.edu">
+            Brigham Young University's</a> <a target="_blank" href="https://ceen.et.byu.edu">Civil and Environmental Engineering Department</a>.</p>
+        <p>The most recent, stable version of this code can be found on <a target="_blank" href="https://github.com/rileyhales/gldas">github</a></p>
+        <p>This app is made possible by: Leaflet, Highcharts, NASA GLDAS, BYU, Tethys Platform</p>
+        <p>Basemap imagery provided by: ESRI, Open Street Map</p>
         </div>
-        <div class="modal-body">
-          <p>The GLDAS Data Visualizer tool was developed by <a target="_blank" href="https://rileyhales.com">Riley Hales</a> at the
-            <a target="_blank" href="https://worldwater.byu.edu">Hydroinformatics Lab</a> of <a target="_blank" href="https://byu.edu">
-              Brigham Young University's</a> <a target="_blank" href="https://ceen.et.byu.edu">Civil and Environmental Engineering Department</a>.</p>
-          <p>The most recent, stable version of this code can be found on <a target="_blank" href="https://github.com/rileyhales/gldas">github</a></p>
-          <p>This app is made possible by: Leaflet, Highcharts, NASA GLDAS, BYU, Tethys Platform</p>
-          <p>Basemap imagery provided by: ESRI, Open Street Map</p>
-          <p>You are using version 1.1.1 last updated Oct 31 2018</p>
-          </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
       </div>
     </div>
   </div>
+</div>
 
+<div class="modal fade" id="stats-modal" tabindex="-1" role="dialog" aria-labelledby="stats-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
 
-  <div class="modal fade" id="stats-modal" tabindex="-1" role="dialog" aria-labelledby="stats-modal-label">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h5 class="modal-title" id="stats-modal-label">App Usage Statistics</h5>
-        </div>
-        <div id="stats-content" class="modal-body">
-          <div id="num-users">Usage Statistics Loading.....</div>
-          <div id="num-locations"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-        </div>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h5 class="modal-title" id="stats-modal-label">App Usage Statistics</h5>
       </div>
+
+      <div id="stats-content" class="modal-body">
+        <div id="metrics-options">
+          {% gizmo select_input metrics %}
+        </div>
+        <div id="metrics-results"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="get-metrics">Get Metrics</button>
+      </div>
+
     </div>
   </div>
-
-
+</div>
 {% endblock %}
+
 
 {% block content_dependent_styles %}
   {{ block.super }}

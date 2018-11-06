@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import SelectInput, RangeSlider
-from .resources import gldas_variables, wms_colors, get_times, get_zooms
+from .resources import gldas_variables, wms_colors, get_times, get_zooms, GAmetrics
 
 @login_required()
 def home(request):
@@ -55,12 +55,21 @@ def home(request):
         options=get_zooms()
     )
 
+    metrics = SelectInput(
+        display_text='Available Metrics',
+        name='metrics',
+        multiple=True,
+        original=False,
+        options=GAmetrics(),
+    )
+
     context = {
         'layers': layers,
         'opacity': opacity,
         'colors': colors,
         'times': times,
         'zooms': zooms,
+        'metrics': metrics,
     }
 
     return render(request, 'gldas/home.html', context)

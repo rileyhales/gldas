@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .datatools import ts_plot
-from .resources import gldas_variables, get_paths
+from .resources import gldas_variables, app_configuration
 import ast, math, netCDF4, os      # ast can convert stringified json data back to a python dictionary
 
 
@@ -32,8 +32,8 @@ def getBounds(request):
     Will be reimplemented when the app supports custom time values
     Requires netcdf4, os, ast, math
     """
-    paths = get_paths()
-    thredds_data_dir = paths['thredds_data_dir']
+    configs = app_configuration()
+    thredds_data_dir = configs['thredds_data_dir']
 
     data = ast.literal_eval(request.body)
     print data
@@ -67,10 +67,10 @@ def getBounds(request):
     return JsonResponse(response_object)
 
 
-def getPaths(request):
+def getConfigs(request):
     """
     returns the paths to the data/thredds services taken from the custom settings and gives it to the javascript
     """
-    paths = get_paths()
+    configs = app_configuration()
 
-    return JsonResponse(paths)
+    return JsonResponse(configs)

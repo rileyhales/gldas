@@ -44,8 +44,8 @@ class Gldas(TethysAppBase):
             ),
             UrlMap(
                 name='getPaths',
-                url='gldas/getPaths',
-                controller='gldas.ajaxhandlers.getPaths'
+                url='gldas/getConfigs',
+                controller='gldas.ajaxhandlers.getConfigs'
             ),
 
         # url map for api calls
@@ -85,5 +85,12 @@ class Gldas(TethysAppBase):
                 required=True,
                 # http://127.0.0.1:7000/thredds/wms/testAll/
             ),
+            CustomSetting(
+                name='Google Analytics Tracking: View ID',
+                type=CustomSetting.TYPE_STRING,         # should be string because google analytics api requires it
+                description='The View ID associated with this app in Google Analytics',
+                required=True,
+                # 184214759
+            )
         )
         return CustomSettings

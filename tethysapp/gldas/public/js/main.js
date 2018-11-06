@@ -12,12 +12,12 @@ $.ajaxSetup({
     }
 });
 
-paths = getPaths();     // found in ajaxFunctions.js
+configs = getConfigs();     // found in ajaxFunctions.js
 
 //  Sets the correct urls based on the time period
-function setParams(paths, time, variable) {
+function setParams(configs, time, variable) {
 //  Sets the links to data
-    thredds_base = paths['thredds_wms_url'];
+    thredds_base = configs['thredds_wms_url'];
     thredds_wms = thredds_base + time + '.ncml';
 
 //  Gets the correct bounds for the time, variable, color combination
@@ -37,7 +37,7 @@ $(document).ready(function() {
     variable = $('#layers').val();
     time = $("#times").val();
     color = $('#colors').val();
-    setParams(paths, time, variable);
+    setParams(configs, time, variable);
     newLayer(variable, color);
     newControls();
     legend.addTo(map);
@@ -80,7 +80,7 @@ $(document).ready(function() {
 
 /////////////////////////////////////////////////////////////////////////////// JQUERY LISTENER
 
-    $("#stats-button").on("click", function() {
+    $("#get-metrics").on("click", function() {
         getGAstats();
         });
 

@@ -107,16 +107,29 @@ def get_zooms():
     ]
     return zooms
 
-def get_paths():
+def app_configuration():
     app_workspace = Gldas.get_app_workspace()
     app_wksp_path = os.path.join(app_workspace.path, '')
     thredds_wms_url = Gldas.get_custom_setting("Thredds WMS URL")
     thredds_data_dir = Gldas.get_custom_setting("Local Thredds Folder Path")
+    viewID = Gldas.get_custom_setting("Google Analytics Tracking: View ID")
 
-    paths = {
+    settings = {
         'app_wksp_path': app_wksp_path,
         'thredds_wms_url': thredds_wms_url,
         'thredds_data_dir': thredds_data_dir,
+        'viewID': viewID,
     }
 
-    return paths
+    return settings
+
+def GAmetrics():
+    metrics = [
+        ('Total Uses', 'ga:sessions'),
+        # ('Users Last 30 Days', 'ga:30dayUsers'),
+        # ('Average Session Duration', 'ga:avgSessionDuration'),
+        # ('User Countries', 'ga:country'),
+        # ('User Cities', 'ga:city'),
+    ]
+
+    return metrics
