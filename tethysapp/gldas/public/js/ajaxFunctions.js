@@ -79,8 +79,8 @@ function getConfigs() {
 }
 
 function getGAstats() {
-    data = {metrics: $("#metrics").val(),}
-    console.log(data);
+    $("#metrics-results").text('Please wait while the analytics data is retrieved...');
+    data = {selections: $("#metrics").val(),}
 
     $.ajax({
         async: true,
@@ -90,9 +90,10 @@ function getGAstats() {
         contentType: "application/json",
         method: 'POST',
         success: function(result) {
-            console.log(result);
-            result = JSON.stringify(result)
-            $("#metrics-results").text(result);
+            $("#metrics-results").text('');
+            for (metric in result) {
+                $("#metrics-results").append('<br>' + metric + ' : ' + result[metric]);
+                };
             },
         });
 

@@ -3,7 +3,7 @@ var map = L.map('map', {
     zoom: 2,
     minZoom: 1.25,
     boxZoom: true,
-    maxBounds: L.latLngBounds(L.latLng(-90.0,-180.0), L.latLng(90.0,180.0)),
+    maxBounds: L.latLngBounds(L.latLng(-100.0,-270.0), L.latLng(100.0, 270.0)),
     timeDimension: true,
     timeDimensionControl: true,
     timeDimensionControlOptions: {

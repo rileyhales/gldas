@@ -126,10 +126,11 @@ def app_configuration():
 def GAmetrics():
     metrics = [
         ('Total Uses', 'ga:sessions'),
-        # ('Users Last 30 Days', 'ga:30dayUsers'),
-        # ('Average Session Duration', 'ga:avgSessionDuration'),
-        # ('User Countries', 'ga:country'),
-        # ('User Cities', 'ga:city'),
+        ('Unique Users', 'ga:users'),
+        ('User Countries', 'ga:country'),
+        ('User Cities', 'ga:city'),
+        ('Average Session Duration', 'ga:avgSessionDuration'),
+        ('Browsers Used', 'ga:browser'),
     ]
 
     return metrics

@@ -7,10 +7,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 """Hello Analytics Reporting API V4."""
 
 def init_analytics(key_location, scopes):
-    """
-    Initializes and Returns An authorized
-    Analytics Reporting API V4 service object.
-    """
     credentials = ServiceAccountCredentials.from_json_keyfile_name(
         key_location, scopes)
 
@@ -20,20 +16,14 @@ def init_analytics(key_location, scopes):
     return analytics
 
 
-def get_report(analytics, viewID, metrics):
-    """Queries the Analytics Reporting API V4.
-    Args:
-    analytics: An authorized Analytics Reporting API V4 service object.
-    Returns:
-    The Analytics Reporting API V4 response.
-    """
+def get_report(analytics, viewID, metrics, dimensions):
     reports = analytics.reports().batchGet(
         body={
             'reportRequests': [{
                 'viewId': viewID,
-                'dateRanges': [{'startDate': '7daysAgo', 'endDate': 'today'}],
+                'dateRanges': [{'startDate': '30daysAgo', 'endDate': 'today'}],
                 'metrics': metrics,
-                'dimensions': [{'name': 'ga:country'}]
+                'dimensions': dimensions
                 }]
             }
         ).execute()
@@ -63,7 +53,7 @@ def print_results(response):
                 results[header] = dimension
 
             for i, values in enumerate(dateRangeValues):
-                results['Date range' + str(i)] = str(i)
+                # results['Date range' + str(i)] = str(i)
                 for metricHeader, value in zip(metricHeaders, values.get('values')):
                     results[metricHeader.get('name')] = value
 
@@ -71,13 +61,32 @@ def print_results(response):
     return results
 
 
-def GAstats(request):
-    data = ast.literal_eval(request.body)['metrics']
-    pprint.pprint(data)
+def sortMetricDimension(selections):
+    pprint.pprint(selections)
+    metric_list = ['ga:sessions', 'ga:users', 'ga:avgSessionDuration']
+    dimension_list = ['ga:country', 'ga:city', 'ga:browser']
     metrics = []
-    for metric in data:
-        tmp = {'expression': metric}
-        metrics.append(tmp)
+    dimensions = []
+    for selection in selections:
+        if selection in metric_list:
+            tmp = {'expression': selection}
+            metrics.append(tmp)
+        if selection in dimension_list:
+            tmp = {'name': selection}
+            dimensions.append(tmp)
+
+    sorted = {
+        'metrics': metrics,
+        'dimensions': dimensions,
+    }
+
+    return sorted
+
+def GAstats(request):
+    selections = ast.literal_eval(request.body)['selections']
+    selections = sortMetricDimension(selections)
+    metrics = selections['metrics']
+    dimensions = selections['dimensions']
 
     app_config = app_configuration()
     scopes = ['https://www.googleapis.com/auth/analytics.readonly']
@@ -85,7 +94,7 @@ def GAstats(request):
     viewID = app_config['viewID']
 
     analytics = init_analytics(key_location, scopes)
-    response = get_report(analytics, viewID, metrics)
+    response = get_report(analytics, viewID, metrics, dimensions)
     results = print_results(response)
 
     return JsonResponse(results)
