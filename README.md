@@ -1,8 +1,12 @@
 # GLDAS Data Visualizer Documentation
-# Data and Data Structure
-This app accepts data from the nasa gesdisc website. Use ¼ degree resolution netcdf4 (.nc4) datasets with monthly averages. When using this app, do not change the file names. You should use the naming conventions used by NASA for the file names.
+This is a Tethys 2/3 compatible app that visualizes data from the nasa gesdisc website. It was developed using the ¼ degree resolution netcdf4 (.nc4) datasets with monthly averages but other datasets with monthly averages should also work.
 
-Data is aggegated by year using NetCDF Markup Language (.ncml). The files you need are in the ncml folder of this app. If you need to modify the years you want to show, modify the existing files and use the naming convention shown (4 digit year and .ncml eg 2004.ncml.) Keep the changed files in the folder where you keep the datasets for Thredds. In the same folder, include another folder named raw. Inside the raw folder, place all the .nc4 datasets you got from NASA without changing names, preprocessing data, etc.
+Developed by Riley Hales in 2018 at the BYU Hydroinformatics Lab.
+
+## Data and Data Structure
+Data is aggregated by year using NetCDF Markup Language (.ncml). The files you need are in the ncml folder of this app. If you need to modify the years you want to show, modify the existing files and use the naming convention shown (4 digit year and .ncml eg 2004.ncml.) Keep the changed files in the folder where you keep the datasets for Thredds. In the same folder, include another folder named raw. Inside the raw folder, place all the .nc4 datasets you got from NASA without changing names, preprocessing data, etc.
+
+When using this app, do not change the file names. You should use the naming conventions used by NASA for the file names.
 
 The datasets are available at: https://disc.gsfc.nasa.gov/datasets?keywords=gldas&page=1
 
@@ -18,8 +22,8 @@ The datasets are available at: https://disc.gsfc.nasa.gov/datasets?keywords=glda
 * math
 
 ### Custom Settings
-You need to specify 2 custome settings when you install the app. The file path to where you are storing the gldas netCDF files locally on the server and the base wms URL for the thredds server that will be serving the data.   
-On tethys.byu.edu the correct custom settings are:  
+You need to specify 2 custom settings when you install the app. The file path to where you are storing the gldas netCDF files locally on the server and the base wms URL for the thredds server that will be serving the data.   
+For Example, on tethys.byu.edu the correct custom settings are:  
 **Local File Path:** /home/tethys/Thredds/gldas/  
 **WMS base address:** https://tethys.byu.edu/thredds/wms/testAll/gldas/
 
@@ -34,7 +38,7 @@ The JS is run out of the main.js file. In that file, cookies and global variable
 **App.py**  
 Class Declaration  
 **Api.py:**  
-Returns JSON data for some of the information provided by the app
+Returns JSON data for some of the information provided by the app  
 **Resources.py:**  
 app parameters are processed here including: available variables, year intervals, Map locations to zoom to, results of the custom settings and app workspace paths, available metrics from google analytics, color scales, and available variables.  
 **Controllers.py:**  
@@ -46,6 +50,6 @@ conatins functions for extracting data from the netcdf files, specifically creat
 Using the App
 The app is used by zooming to certain regions, using the tool in the map interface to click a point, viewing the timeseries of values for the given variable, time, and location pairing.
 
-The chart will regenerate itself when the time or variable is changed.
-The timeseries animation on the map will continue when you change colors, variables or times.
-When you load all available data, the chart and map will take noticeably longer to initially load.
+The chart will regenerate itself when the time or variable is changed.  
+The timeseries animation on the map will continue when you change colors, variables or times.  
+When you load all available data, the chart and map will take noticeably longer to initially load.  
