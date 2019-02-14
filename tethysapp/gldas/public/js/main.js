@@ -12,7 +12,7 @@ $.ajaxSetup({
     }
 });
 
-configs = getConfigs();     // found in ajaxFunctions.js
+let configs = getConfigs();     // found in ajaxFunctions.js
 
 //  Sets the correct urls based on the time period
 function setParams(configs, time, variable) {
@@ -66,22 +66,16 @@ $(document).ready(function() {
         timedLayer.setOpacity($('#opacity').val());
         });
 
-//  Listener for changing zooms
-    $("#zooms").change(function() {
-        zoomMap($('#zooms').val());
-        });
+//  Listener for changing zooms                     Ignored because of performance bugs
+//     $("#zooms").change(function() {
+//         zoomMap($('#zooms').val());
+//         });
 
 /////////////////////////////////////////////////////////////////////////////// HIGHCHARTS CONTROLS
 
 //  Generate a plot whenever the user draws a new point
     map.on("draw:created", function() {
         getChart();
-        });
-
-/////////////////////////////////////////////////////////////////////////////// JQUERY LISTENER
-
-    $("#get-metrics").on("click", function() {
-        getGAstats();
         });
 
 });

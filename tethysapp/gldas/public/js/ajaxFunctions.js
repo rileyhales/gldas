@@ -1,6 +1,6 @@
 function getChart() {
 //  If there is no point selected then exit
-    if (drawnItems._layers == '') {
+    if (drawnItems._layers === '') {
         return
     }
 
@@ -52,8 +52,8 @@ function getBounds() {
         method: 'POST',
         success: function(result) {
             console.log(result);
-            data_min = result['minimum'];
-            data_max = result['maximum'];
+            var data_min = result['minimum'];
+            var data_max = result['maximum'];
             return data_min, data_max
             },
         });
@@ -70,31 +70,10 @@ function getConfigs() {
         contentType: "application/json",
         method: 'POST',
         success: function(result) {
-            configs = result
+            var configs = result;
             return configs
             },
         });
 
     return configs
-}
-
-function getGAstats() {
-    $("#metrics-results").text('Please wait while the analytics data is retrieved...');
-    data = {selections: $("#metrics").val(),}
-
-    $.ajax({
-        async: true,
-        url:'/apps/gldas/GAstats/',
-        data: JSON.stringify(data),
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'POST',
-        success: function(result) {
-            $("#metrics-results").text('');
-            for (metric in result) {
-                $("#metrics-results").append('<br>' + metric + ' : ' + result[metric]);
-                };
-            },
-        });
-
 }

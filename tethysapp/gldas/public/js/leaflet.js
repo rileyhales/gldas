@@ -22,12 +22,9 @@ var map = L.map('map', {
 
 
 // create the basemap layers (default basemap is world imagery)
-var Esri_WorldTerrain = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {maxZoom: 13}).addTo(map);
 var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
-var openStreetMap = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-   attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-   name: 'openStreetMap',
-    });
+var Esri_Imagery_Labels = L.esri.basemapLayer('ImageryLabels');
+var basemaps = {"Basemap": L.layerGroup([Esri_WorldImagery, Esri_Imagery_Labels]).addTo(map)};
 
 
 // Add controls for user drawings
@@ -51,7 +48,7 @@ map.addControl(drawControl);
 
 
 // Listeners that control what happens when the user draws things on the map
-map.on("draw:drawstart ", function (e) {
+map.on("draw:drawstart ", function () {
     drawnItems.clearLayers();
 });
 map.on("draw:created", function (e) {
@@ -96,15 +93,7 @@ function newLayer(variable, color) {
 
 // removes old controls and adds new ones. Must be called after changeLayer
 function newControls() {
-    data_layers = {
-        'GLDAS Layer': timedLayer,
-        }
-    basemaps = {
-        "ESRI Imagery": Esri_WorldImagery,
-        "ESRI Terrain": Esri_WorldTerrain,
-        "OpenStreetMap": openStreetMap,
-        }
-    lyrControls = L.control.layers(basemaps, data_layers).addTo(map);
+    var lyrControls = L.control.layers(basemaps, {'GLDAS Layer': timedLayer}).addTo(map);
 }
 
 

@@ -1,4 +1,4 @@
-from .app import Gldas, CustomSetting
+from .app import Gldas
 import os
 
 def gldas_variables():
@@ -92,45 +92,17 @@ def get_times():
     ]
     return times
 
-def get_zooms():
-    """
-    List of places to zoom to and their [lat, long, zoom]
-    """
-    zooms = [
-        ('Full Extent', 'Full Extent'),
-        ('North America', 'North America'),
-        ('South America', 'South America'),
-        ('Europe', 'Europe'),
-        ('Africa', 'Africa'),
-        ('Asia', 'Asia'),
-        ('Australia', 'Australia'),
-    ]
-    return zooms
 
 def app_configuration():
     app_workspace = Gldas.get_app_workspace()
     app_wksp_path = os.path.join(app_workspace.path, '')
     thredds_wms_url = Gldas.get_custom_setting("Thredds WMS URL")
     thredds_data_dir = Gldas.get_custom_setting("Local Thredds Folder Path")
-    viewID = Gldas.get_custom_setting("Google Analytics Tracking: View ID")
 
     settings = {
         'app_wksp_path': app_wksp_path,
         'thredds_wms_url': thredds_wms_url,
         'thredds_data_dir': thredds_data_dir,
-        'viewID': viewID,
     }
 
     return settings
-
-def GAmetrics():
-    metrics = [
-        ('Total Uses', 'ga:sessions'),
-        ('Unique Users', 'ga:users'),
-        ('User Countries', 'ga:country'),
-        ('User Cities', 'ga:city'),
-        ('Average Session Duration', 'ga:avgSessionDuration'),
-        ('Browsers Used', 'ga:browser'),
-    ]
-
-    return metrics

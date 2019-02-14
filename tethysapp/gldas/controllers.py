@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import SelectInput, RangeSlider
-from .resources import gldas_variables, wms_colors, get_times, get_zooms, GAmetrics
+from .resources import gldas_variables, wms_colors, get_times
 
 @login_required()
 def home(request):
@@ -13,6 +13,7 @@ def home(request):
     for key in sorted(variables.keys()):
         tuple1 = (key, variables[key])
         options.append(tuple1)
+    del tuple1, key, variables
 
     layers = SelectInput(
         display_text='Select GLDAS Variable',
@@ -47,29 +48,11 @@ def home(request):
         initial=.75,
     )
 
-    zooms = SelectInput(
-        display_text='Quick Zoom',
-        name='zooms',
-        multiple=False,
-        original=True,
-        options=get_zooms()
-    )
-
-    metrics = SelectInput(
-        display_text='Available Metrics',
-        name='metrics',
-        multiple=True,
-        original=False,
-        options=GAmetrics(),
-    )
-
     context = {
         'layers': layers,
         'opacity': opacity,
         'colors': colors,
         'times': times,
-        'zooms': zooms,
-        'metrics': metrics,
     }
 
     return render(request, 'gldas/home.html', context)

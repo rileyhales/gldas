@@ -11,7 +11,7 @@ class Gldas(TethysAppBase):
     icon = 'gldas/images/globe.png'
     package = 'gldas'
     root_url = 'gldas'
-    color = '#ace9e7'
+    color = '#002366'
     description = 'Visualizes GLDAS data through maps and charts'
     tags = '&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;tseries&quot;'
     enable_feedback = False
@@ -59,13 +59,6 @@ class Gldas(TethysAppBase):
                 url='gldas/api/getTimes',
                 controller='gldas.api.getTimes',
             ),
-
-            # url map for sharing google analytics data
-            UrlMap(
-                name='GAstats',
-                url='gldas/GAstats',
-                controller='gldas.googleAnalytics.GAstats'
-            )
         )
         return url_maps
 
@@ -74,23 +67,16 @@ class Gldas(TethysAppBase):
             CustomSetting(
                 name='Local Thredds Folder Path',
                 type=CustomSetting.TYPE_STRING,
-                description="Path to data in the folder mounted by Thredds (e.g. /home/thredds/myData/)",
+                description="Path to data in the folder mounted by Thredds (e.g. /home/thredds/myDataFolder/)",
                 required=True,
                 # /home/rchales/thredds/gldas/
             ),
             CustomSetting(
                 name='Thredds WMS URL',
                 type=CustomSetting.TYPE_STRING,
-                description="URL to the folder with your data on the thredds server (e.g. tethys.byu.edu/thredds/myDataFolder/)",
+                description="URL to the folder of GLDAS data and .ncml files on the thredds server (e.g. tethys.byu.edu/thredds/myDataFolder/)",
                 required=True,
                 # http://127.0.0.1:7000/thredds/wms/testAll/
             ),
-            CustomSetting(
-                name='Google Analytics Tracking: View ID',
-                type=CustomSetting.TYPE_STRING,         # should be string because google analytics api requires it
-                description='The View ID associated with this app in Google Analytics',
-                required=True,
-                # 184214759
-            )
         )
         return CustomSettings

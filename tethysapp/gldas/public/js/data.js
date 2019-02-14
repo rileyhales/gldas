@@ -161,13 +161,14 @@ boundaries = {
            'Wind_f_inst': [0, 17]},
 }
 
-zoomOpts = {
-//  Location to Zoom: [lat, lon, zoom]
-    'Full Extent': [20, 0, 1.25],
-    'North America': [45, -100, 3],
-    'South America': [-15, -61, 3],
-    'Europe': [49, 10, 3],
-    'Africa': [6, 14, 3],
-    'Asia': [53, 90, 3],
-    'Australia': [-25, 134, 4],
-}
+// old function for setting zoom of the map. ignored because the
+// zoomOpts = {
+// //  Location to Zoom: [lat, lon, zoom]
+//     'Full Extent': [20, 0, 1.25],
+//     'North America': [45, -100, 3],
+//     'South America': [-15, -61, 3],
+//     'Europe': [49, 10, 3],
+//     'Africa': [6, 14, 3],
+//     'Asia': [53, 90, 3],
+//     'Australia': [-25, 134, 4],
+// }

@@ -7,29 +7,27 @@
 {% block header_buttons %}
 <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
     <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
-  </div>
-
-<div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="App Statistics">
-  <a data-toggle="modal" data-target="#stats-modal"><span class="fa fa-bar-chart"></span></a>
 </div>
 {% endblock %}
 
 {% block app_content %}
-<div id="map"></div>
-<div id="highchart"></div>
+<div id="outer-container">
+    <div id="map"></div>
+    <div id="highchart"></div>
+</div>
 {% endblock %}
 
 {% block app_actions %}
 {% endblock %}
 
 {% block app_navigation_items %}
-  <!--<span style="white-space:nowrap"/>-->
-  <li class="title">App Navigation</li>
-  {% gizmo select_input layers %}
-  {% gizmo select_input colors %}
-  {% gizmo select_input times %}
-  {% gizmo select_input zooms %}
-  {% gizmo range_slider opacity %}
-  <!--<a id="removal" class="btn btn-default" role="button">Clear Data</a>-->
-  <p>GLDAS data can be viewed in 1-year increments. App performance may vary based on your interval and variable choice.</p>
+    <!--<span style="white-space:nowrap"/>-->
+    <li class="title">App Navigation</li>
+    {% gizmo select_input layers %}
+    {% gizmo select_input colors %}
+    {% gizmo select_input times %}
+    {% gizmo range_slider opacity %}
+    <p>GLDAS data can be viewed in 1-year increments. App performance and loading times will vary based on interval and variable choice.</p>
+    <p><b>Documentation and help</b> available at the <a href="https://www.github.com/rileyhales/gldas" target="_blank">github repo</a> for this app.</p>
+    <!--<p><b>Tutorial videos</b> available on <a href="https://www.youtube.com" target="_blank">YouTube</a></p>-->
 {% endblock %}
