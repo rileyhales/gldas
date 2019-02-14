@@ -3,7 +3,9 @@
 *.egg-info
 *.class
 *.pyo
-*.pyc
 *.db
-*.sqlite
-*.DS_Store
+.pyc
+.sqlite
+.DS_Store
+.idea
+.idea/*

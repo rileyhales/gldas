@@ -36,7 +36,7 @@ def getBounds(request):
     thredds_data_dir = configs['thredds_data_dir']
 
     data = ast.literal_eval(request.body)
-    print data
+    print(data)
     variable = data['variable']
     time = data['time']
     response_object = {}

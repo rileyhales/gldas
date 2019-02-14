@@ -10,7 +10,7 @@ app_class = 'gldas.app:Gldas'
 app_package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', app_package)
 
 # -- Python Dependencies -- #
-dependencies = []
+dependencies = ['ast', 'netCDF4', 'numpy', 'datetime', 'calendar', 'math']
 
 setup(
     name=release_package,
