@@ -1,11 +1,8 @@
-from .app import Gldas
-import os
-
 def gldas_variables():
     """
     List of the plottable variables from the GLDAS 2.1 datasets used
     """
-    variables = {
+    return {
         'Air Temperature': 'Tair_f_inst',
         'Surface Albedo': 'Albedo_inst',
         'Surface Temperature': 'AvgSurfT_inst',
@@ -39,14 +36,13 @@ def gldas_variables():
         # 'Longitude': 'lon',
         # 'Time': 'time',
         }
-    return variables
 
 
 def wms_colors():
     """
     Color options usable by thredds wms
     """
-    color_opts = [
+    return [
         ('SST-36', 'sst_36'),
         ('Greyscale', 'greyscale'),
         ('Rainbox', 'rainbow'),
@@ -61,14 +57,14 @@ def wms_colors():
         # ('White-Blue', whiteblue'),
         # ('Grace', 'grace'),
         ]
-    return color_opts
 
 
 def get_times():
     """
     Time intervals of GLDAS data
     """
-    times = [
+    return [
+        # (2019, 2019),
         (2018, 2018),
         (2017, 2017),
         (2016, 2016),
@@ -90,19 +86,16 @@ def get_times():
         (2000, 2000),
         ('All Available Times', 'alltimes'),
     ]
-    return times
 
 
 def app_configuration():
-    app_workspace = Gldas.get_app_workspace()
-    app_wksp_path = os.path.join(app_workspace.path, '')
-    thredds_wms_url = Gldas.get_custom_setting("Thredds WMS URL")
-    thredds_data_dir = Gldas.get_custom_setting("Local Thredds Folder Path")
-
-    settings = {
-        'app_wksp_path': app_wksp_path,
-        'thredds_wms_url': thredds_wms_url,
-        'thredds_data_dir': thredds_data_dir,
+    """
+    gets the settings for the app for use in other functions and ajax for leaflet
+    """
+    import os
+    from .app import Gldas
+    return {
+        'app_wksp_path': os.path.join(Gldas.get_app_workspace().path, ''),
+        'threddsurl': Gldas.get_custom_setting("Thredds WMS URL"),
+        'datadir': Gldas.get_custom_setting("Local Thredds Folder Path"),
     }
-
-    return settings

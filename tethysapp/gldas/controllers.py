@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import SelectInput, RangeSlider
-from .resources import gldas_variables, wms_colors, get_times
+from .model import gldas_variables, wms_colors, get_times
 
 @login_required()
 def home(request):
@@ -15,9 +15,9 @@ def home(request):
         options.append(tuple1)
     del tuple1, key, variables
 
-    layers = SelectInput(
+    variables = SelectInput(
         display_text='Select GLDAS Variable',
-        name='layers',
+        name='variables',
         multiple=False,
         original=True,
         options=options,
@@ -27,32 +27,30 @@ def home(request):
         display_text='Color Scheme',
         name='colors',
         multiple=False,
-        original=True,
         options=wms_colors(),
     )
 
-    times = SelectInput(
+    dates = SelectInput(
         display_text='Time Interval',
-        name='times',
+        name='dates',
         multiple=False,
-        original=True,
         options=get_times(),
     )
 
     opacity = RangeSlider(
         display_text='Layer Opacity',
         name='opacity',
-        min=.5,
+        min=.4,
         max=1,
         step=.05,
-        initial=.75,
+        initial=.8,
     )
 
     context = {
-        'layers': layers,
+        'variables': variables,
         'opacity': opacity,
         'colors': colors,
-        'times': times,
+        'dates': dates,
     }
 
     return render(request, 'gldas/home.html', context)

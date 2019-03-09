@@ -12,70 +12,173 @@ $.ajaxSetup({
     }
 });
 
-let configs = getConfigs();     // found in ajaxFunctions.js
 
-//  Sets the correct urls based on the time period
-function setParams(configs, time, variable) {
-//  Sets the links to data
-    thredds_base = configs['thredds_wms_url'];
-    thredds_wms = thredds_base + time + '.ncml';
-
-//  Gets the correct bounds for the time, variable, color combination
-    min_bnd = boundaries[time][variable][0];
-    max_bnd = boundaries[time][variable][1];
-
-    return thredds_wms, min_bnd, max_bnd
-}
-
-
-// Listeners/Controllers to let the user manipulate the map
 $(document).ready(function() {
+    ////////////////////////////////////////////////////////////////////////  MAP FUNCTIONS
+    function map() {
+        // create the map
+        return L.map('map', {
+            zoom: 2,
+            minZoom: 1.25,
+            boxZoom: true,
+            maxBounds: L.latLngBounds(L.latLng(-100.0, -270.0), L.latLng(100.0, 270.0)),
+            center: [20, 0],
+            timeDimension: true,
+            timeDimensionControl: true,
+            timeDimensionControlOptions: {
+                position: "bottomleft",
+                autoPlay: true,
+                loopButton: true,
+                backwardButton: true,
+                forwardButton: true,
+                timeSliderDragUpdate: true,
+                minSpeed: 1,
+                maxSpeed: 6,
+                speedStep: 1,
+            },
+        });
+    }
 
-/////////////////////////////////////////////////////////////////////////////// GENERAL CONTROLS
+    function basemaps() {
+        // create the basemap layers
+        let Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+        let Esri_Imagery_Labels = L.esri.basemapLayer('ImageryLabels');
+        return {"Basemap": L.layerGroup([Esri_WorldImagery, Esri_Imagery_Labels]).addTo(mapObj)}
+    }
 
-//  Load initial map data as soon as the page is ready
-    variable = $('#layers').val();
-    time = $("#times").val();
-    color = $('#colors').val();
-    setParams(configs, time, variable);
-    newLayer(variable, color);
-    newControls();
-    legend.addTo(map);
-
-/////////////////////////////////////////////////////////////////////////////// LEAFLET CONTROLS
-
-//  Listener for the variable picker menu (selectinput gizmo)
-    $("#layers").change(function () {
-        updateMap();
-        getChart();
+    function newLayer() {
+        let wmsurl = wmsbase + $("#dates").val() + '.ncml';
+        let wmsLayer = L.tileLayer.wms(wmsurl, {
+            layers: $("#variables").val(),
+            useCache: true,
+            crossOrigin: false,
+            format: 'image/png',
+            transparent: true,
+            opacity: $("#opacity").val(),
+            BGCOLOR: '0x000000',
+            styles: 'boxfill/' + $('#colors').val(),
+            colorscalerange: bounds[$("#dates").val()][$("#variables").val()],
         });
 
-//  Listener for the color changer
-    $("#colors").change(function () {
-        updateMap();
-        });
+        let timedLayer = L.timeDimension.layer.wms(wmsLayer, {
+            name: 'TimeSeries',
+            requestTimefromCapabilities: true,
+            updateTimeDimension: true,
+            updateTimeDimensionMode: 'replace',
+            cache: 15,
+            }).addTo(mapObj);
 
-//  Listener for the time selection menu
-    $("#times").change(function() {
-        updateMap();
-        getChart();
-        });
+        return timedLayer
+    }
 
-//  Listener for the opacity select slider (rangeslider gizmo)
+    function makeControls() {
+        return L.control.layers(basemapObj, {'GLDAS Layer': layerObj}).addTo(mapObj);
+    }
+
+    function clearMap() {
+        controlsObj.removeLayer(layerObj);
+        mapObj.removeLayer(layerObj);
+        mapObj.removeControl(controlsObj);
+    }
+
+    function getThreddswms() {
+        $.ajax({
+            url:'/apps/gldas/ajax/customsettings/',
+            async: false,
+            data: '',
+            dataType: 'json',
+            contentType: "application/json",
+            method: 'POST',
+            success: function(result) {
+                console.log(result);
+                wmsbase = result['threddsurl'];
+                return wmsbase;
+                },
+            });
+        return wmsbase;
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////  INITIALIZE MAP ON DOCUMENT READY
+
+    //  Load initial map data as soon as the page is ready
+    var wmsbase = getThreddswms();
+    var mapObj = map();
+    var basemapObj = basemaps();
+    var layerObj = newLayer();
+    var controlsObj = makeControls();
+
+
+
+    ////////////////////////////////////////////////////////////////////////  SETUP FOR LEGEND AND DRAW CONTROLS
+    let legend = L.control({position:'bottomright'});
+        legend.onAdd = function(mapObj) {
+            let div = L.DomUtil.create('div', 'legend');
+            let url = wmsbase + $("#dates").val() + '.ncml' + "?REQUEST=GetLegendGraphic&LAYER=" + $("#variables").val() + "&PALETTE=" + $('#colors').val() + "&COLORSCALERANGE=" + bounds[$("#dates").val()][$("#variables").val()];
+            div.innerHTML = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
+            return div
+        };
+    legend.addTo(mapObj);
+
+    // Add controls for user drawings
+    let drawnItems = new L.FeatureGroup();      // FeatureGroup is to store editable layers
+    mapObj.addLayer(drawnItems);
+    let drawControl = new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems,
+            edit: false,
+        },
+        draw: {
+            polyline: false,
+            circlemarker:false,
+            circle:false,
+            polygon:false,
+            rectangle:false,
+        },
+    });
+    mapObj.addControl(drawControl);
+    mapObj.on("draw:drawstart ", function () {     // control what happens when the user draws things on the map
+        drawnItems.clearLayers();
+    });
+    mapObj.on("draw:created", function (e) {
+        var layer = e.layer;
+        layer.addTo(drawnItems);
+    });
+
+
+
+    ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
+
+    //  Listener for the variable picker menu (selectinput gizmo)
+    $("#dates").change(function () {
+        clearMap();
+        layerObj = newLayer();
+        controlsObj = makeControls();
+        legend.addTo(mapObj);
+    });
+
+    $("#variables").change(function () {
+        clearMap();
+        layerObj = newLayer();
+        controlsObj = makeControls();
+        legend.addTo(mapObj);
+    });
+
     $("#opacity").change(function () {
-        timedLayer.setOpacity($('#opacity').val());
-        });
+        layerObj.setOpacity($('#opacity').val());
+    });
 
-//  Listener for changing zooms                     Ignored because of performance bugs
-//     $("#zooms").change(function() {
-//         zoomMap($('#zooms').val());
-//         });
+    $('#colors').change(function () {
+        clearMap();
+        layerObj = newLayer();
+        controlsObj = makeControls();
+        legend.addTo(mapObj);
+    });
 
-/////////////////////////////////////////////////////////////////////////////// HIGHCHARTS CONTROLS
-
-//  Generate a plot whenever the user draws a new point
-    map.on("draw:created", function() {
+    //  Generate a plot whenever the user draws a new point
+    mapObj.on("draw:created", function() {
         getChart();
-        });
+    });
 
 });

@@ -1,5 +1,4 @@
 import os
-import sys
 from setuptools import setup, find_packages
 from tethys_apps.app_installation import custom_develop_command, custom_install_command
 
@@ -14,7 +13,7 @@ dependencies = ['netCDF4', 'numpy']
 
 setup(
     name=release_package,
-    version='0.0.1',
+    version='1.9.1',
     tags='&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;teries&quot;',
     description='Visualizes GLDAS data through maps and charts',
     long_description='',

@@ -1,4 +1,4 @@
-from .resources import app_configuration
+from .model import app_configuration
 import netCDF4, numpy, datetime, os, calendar
 
 # generates the plotable points based on the user inputs

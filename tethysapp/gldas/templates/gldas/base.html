@@ -85,8 +85,6 @@
   <!-- script for timeseries controls in leaflet -->
   <script type="text/javascript" src="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.min.js"></script>
   <script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
-  <!-- script for bing maps layer compatibility in leaflet-->
-  <script type="text/javascript" src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Promise"></script>
   <!-- allows you to use the leaflet draw plugin -->
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.js"></script>
 
@@ -96,10 +94,6 @@
   <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
   <!-- Use this to show loading functions and placeholders -->
   <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
-
-  <!-- Use this to cache tile layers for improved map loading performance -- Minimal Compatibility with Timeseries-->
-  <!--<script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>-->
-  <!--<script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>-->
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128273217-2"></script>
@@ -111,10 +105,9 @@
     </script>
 
 
-  <!-- scripts i wrote for using these resources, MAIN MUST GO LAST -->
+  <!-- scripts I wrote for the app, main should go last -->
   <script src="{% static 'gldas/js/data.js' %}" type="text/javascript"></script>
-  <script src="{% static 'gldas/js/leaflet.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/highcharts.js' %}" type="text/javascript"></script>
-  <script src="{% static 'gldas/js/ajaxFunctions.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/ajax.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/main.js' %}" type="text/javascript"></script>
 {% endblock %}

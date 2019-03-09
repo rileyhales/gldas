@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes
-from .datatools import ts_plot
-from .resources import gldas_variables, get_times
+from .tools import ts_plot
+from .model import gldas_variables, get_times
 import ast
 
 @api_view(['GET'])

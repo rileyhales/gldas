@@ -1,8 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .datatools import ts_plot
-from .resources import gldas_variables, app_configuration
-import ast, math, netCDF4, os      # ast can convert stringified json data back to a python dictionary
 
 
 @login_required()
@@ -10,6 +7,9 @@ def generatePlot(request):
     """
     The controller for the ajax call to create a timeseries for the area chosen by the user's drawing
     """
+    from .model import gldas_variables
+    from .tools import ts_plot
+    import ast
 
     data = ast.literal_eval(request.body)
     response_object = {}
@@ -25,6 +25,7 @@ def generatePlot(request):
     return JsonResponse(response_object)
 
 
+@login_required()
 def getBounds(request):
     """
     Dynamically defines exact boundaries for the legend and wms so that they are synchronized
@@ -32,11 +33,16 @@ def getBounds(request):
     Will be reimplemented when the app supports custom time values
     Requires netcdf4, os, ast, math
     """
+    from .model import app_configuration
+    import ast
+    import math
+    import netCDF4
+    import os
+
     configs = app_configuration()
     thredds_data_dir = configs['thredds_data_dir']
 
     data = ast.literal_eval(request.body)
-    print(data)
     variable = data['variable']
     time = data['time']
     response_object = {}
@@ -67,10 +73,10 @@ def getBounds(request):
     return JsonResponse(response_object)
 
 
-def getConfigs(request):
+@login_required()
+def customsettings(request):
     """
     returns the paths to the data/thredds services taken from the custom settings and gives it to the javascript
     """
-    configs = app_configuration()
-
-    return JsonResponse(configs)
+    from .model import app_configuration
+    return JsonResponse(app_configuration())
