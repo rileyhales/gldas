@@ -12,8 +12,6 @@ The datasets are available at: https://disc.gsfc.nasa.gov/datasets?keywords=glda
 
 ### Python Package Dependencies
 * netCDF4
-* oauth2client (required for google analytics)
-* apiclient (google analytics api interface)
 * os
 * numpy
 * datetime
