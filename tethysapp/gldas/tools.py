@@ -1,6 +1,3 @@
-from .model import app_configuration
-import netCDF4, numpy, datetime, os, calendar
-
 # generates the plotable points based on the user inputs
 def ts_plot(data):
     """
@@ -10,6 +7,9 @@ def ts_plot(data):
     Dependencies: netcdf4, numpy, datetime, random
     Last Updated: Oct 11 2018
     """
+    from .model import app_configuration
+    import netCDF4, numpy, datetime, os, calendar
+
     values = []
     variable = str(data['variable'])
     coords = data['coords']

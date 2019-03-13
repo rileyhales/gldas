@@ -13,7 +13,7 @@ dependencies = ['netCDF4', 'numpy']
 
 setup(
     name=release_package,
-    version='1.9.1',
+    version='1.9.2',
     tags='&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;teries&quot;',
     description='Visualizes GLDAS data through maps and charts',
     long_description='',

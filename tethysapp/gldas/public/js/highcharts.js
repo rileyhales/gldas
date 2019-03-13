@@ -70,3 +70,34 @@ function newHighchart(data) {
 
     });
 }
+
+
+function getChart() {
+
+    chart.hideNoData();
+    chart.showLoading();
+
+//  Compatibility if user picks something out of normal bounds
+    coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
+    if (coords[0] < -180) {
+        coords[0] += 360;
+    }
+    if(coords[0] > 180) {
+        coords[0] -= 360;
+    }
+    data = {
+        coords: coords,
+        variable: $('#variables').val(),
+        time: $("#dates").val(),l
+        };
+    $.ajax({
+        url:'/apps/gldas/generatePlot/',
+        data: JSON.stringify(data),
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'POST',
+        success: function(result) {
+            newHighchart(result);
+            },
+        });
+}

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import SelectInput, RangeSlider
 from .model import gldas_variables, wms_colors, get_times
+from .app import Gldas as App
 
 @login_required()
 def home(request):
@@ -14,6 +15,9 @@ def home(request):
         tuple1 = (key, variables[key])
         options.append(tuple1)
     del tuple1, key, variables
+
+    version = App.version
+    updated = App.updated
 
     variables = SelectInput(
         display_text='Select GLDAS Variable',
@@ -51,6 +55,8 @@ def home(request):
         'opacity': opacity,
         'colors': colors,
         'dates': dates,
+        'version': version,
+        'updated': updated,
     }
 
     return render(request, 'gldas/home.html', context)

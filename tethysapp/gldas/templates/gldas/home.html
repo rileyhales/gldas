@@ -27,7 +27,10 @@
     {% gizmo select_input colors %}
     {% gizmo select_input dates %}
     {% gizmo range_slider opacity %}
-    <p>GLDAS data can be viewed in 1-year increments. App performance and loading times will vary based on interval and variable choice.</p>
+    <p>GLDAS data is shown in 1-year increments. Performance and loading times will vary based on time and variable choice.</p>
     <p><b>Documentation and help</b> available at the <a href="https://www.github.com/rileyhales/gldas" target="_blank">github repo</a> for this app.</p>
-    <!--<p><b>Tutorial videos</b> available on <a href="https://www.youtube.com" target="_blank">YouTube</a></p>-->
+    <p><b>Data</b> for this app came from the <a href="https://disc.gsfc.nasa.gov/datasets?keywords=GLDAS" target="_blank">NASA GES Disc</a> and is monthly average, 1/4 degree resolution, netCDF4 format.</p>
+    <p><b>Tutorial videos</b> for this and related apps available on the <a href="https://www.youtube.com/channel/UC6B62KhB-Cd34ad6pGBldQQ/featured" target="_blank"> BYU Hydroinformatics Lab YouTube Channel</a>.</p>
+    <p><b>Last Updated:</b> {{ updated }}</p>
+    <p><b>Version:</b> {{ version }}</p>
 {% endblock %}
