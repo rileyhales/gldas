@@ -1,4 +1,3 @@
-# generates the plotable points based on the user inputs
 def ts_plot(data):
     """
     Description: generates a timeseries for a given point and given variable defined by the user.

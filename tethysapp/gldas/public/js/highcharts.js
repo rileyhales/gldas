@@ -12,7 +12,7 @@ Highcharts.setOptions({
     },
 });
 
-// Place holder chart
+// Placeholder chart
 chart = Highcharts.chart('highchart', {
     title: {
         align: "center",
@@ -72,7 +72,7 @@ function newHighchart(data) {
 }
 
 
-function getChart() {
+function getChart(drawnItems) {
 
     chart.hideNoData();
     chart.showLoading();
@@ -88,9 +88,10 @@ function getChart() {
     data = {
         coords: coords,
         variable: $('#variables').val(),
-        time: $("#dates").val(),l
+        time: $("#dates").val(),
         };
-    $.ajax({
+    console.log(data);
+        $.ajax({
         url:'/apps/gldas/generatePlot/',
         data: JSON.stringify(data),
         dataType: 'json',

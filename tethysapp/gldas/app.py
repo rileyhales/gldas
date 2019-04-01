@@ -17,7 +17,7 @@ class Gldas(TethysAppBase):
     enable_feedback = False
     feedback_emails = []
     version = '2.0'
-    updated = '13 March 2019'
+    updated = '1 April 2019'
 
     def url_maps(self):
         """

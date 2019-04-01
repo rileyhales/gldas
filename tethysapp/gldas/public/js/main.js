@@ -42,14 +42,20 @@ $(document).ready(function() {
     function basemaps() {
         // create the basemap layers
         let Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+        let Esri_WorldTerrain = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {maxZoom: 13});
         let Esri_Imagery_Labels = L.esri.basemapLayer('ImageryLabels');
-        return {"Basemap": L.layerGroup([Esri_WorldImagery, Esri_Imagery_Labels]).addTo(mapObj)}
+        return {
+            "ESRI Imagery": L.layerGroup([Esri_WorldImagery, Esri_Imagery_Labels]).addTo(mapObj),
+            "ESRI Terrain": L.layerGroup([Esri_WorldTerrain, Esri_Imagery_Labels])
+        }
     }
 
     function newLayer() {
         let wmsurl = wmsbase + $("#dates").val() + '.ncml';
         let wmsLayer = L.tileLayer.wms(wmsurl, {
+            // version: '1.3.0',
             layers: $("#variables").val(),
+            dimension: 'time',
             useCache: true,
             crossOrigin: false,
             format: 'image/png',
@@ -61,18 +67,18 @@ $(document).ready(function() {
         });
 
         let timedLayer = L.timeDimension.layer.wms(wmsLayer, {
-            name: 'TimeSeries',
+            name: 'time',
             requestTimefromCapabilities: true,
             updateTimeDimension: true,
             updateTimeDimensionMode: 'replace',
-            cache: 15,
+            cache: 20,
             }).addTo(mapObj);
 
         return timedLayer
     }
 
     function makeControls() {
-        return L.control.layers(basemapObj, {'GLDAS Layer': layerObj}).addTo(mapObj);
+        return L.control.layers(basemapObj, {'GLDAS Layer': layerObj, 'Point': drawnItems}).addTo(mapObj);
     }
 
     function clearMap() {
@@ -90,7 +96,6 @@ $(document).ready(function() {
             contentType: "application/json",
             method: 'POST',
             success: function(result) {
-                console.log(result);
                 wmsbase = result['threddsurl'];
                 return wmsbase;
                 },
@@ -99,17 +104,10 @@ $(document).ready(function() {
     }
 
 
-
     ////////////////////////////////////////////////////////////////////////  INITIALIZE MAP ON DOCUMENT READY
-
     //  Load initial map data as soon as the page is ready
     var wmsbase = getThreddswms();
     var mapObj = map();
-    var basemapObj = basemaps();
-    var layerObj = newLayer();
-    var controlsObj = makeControls();
-
-
 
     ////////////////////////////////////////////////////////////////////////  SETUP FOR LEGEND AND DRAW CONTROLS
     let legend = L.control({position:'bottomright'});
@@ -122,9 +120,8 @@ $(document).ready(function() {
     legend.addTo(mapObj);
 
     // Add controls for user drawings
-    let drawnItems = new L.FeatureGroup();      // FeatureGroup is to store editable layers
-    mapObj.addLayer(drawnItems);
-    let drawControl = new L.Control.Draw({
+    var drawnItems = new L.FeatureGroup().addTo(mapObj);      // FeatureGroup is to store editable layers
+    var drawControl = new L.Control.Draw({
         edit: {
             featureGroup: drawnItems,
             edit: false,
@@ -141,10 +138,27 @@ $(document).ready(function() {
     mapObj.on("draw:drawstart ", function () {     // control what happens when the user draws things on the map
         drawnItems.clearLayers();
     });
-    mapObj.on("draw:created", function (e) {
-        var layer = e.layer;
-        layer.addTo(drawnItems);
+
+    // map.on(L.Draw.Event.CREATED, function(event) {
+    //         var layer = event.layer;
+    //         var content = getPopupContent(layer);
+    //         if (content !== null) {
+    //             layer.bindPopup(content);
+    //         }
+    //         drawnItems.addLayer(layer);
+    //     });
+
+    mapObj.on(L.Draw.Event.CREATED, function (event) {
+        drawnItems.addLayer(event.layer);
+        L.Draw.Event.STOP;
+        getChart(drawnItems);
+        // e.layer.addTo(drawnItems);
     });
+
+    var basemapObj = basemaps();
+    var layerObj = newLayer();
+    var controlsObj = makeControls();
+
 
 
 
@@ -174,11 +188,6 @@ $(document).ready(function() {
         layerObj = newLayer();
         controlsObj = makeControls();
         legend.addTo(mapObj);
-    });
-
-    //  Generate a plot whenever the user draws a new point
-    mapObj.on("draw:created", function() {
-        getChart();
     });
 
 });

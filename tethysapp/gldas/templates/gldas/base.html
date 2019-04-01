@@ -5,13 +5,7 @@
 {% load staticfiles %}
 
 {% block title %}{{ tethys_app.name }}{% endblock %}
-
-{% block app_icon %}
-  {# The path you provided in your app.py is accessible through the tethys_app.icon context variable #}
-  <img src="{% static tethys_app.icon %}">
-{% endblock %}
-
-{# The name you provided in your app.py is accessible through the tethys_app.name context variable #}
+{% block app_icon %}<img src="{% static tethys_app.icon %}">{% endblock %}
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 
 {% block app_navigation_items %}
@@ -24,32 +18,38 @@
 {% endblock %}
 
 {% block header_buttons %}
-<div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
-    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
-  </div>
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Download GLDAS Data">
+        <a href="https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas" target="_blank"><span class="glyphicon glyphicon-download-alt"></span></a>
+    </div>
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Tutorial on YouTube">
+        <a href="https://www.youtube.com/channel/UC6B62KhB-Cd34ad6pGBldQQ/videos" target="_blank"><span class="glyphicon glyphicon-play-circle"></span></a>
+    </div>
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
+        <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+    </div>
 {% endblock %}
 
 {% block after_app_content %}
 <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5 class="modal-title" id="help-modal-label">GLDAS Data Visualizer -- Support</h5>
-      </div>
-      <div class="modal-body">
-        <p>The GLDAS Data Visualizer tool was developed by <a target="_blank" href="https://rileyhales.com">Riley Hales</a> at the
-          <a target="_blank" href="https://worldwater.byu.edu">Hydroinformatics Lab</a> of <a target="_blank" href="https://byu.edu">
-            Brigham Young University's</a> <a target="_blank" href="https://ceen.et.byu.edu">Civil and Environmental Engineering Department</a>.</p>
-        <p>The most recent, stable version of this code can be found on <a target="_blank" href="https://github.com/rileyhales/gldas">github</a></p>
-        <p>This app is made possible by: Leaflet, Highcharts, NASA GLDAS, BYU, Tethys Platform</p>
-        <p>Basemap imagery provided by: ESRI, Open Street Map</p>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="help-modal-label">GLDAS Data Visualizer -- Support</h5>
+            </div>
+            <div class="modal-body">
+                <p>The GLDAS Data Visualizer tool was developed by <a target="_blank" href="https://rileyhales.com">Riley Hales</a> at the
+                    <a target="_blank" href="https://worldwater.byu.edu">Hydroinformatics Lab</a> of <a target="_blank" href="https://byu.edu">
+                        Brigham Young University's</a> <a target="_blank" href="https://ceen.et.byu.edu">Civil and Environmental Engineering Department</a>.</p>
+                <p>The most recent, stable version of this code can be found on <a target="_blank" href="https://github.com/rileyhales/gldas">github</a>. If you experience problems with this app, please visit report it to the <a href="https://github.com/rileyhales/gldas/issues">issues page</a>.</p>
+                <p>This app is made possible by: Leaflet, Highcharts, NASA GLDAS, BYU, Tethys Platform</p>
+                <p>Basemap imagery provided by: ESRI, Open Street Map</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
         </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-      </div>
     </div>
-  </div>
 </div>
 
 
@@ -57,56 +57,56 @@
 
 
 {% block content_dependent_styles %}
-  {{ block.super }}
-  <!-- styling for leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
-  <!-- styling for timeseries controls -->
-  <link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
-  <!-- styling for the leaflet draw plugin -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
+{{ block.super }}
+<!-- styling for leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+<!-- styling for timeseries controls -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
+<!-- styling for the leaflet draw plugin -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
 
-  <!-- styling generated for the app -->
-  <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
+<!-- styling generated for the app -->
+<link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
 
-  <!-- Font Awesome for some icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- Font Awesome for some icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block scripts %}
-  {{ block.super }}
+{{ block.super }}
 
-  <!-- Allows csrf verification with AJAX -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<!-- Allows csrf verification with AJAX -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
-  <!-- script for leaflet -->
-  <script type="text/javascript" src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
-  <!-- Leadlet with Esri -->
-  <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js" integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g==" crossorigin=""></script>
-  <!-- script for timeseries controls in leaflet -->
-  <script type="text/javascript" src="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.min.js"></script>
-  <script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
-  <!-- allows you to use the leaflet draw plugin -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.js"></script>
+<!-- script for leaflet -->
+<script type="text/javascript" src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+<!-- Leadlet with Esri -->
+<script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js" integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g==" crossorigin=""></script>
+<!-- script for timeseries controls in leaflet -->
+<script type="text/javascript" src="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
+<!-- allows you to use the leaflet draw plugin -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.js"></script>
 
-  <!-- script for using highcharts (display timeseries plot) -->
-  <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
-  <!-- Use this to export data from highcharts as csv, jpeg, etc -->
-  <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
-  <!-- Use this to show loading functions and placeholders -->
-  <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+<!-- script for using highcharts (display timeseries plot) -->
+<script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+<!-- Use this to export data from highcharts as csv, jpeg, etc -->
+<script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+<!-- Use this to show loading functions and placeholders -->
+<script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128273217-2"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-128273217-2');
-    </script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-128273217-2"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-128273217-2');
+</script>
 
 
-  <!-- scripts I wrote for the app, main should go last -->
-  <script src="{% static 'gldas/js/data.js' %}" type="text/javascript"></script>
-  <script src="{% static 'gldas/js/highcharts.js' %}" type="text/javascript"></script>
-  <script src="{% static 'gldas/js/main.js' %}" type="text/javascript"></script>
+<!-- scripts I wrote for the app, main should go last -->
+<script src="{% static 'gldas/js/data.js' %}" type="text/javascript"></script>
+<script src="{% static 'gldas/js/highcharts.js' %}" type="text/javascript"></script>
+<script src="{% static 'gldas/js/main.js' %}" type="text/javascript"></script>
 {% endblock %}

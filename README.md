@@ -46,7 +46,7 @@ contains 1 function to handle the data requested by leaflet or highcharts in eac
 **tools.py:**  
 conatins functions for extracting data from the netcdf files, specifically creating the timeseries points to be plotted by highcharts.
 
-##Using the App
+## Using the App
 The app is used by zooming to certain regions, using the tool in the map interface to click a point, viewing the timeseries of values for the given variable, time, and location pairing.
 
 The chart will regenerate itself when the time or variable is changed.  
