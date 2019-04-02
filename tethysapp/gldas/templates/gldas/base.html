@@ -18,41 +18,21 @@
 {% endblock %}
 
 {% block header_buttons %}
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Resources">
+        <font color="white"><b>Additional Resources:</b></font>
+    </div>
     <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Download GLDAS Data">
-        <a href="https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas" target="_blank"><span class="glyphicon glyphicon-download-alt"></span></a>
+        <a href="{{ gldaslink }}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span></a>
     </div>
     <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Tutorial on YouTube">
-        <a href="https://www.youtube.com/channel/UC6B62KhB-Cd34ad6pGBldQQ/videos" target="_blank"><span class="glyphicon glyphicon-play-circle"></span></a>
+        <a href="{{ youtubelink }}" target="_blank"><span class="glyphicon glyphicon-play-circle"></span></a>
     </div>
-    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Help">
-        <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Source Code and Documentation">
+        <a href="https://github.com/rileyhales/gldas" target="_blank"><span class="glyphicon glyphicon-hdd"></span></a>
     </div>
-{% endblock %}
-
-{% block after_app_content %}
-<div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h5 class="modal-title" id="help-modal-label">GLDAS Data Visualizer -- Support</h5>
-            </div>
-            <div class="modal-body">
-                <p>The GLDAS Data Visualizer tool was developed by <a target="_blank" href="https://rileyhales.com">Riley Hales</a> at the
-                    <a target="_blank" href="https://worldwater.byu.edu">Hydroinformatics Lab</a> of <a target="_blank" href="https://byu.edu">
-                        Brigham Young University's</a> <a target="_blank" href="https://ceen.et.byu.edu">Civil and Environmental Engineering Department</a>.</p>
-                <p>The most recent, stable version of this code can be found on <a target="_blank" href="https://github.com/rileyhales/gldas">github</a>. If you experience problems with this app, please visit report it to the <a href="https://github.com/rileyhales/gldas/issues">issues page</a>.</p>
-                <p>This app is made possible by: Leaflet, Highcharts, NASA GLDAS, BYU, Tethys Platform</p>
-                <p>Basemap imagery provided by: ESRI, Open Street Map</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-            </div>
-        </div>
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Report a Problem">
+        <a href="https://github.com/rileyhales/gldas/issues" target="_blank"><span class="glyphicon glyphicon-wrench"></span></a>
     </div>
-</div>
-
-
 {% endblock %}
 
 

@@ -103,7 +103,6 @@ $(document).ready(function() {
         return wmsbase;
     }
 
-
     ////////////////////////////////////////////////////////////////////////  INITIALIZE MAP ON DOCUMENT READY
     //  Load initial map data as soon as the page is ready
     var wmsbase = getThreddswms();
@@ -139,15 +138,6 @@ $(document).ready(function() {
         drawnItems.clearLayers();
     });
 
-    // map.on(L.Draw.Event.CREATED, function(event) {
-    //         var layer = event.layer;
-    //         var content = getPopupContent(layer);
-    //         if (content !== null) {
-    //             layer.bindPopup(content);
-    //         }
-    //         drawnItems.addLayer(layer);
-    //     });
-
     mapObj.on(L.Draw.Event.CREATED, function (event) {
         drawnItems.addLayer(event.layer);
         L.Draw.Event.STOP;
@@ -158,8 +148,6 @@ $(document).ready(function() {
     var basemapObj = basemaps();
     var layerObj = newLayer();
     var controlsObj = makeControls();
-
-
 
 
     ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS

@@ -21,10 +21,8 @@
     {% gizmo select_input colors %}
     {% gizmo select_input dates %}
     {% gizmo range_slider opacity %}
-    <p>GLDAS data is shown in 1-year increments. Performance and loading times will vary based on time and variable choice.</p>
-    <p><b>Documentation and help</b> available at the <a href="https://www.github.com/rileyhales/gldas" target="_blank">github repo</a> for this app.</p>
-    <p><b>Data</b> for this app came from the <a href="https://disc.gsfc.nasa.gov/datasets?keywords=GLDAS" target="_blank">NASA GES Disc</a> and is monthly average, 1/4 degree resolution, netCDF4 format.</p>
-    <p><b>Tutorial videos</b> for this and related apps available on the <a href="https://www.youtube.com/channel/UC6B62KhB-Cd34ad6pGBldQQ/videos" target="_blank"> BYU Hydroinformatics Lab YouTube Channel</a>.</p>
+    <p>Data for this app came from the <a href="{{ gldaslink }}" target="_blank">NASA GES Disc</a> and is monthly average, 1/4 degree resolution, netCDF4 format.</p>
+    <p>Data is shown in 1-year intervals. Performance and loading times will vary based on time and variable choice.</p>
+    <p><b>Credits:</b> Developed by <a href="https://rileyhales.com">Riley Hales</a> at the <a target="_blank" href="https://worldwater.byu.edu">BYU Hydroinformatics Lab</a>. Software and data from Tethys Platform, Leaflet, Highcharts, Thredds, NASA GLDAS, ESRI</p>
     <p><b>Last Updated:</b> {{ updated }}</p>
-    <p><b>Version:</b> {{ version }}</p>
 {% endblock %}

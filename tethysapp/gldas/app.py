@@ -1,6 +1,7 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import CustomSetting
 
+
 class Gldas(TethysAppBase):
     """
     Tethys app class for GLDAS Data Visualizer.
@@ -16,8 +17,9 @@ class Gldas(TethysAppBase):
     tags = '&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;tseries&quot;'
     enable_feedback = False
     feedback_emails = []
-    version = '2.0'
     updated = '1 April 2019'
+    youtubelink = 'https://www.youtube.com/channel/UC6B62KhB-Cd34ad6pGBldQQ/videos'
+    gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
 
     def url_maps(self):
         """
