@@ -10,19 +10,3 @@
     <div id="highchart"></div>
 </div>
 {% endblock %}
-
-{% block app_actions %}
-{% endblock %}
-
-{% block app_navigation_items %}
-    <!--<span style="white-space:nowrap"/>-->
-    <li class="title">App Navigation</li>
-    {% gizmo select_input variables %}
-    {% gizmo select_input colors %}
-    {% gizmo select_input dates %}
-    {% gizmo range_slider opacity %}
-    <p>Data for this app came from the <a href="{{ gldaslink }}" target="_blank">NASA GES Disc</a> and is monthly average, 1/4 degree resolution, netCDF4 format.</p>
-    <p>Data is shown in 1-year intervals. Performance and loading times will vary based on time and variable choice.</p>
-    <p><b>Credits:</b> Developed by <a href="https://rileyhales.com">Riley Hales</a> at the <a target="_blank" href="https://worldwater.byu.edu">BYU Hydroinformatics Lab</a>. Software and data from Tethys Platform, Leaflet, Highcharts, Thredds, NASA GLDAS, ESRI</p>
-    <p><b>Last Updated:</b> {{ updated }}</p>
-{% endblock %}
