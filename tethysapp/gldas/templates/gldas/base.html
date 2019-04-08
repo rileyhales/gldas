@@ -7,7 +7,6 @@
 {% block title %}{{ tethys_app.name }}{% endblock %}
 {% block app_icon %}<img src="{% static tethys_app.icon %}">{% endblock %}
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
-{% block app_navigation_items %}{% endblock %}
 {% block app_content %}{% endblock %}
 {% block app_actions %}{% endblock %}
 
@@ -30,7 +29,6 @@
     </div>
 {% endblock %}
 
-
 {% block app_navigation_items %}
     <li class="title">App Navigation</li>
     {% gizmo select_input variables %}
@@ -43,7 +41,6 @@
     <p><b>Last Updated:</b> {{ updated }}</p>
 {% endblock %}
 
-
 {% block content_dependent_styles %}
 {{ block.super }}
 <!-- styling for leaflet -->
@@ -52,17 +49,13 @@
 <link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
 <!-- styling for the leaflet draw plugin -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
-
 <!-- styling generated for the app -->
 <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
-
-<!-- Font Awesome for some icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
+
 
 {% block scripts %}
 {{ block.super }}
-
 <!-- Allows csrf verification with AJAX -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
