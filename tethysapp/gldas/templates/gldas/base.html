@@ -15,6 +15,9 @@
     <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Resources">
         <font color="white"><b>Additional Resources:</b></font>
     </div>
+    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="How To Use This Page">
+        <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+    </div>
     <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Download GLDAS Data">
         <a href="{{ gldaslink }}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span></a>
     </div>
@@ -26,6 +29,48 @@
     </div>
     <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Report a Problem">
         <a href="https://github.com/rileyhales/gldas/issues" target="_blank"><span class="glyphicon glyphicon-wrench"></span></a>
+    </div>
+{% endblock %}
+
+{% block after_app_content %}
+    <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="help-modal-label">How To Use This Page</h5>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        This app contains 4 primary areas.
+                        <ol>
+                            <li>A column of controls on the left side of the screen</li>
+                            <li>A map showing the date the user specifies</li>
+                            <li>Space for a graph of timeseries information</li>
+                            <li>Help buttons with links to this help modal, GLDAS data downloads, help videos, source code, and error reporting</li>
+                        </ol>
+                        <div id="imgwrapper" style="text-align: center;"><img src="{% static 'gldas/images/helpdiagram.png' %}" style="width: 100%"></div>
+                    </p
+                    <p>
+                        To use this app you should:
+                        <ol>
+                            <li>Pick the date range for which you want to see GLDAS data <b>(area 1)</b></li>
+                            <li>Change the color scheme and opacity as desired <b>(area 1)</b></li>
+                            <li>Use the controls on the bottom left corner of the map to control the map's animation. The animation will show monthly timesteps of averaged values each month in the date range you chose <b>(area 2)</b></li>
+                            <li>Use the controls on the top left corner of the map to place a marker on any point on the map for which there is data <b>(area 2)</b></li>
+                            <li>Look at the chart at the bottom of the screen to view a timeseries of values plotted for the variable-date-location combo that you chose <b>(area 3)</b></li>
+                            <li>Use the options found at the top right corner of the chart box to download the data in the chart <b>(area 3)</b></li>
+                            <li>Use the controls on the top right corner of the screen to access help, data, and more <b>(area 4)</b></li>
+                        </ol>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

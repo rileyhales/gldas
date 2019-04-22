@@ -1,4 +1,4 @@
-bounds = {
+const bounds = {
        2000: {'Albedo_inst': '4,83',
            'AvgSurfT_inst': '222,316',
            'CanopInt_inst': '0,1',
