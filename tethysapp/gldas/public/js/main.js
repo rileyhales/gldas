@@ -158,6 +158,7 @@ $(document).ready(function() {
         clearMap();
         layerObj = newLayer();
         controlsObj = makeControls();
+        getChart(drawnItems);
         legend.addTo(mapObj);
     });
 
@@ -165,6 +166,7 @@ $(document).ready(function() {
         clearMap();
         layerObj = newLayer();
         controlsObj = makeControls();
+        getChart(drawnItems);
         legend.addTo(mapObj);
     });
 

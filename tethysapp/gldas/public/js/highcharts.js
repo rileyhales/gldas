@@ -73,32 +73,37 @@ function newHighchart(data) {
 
 
 function getChart(drawnItems) {
-
-    chart.hideNoData();
-    chart.showLoading();
-
 //  Compatibility if user picks something out of normal bounds
-    coords = drawnItems.toGeoJSON()['features'][0]['geometry']['coordinates'];
-    if (coords[0] < -180) {
-        coords[0] += 360;
+    let geometry = drawnItems.toGeoJSON()['features'];
+    if (geometry.length > 0) {
+        chart.hideNoData();
+        chart.showLoading();
+
+        let coords = geometry[0]['geometry']['coordinates'];
+        if (coords[0] < -180) {
+            coords[0] += 360;
+        }
+        if(coords[0] > 180) {
+            coords[0] -= 360;
+        }
+
+        let data = {
+            coords: coords,
+            variable: $('#variables').val(),
+            time: $("#dates").val(),
+            };
+
+        console.log(data);
+            $.ajax({
+            url:'/apps/gldas/ajax/generatePlot/',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: "application/json",
+            method: 'POST',
+            success: function(result) {
+                newHighchart(result);
+                },
+            });
     }
-    if(coords[0] > 180) {
-        coords[0] -= 360;
-    }
-    data = {
-        coords: coords,
-        variable: $('#variables').val(),
-        time: $("#dates").val(),
-        };
-    console.log(data);
-        $.ajax({
-        url:'/apps/gldas/ajax/generatePlot/',
-        data: JSON.stringify(data),
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'POST',
-        success: function(result) {
-            newHighchart(result);
-            },
-        });
+
 }
