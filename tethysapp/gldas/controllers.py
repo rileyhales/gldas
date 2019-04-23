@@ -16,10 +16,6 @@ def home(request):
         options.append(tuple1)
     del tuple1, key, variables
 
-    updated = App.updated
-    youtubelink = App.youtubelink
-    gldaslink = App.gldaslink
-
     variables = SelectInput(
         display_text='Select GLDAS Variable',
         name='variables',
@@ -56,9 +52,9 @@ def home(request):
         'opacity': opacity,
         'colors': colors,
         'dates': dates,
-        'youtubelink': youtubelink,
-        'gldaslink': gldaslink,
-        'updated': updated,
+        'youtubelink': App.youtubelink,
+        'gldaslink': App.gldaslink,
+        'updated': App.updated,
     }
 
     return render(request, 'gldas/home.html', context)

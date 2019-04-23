@@ -87,6 +87,7 @@ $(document).ready(function() {
         mapObj.removeControl(controlsObj);
     }
 
+    ////////////////////////////////////////////////////////////////////////  AJAX FUNCTIONS
     function getThreddswms() {
         $.ajax({
             url:'/apps/gldas/ajax/customsettings/',

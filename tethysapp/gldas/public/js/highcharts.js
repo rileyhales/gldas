@@ -92,7 +92,7 @@ function getChart(drawnItems) {
         };
     console.log(data);
         $.ajax({
-        url:'/apps/gldas/generatePlot/',
+        url:'/apps/gldas/ajax/generatePlot/',
         data: JSON.stringify(data),
         dataType: 'json',
         contentType: "application/json",
