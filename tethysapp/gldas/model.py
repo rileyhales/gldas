@@ -64,7 +64,7 @@ def get_times():
     Time intervals of GLDAS data
     """
     return [
-        # (2019, 2019),
+        (2019, 2019),
         (2018, 2018),
         (2017, 2017),
         (2016, 2016),
@@ -97,5 +97,5 @@ def app_configuration():
     return {
         'app_wksp_path': os.path.join(Gldas.get_app_workspace().path, ''),
         'threddsurl': Gldas.get_custom_setting("Thredds WMS URL"),
-        'datadir': Gldas.get_custom_setting("Local Thredds Folder Path"),
+        'threddsdatadir': Gldas.get_custom_setting("Local Thredds Folder Path"),
     }

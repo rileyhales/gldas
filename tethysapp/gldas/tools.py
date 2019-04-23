@@ -15,7 +15,7 @@ def ts_plot(data):
     tperiod = data['time']
 
     configs = app_configuration()
-    data_dir = configs['thredds_data_dir']
+    data_dir = configs['threddsdatadir']
 
     if tperiod == 'alltimes':
         path = os.path.join(data_dir, 'raw')

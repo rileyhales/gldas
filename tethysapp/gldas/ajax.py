@@ -11,7 +11,7 @@ def generatePlot(request):
     from .tools import ts_plot
     import ast
 
-    data = ast.literal_eval(request.body)
+    data = ast.literal_eval(request.body.decode('utf-8'))
     response_object = {}
     plot_items = ts_plot(data)
     response_object['units'] = plot_items[0]
