@@ -45,7 +45,7 @@ def wms_colors():
     return [
         ('SST-36', 'sst_36'),
         ('Greyscale', 'greyscale'),
-        ('Rainbox', 'rainbow'),
+        ('Rainbow', 'rainbow'),
         ('OCCAM', 'occam'),
         ('OCCAM Pastel', 'occam_pastel-30'),
         ('Red-Blue', 'redblue'),

@@ -93,7 +93,6 @@ function getChart(drawnItems) {
             time: $("#dates").val(),
             };
 
-        console.log(data);
             $.ajax({
             url:'/apps/gldas/ajax/generatePlot/',
             data: JSON.stringify(data),

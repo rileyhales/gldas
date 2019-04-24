@@ -4,6 +4,7 @@ from tethys_sdk.gizmos import SelectInput, RangeSlider
 from .model import gldas_variables, wms_colors, get_times
 from .app import Gldas as App
 
+
 @login_required()
 def home(request):
     """
@@ -29,6 +30,7 @@ def home(request):
         name='colors',
         multiple=False,
         options=wms_colors(),
+        initial='rainbow'
     )
 
     dates = SelectInput(
@@ -36,6 +38,7 @@ def home(request):
         name='dates',
         multiple=False,
         options=get_times(),
+        initial='alltimes'
     )
 
     opacity = RangeSlider(
