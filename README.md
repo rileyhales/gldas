@@ -35,11 +35,13 @@ You need to specify 2 custom settings when you install the app. The file path to
 
 ## How the app works
 The various functions of the app are split into either python or javascript files named for what they control.
+#### Javascript Files
 * **data.js**: Contains a json object that has the minimum/maximum values of each variable arranged by year. These are used to get the color schemes of the map appropriately scaled.
 * **highcharts.js**: Functions for controlling the tables that appear in the app.
 * **leaflet.js**: A collection of functions for interacting with the leaflet javascript mapping api.
 * **main.js**: Calls the mapping functions in exactly the correct order to make the maps and animations work. Also has listeners to change the map when the user changes the controls
 
+#### Python Files
 * **app.py**: Django app declarations, URL maps that connect the user's URL to the correct python function to control that page, Custom setting declarations.
 * **ajax.py**: Contains 1 function for each URL map and ajax call made in javascript - all of the same name.
 * **model.py**: Dictionaries of information that specify the available time periods, color schemes, variables, and so forth.
