@@ -13,15 +13,16 @@ dependencies = ['netCDF4', 'numpy']
 
 setup(
     name=release_package,
-    version='2.0.0',
+    version='2.1.0',
     tags='&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;teries&quot;',
     description='Visualizes GLDAS data through maps and charts',
-    long_description='',
+    long_description='Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution '
+                     'GLDAS data sets from NASA LDAS and LIS.',
     keywords='GLDAS',
     author='Riley Hales',
     author_email='rileyhales1@gmail.com',
     url='rileyhales.com',
-    license='Mozilla Public License Version 2.0',
+    license='BSD-3 Clause',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     namespace_packages=['tethysapp', 'tethysapp.' + app_package],
     include_package_data=True,

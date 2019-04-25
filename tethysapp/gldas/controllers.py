@@ -57,7 +57,6 @@ def home(request):
         'dates': dates,
         'youtubelink': App.youtubelink,
         'gldaslink': App.gldaslink,
-        'updated': App.updated,
     }
 
     return render(request, 'gldas/home.html', context)

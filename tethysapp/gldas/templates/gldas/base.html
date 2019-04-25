@@ -12,9 +12,6 @@
 
 
 {% block header_buttons %}
-    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Resources">
-        <font color="white"><b>Additional Resources:</b></font>
-    </div>
     <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="How To Use This Page">
         <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
     </div>
@@ -26,9 +23,6 @@
     </div>
     <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Source Code and Documentation">
         <a href="https://github.com/rileyhales/gldas" target="_blank"><span class="glyphicon glyphicon-hdd"></span></a>
-    </div>
-    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Report a Problem">
-        <a href="https://github.com/rileyhales/gldas/issues" target="_blank"><span class="glyphicon glyphicon-wrench"></span></a>
     </div>
 {% endblock %}
 
@@ -64,9 +58,28 @@
                             <li>Use the controls on the top right corner of the screen to access help, data, and more <b>(area 4)</b></li>
                         </ol>
                     </p>
+                    <p>By default, the data shown is for all available timesteps (January 1 2000 through the present). Data may also be shown in 1-year intervals. Performance and loading times will vary based on the time and variable combination you choose. Charts will take longer to load if you choose All Available Times as a your time interval.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="data-modal" tabindex="-1" role="dialog" aria-labelledby="data-modal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="data-modal-label">GLDAS Data</h5>
+                </div>
+                <div class="modal-body">
+                    <p>The data shown in this app are Global datasets from the Land Data Assimilation System, or GLDAS data. The data shown here are 1/4 degree resolution, monthly averages. You can download this data for yourself from <a href="{{ gldaslink }}" target="_blank">NASA GES Disc</a>. Refer to the documentation for downloads to find batch download instructions and forms to sign up for credentials to GES Disc.</p>
+                    <p>The data are in netCDF format and shown on the map through OGC WMS using the Thredds Data Server and netCDF Markup Language (ncml).</p>
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
                 </div>
             </div>
@@ -75,27 +88,29 @@
 {% endblock %}
 
 {% block app_navigation_items %}
-    <li class="title">App Navigation</li>
+    <li class="title">Layer Controls</li>
     {% gizmo select_input variables %}
     {% gizmo select_input colors %}
     {% gizmo select_input dates %}
     {% gizmo range_slider opacity %}
-    <p>Data for this app came from the <a href="{{ gldaslink }}" target="_blank">NASA GES Disc</a> and is monthly average, 1/4 degree resolution, netCDF4 format.</p>
-    <p>Data is shown in 1-year intervals. Performance and loading times will vary based on time and variable choice.</p>
-    <p><b>Credits:</b> Developed by <a href="https://rileyhales.com">Riley Hales</a> at the <a target="_blank" href="https://worldwater.byu.edu">BYU Hydroinformatics Lab</a>. Software and data from Tethys Platform, Leaflet, Highcharts, Thredds, NASA GLDAS, ESRI</p>
-    <p><b>Last Updated:</b> {{ updated }}</p>
+
+    <li class="title">Help and Resources</li>
+    <li><a class="bk bk-bs-btn-default" data-toggle="modal" data-target="#help-modal" role="button">How do I use this app?</a></li>
+    <li><a class="bk bk-bs-btn-default" data-toggle="modal" data-target="#data-modal" role="button">About the GLDAS data in this app</a></li>
+    <li><a class="bk bk-bs-btn-default" href="https://github.com/rileyhales/gldas" target="_blank" role="button">View the Source Code for this App</a></li>
+
 {% endblock %}
 
 {% block content_dependent_styles %}
 {{ block.super }}
-<!-- styling for leaflet -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
-<!-- styling for timeseries controls -->
-<link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
-<!-- styling for the leaflet draw plugin -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
-<!-- styling generated for the app -->
-<link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
+    <!-- styling for leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
+    <!-- styling for timeseries controls -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
+    <!-- styling for the leaflet draw plugin -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
+    <!-- styling generated for the app -->
+    <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
 {% endblock %}
 
 
@@ -116,11 +131,9 @@
 
     <!-- script for using highcharts (display timeseries plot) -->
     <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
-    <!-- Use this to export data from highcharts as csv, jpeg, etc -->
     <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <!-- Use this to show loading functions and placeholders -->
-    <script src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128273217-2"></script>

@@ -64,6 +64,7 @@ def get_times():
     Time intervals of GLDAS data
     """
     return [
+        ('All Available Times', 'alltimes'),
         (2019, 2019),
         (2018, 2018),
         (2017, 2017),
@@ -84,7 +85,6 @@ def get_times():
         (2002, 2002),
         (2001, 2001),
         (2000, 2000),
-        ('All Available Times', 'alltimes'),
     ]
 
 

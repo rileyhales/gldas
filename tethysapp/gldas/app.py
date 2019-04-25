@@ -17,7 +17,6 @@ class Gldas(TethysAppBase):
     tags = '&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;tseries&quot;'
     enable_feedback = False
     feedback_emails = []
-    updated = '24 April 2019'
     youtubelink = 'https://www.youtube.com/channel/UC6B62KhB-Cd34ad6pGBldQQ/videos'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
 
