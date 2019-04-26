@@ -95,9 +95,11 @@
     {% gizmo range_slider opacity %}
 
     <li class="title">Help and Resources</li>
-    <li><a class="bk bk-bs-btn-default" data-toggle="modal" data-target="#help-modal" role="button">How do I use this app?</a></li>
-    <li><a class="bk bk-bs-btn-default" data-toggle="modal" data-target="#data-modal" role="button">About the GLDAS data in this app</a></li>
-    <li><a class="bk bk-bs-btn-default" href="https://github.com/rileyhales/gldas" target="_blank" role="button">View the Source Code for this App</a></li>
+    <a class="btn btn-default btn-block" data-toggle="modal" data-target="#help-modal" role="button">How to use this app</a>
+    <a class="btn btn-default btn-block" href="{{ youtubelink }}" target="_blank" role="button">Watch a demonstration on YouTube</a>
+    <a class="btn btn-default btn-block" data-toggle="modal" data-target="#data-modal" role="button">About the GLDAS data</a>
+    <a class="btn btn-default btn-block" href="https://github.com/rileyhales/gldas" target="_blank" role="button">View the source code on GitHub</a>
+
 
 {% endblock %}
 
