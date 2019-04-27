@@ -1,32 +1,70 @@
 # GLDAS Data Visualizer Documentation
-This is a Tethys 2/3 compatible app that visualizes data from the nasa gesdisc website. It was developed using the ¼ degree resolution netcdf4 (.nc4) datasets with monthly averages but other datasets with monthly averages should also work.
+This is a Tethys 2/3 compatible app that visualizes data from the NASA GES Disc website. It was developed using the ¼ degree resolution netcdf4 (.nc4) datasets with monthly averages. Datasets of other resolutions and for other time-periods will also work.
 
 Developed by Riley Hales in 2018 at the BYU Hydroinformatics Lab.
 
-## Install the App
-On the terminal of the server enter the tethys environment then run:  
+## 1 Install the Tethys App
+This application is compatible with Tethys 2.X and Tethys 3 Distributions and is compatible with both Python 2 and 3 and Django 1 and 2. Install the latest version of Tethys before installing this app. This app requires 2 python packages: numpy and netcdf4. Both should be installed automatically as part of this installation process.
+
+On the terminal of the server enter the tethys environment with the ```t``` command. ```cd``` to the directory where you install apps then run the following commands:  
 ~~~~
 git clone https://github.com/rileyhales/gldas.git  
 cd gldas
 python setup.py develop
 ~~~~  
-If you are on a production server, run this command and reset the server
+If you are on a production server, run:
 ~~~~
 tethys manage collectstatic
 ~~~~
+Reset the server then attempt to log in as an administrator. The app should appear in the Apps Library page in grey indicating you need to configure the custom settings.
 
-This app uses two python packages that should be installed for you when you run the develop command.
-* netCDF4, any version
-* numpy, any version
+## 2 Set up your Thredds Server
+Refer to the documentation for Thredds to set up an instance of Thredds on your server.
 
-## Get the GLDAS Data from NASA GES Disc
+In the public folder where your datasets are stored, create a new folder called ```gldas```. Within that folder, place all the contents of the ncml folder in the app you downloaded in the previous step. Create a new folder called ```raw``` and leave it empty. You will fill it with data in the next step. 
+
+Data is aggregated by year using NetCDF Markup Language (.ncml). The files you need are in the ncml folder of the app and you should copy them to the Thredds folder you just created. When you add new datasets each month, you will need to modify the ncml file for the appropriate year to include the new dataset in your aggregation. If you need to modify the years you want to show, modify the existing files and use the naming convention shown (4 digit year and .ncml eg 2004.ncml.) These files look for the file called raw then filter the datasets within by name to create the aggregation. It is important that you use the exact file structure and naming conventions for these datasets used by NASA. Though you need to modify a file each time you add a new dataset, this prevents you from postprocessing years of GLDAS data each month.
+
+If you did it correctly, your folder should look like this:
+~~~~
+gldas
+--->2000.ncml
+--->2001.ncml
+--->2002.ncml
+    ...
+--->2019.ncml
+--->alltimes.ncml
+    
+--->raw
+    ---><empty directory>
+~~~~
+You will also need to modify Thredds' settings files to enable WMS services and support for netCDF files on your server. In the folder where you  installed Thredds, there should be a file called ```catalog.xml```. 
+~~~~
+vim catalog.xml
+~~~~
+Type ```a``` to begin editing the document.
+
+At the top of the document is a list of supported services. Make sure the line for wms is not commented out.
+~~~~
+<service name="wms" serviceType="WMS" base="/thredds/wms/" />
+~~~~
+Scroll down toward the end of the section that says ```filter```. This is the section that limits which kinds of datasets Thredds will process. We need it to accept .nc, .nc4, and .ncml file types. Make sure your ```filter``` tag includes the following lines.
+~~~~
+<filter>
+    <include wildcard="*"/>
+    <include wildcard="*.nc"/>
+    <include wildcard="*.nc4"/>
+    <include wildcard="*.ncml"/>
+</filter>
+~~~~
+Press ```esc``` then type ```:x!```  and press the ```return``` key to save and quit.  
+
+## 3 Get the GLDAS Data from NASA GES Disc
 The datasets shown in this app are available at: https://disc.gsfc.nasa.gov/datasets?keywords=gldas&page=1. When using this app, do not change the file names. You should use the naming conventions used by NASA for the file names. Follow the necessary steps on their website to get credentials and use the batch download commands.
 
-You will save this data to a folder within the directory containing all the data served by the thredds server you're using. Within that directory make another directory called gldas. In that folder put all the .ncml files found in the app's ncml directory and then create another folder called 'raw'. All the netcdf datasets you got from NASA GES Disc should be saved within this raw folder.  
+You will save this data to the ```raw``` folder you created in the previous step.  
 
-Data is aggregated by year using NetCDF Markup Language (.ncml). The files you need are in the ncml folder of this app. If you need to modify the years you want to show, modify the existing files and use the naming convention shown (4 digit year and .ncml eg 2004.ncml.) Keep the changed files in the folder where you keep the datasets for Thredds. In the same folder, include another folder named raw. Inside the raw folder, place all the .nc4 datasets you got from NASA without changing names, preprocessing data, etc.
-
-## Set The Custom Settings
+## 4 Set The Custom Settings
 You need to specify 2 custom settings when you install the app. The file path to where you are storing the gldas netCDF files locally on the server and the base wms URL for the thredds server that will be serving the data.
 
 **Local File Path:** This is the path to the directory named gldas that you should have already created within the thredds data directory. You can get this by navigating to that folder in the terminal and then using the ```pwd``` command. (example: /home/tethys/Thredds/gldas/)  
