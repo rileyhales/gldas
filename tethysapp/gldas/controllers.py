@@ -29,6 +29,7 @@ def home(request):
         display_text='Color Scheme',
         name='colors',
         multiple=False,
+        original=True,
         options=wms_colors(),
         initial='rainbow'
     )
@@ -37,6 +38,7 @@ def home(request):
         display_text='Time Interval',
         name='dates',
         multiple=False,
+        original=True,
         options=get_times(),
         initial='alltimes'
     )
