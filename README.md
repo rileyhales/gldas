@@ -38,7 +38,7 @@ gldas
 --->raw
     ---><empty directory>
 ~~~~
-You will also need to modify Thredds' settings files to enable WMS services and support for netCDF files on your server. In the folder where you  installed Thredds, there should be a file called ```catalog.xml```. 
+You will also need to modify Thredds' settings files to enable WMS services and support for netCDF files on your server. In the folder where you installed Thredds, there should be a file called ```catalog.xml```. 
 ~~~~
 vim catalog.xml
 ~~~~
@@ -51,25 +51,36 @@ At the top of the document is a list of supported services. Make sure the line f
 Scroll down toward the end of the section that says ```filter```. This is the section that limits which kinds of datasets Thredds will process. We need it to accept .nc, .nc4, and .ncml file types. Make sure your ```filter``` tag includes the following lines.
 ~~~~
 <filter>
-    <include wildcard="*"/>
     <include wildcard="*.nc"/>
     <include wildcard="*.nc4"/>
     <include wildcard="*.ncml"/>
 </filter>
 ~~~~
-Press ```esc``` then type ```:x!```  and press the ```return``` key to save and quit.  
+Press ```esc``` then type ```:x!```  and press the ```return``` key to save and quit. You'll need to reset the Thredds server so the catalog is regenerated with the edits that you've made. The command to reset your server will vary based on your installation method such as ```docker reset thredds``` or ```sudo systemctl reset tomcat```.
 
 ## 3 Get the GLDAS Data from NASA GES Disc
 The datasets shown in this app are available at: https://disc.gsfc.nasa.gov/datasets?keywords=gldas&page=1. When using this app, do not change the file names. You should use the naming conventions used by NASA for the file names. Follow the necessary steps on their website to get credentials and use the batch download commands.
 
-You will save this data to the ```raw``` folder you created in the previous step.  
+You will save this data to the ```raw``` folder you created in the previous step. Verify that you have 12 netcdf files per year plus any files for the current year. Your thredds folder should now look like this:
+~~~~
+gldas
+    ...
+--->alltimes.ncml
+    
+--->raw
+    --->GLDAS_NOAH025_M.A200001.021.nc4
+    --->GLDAS_NOAH025_M.A200002.021.nc4
+        ...    
+~~~~
+
+Verify that you have completed steps 2 and 3 correctly by viewing the Thredds catalog through a web browser. The default address will be something like ```yourserver.com/thredds/catalog.html```. Navigate to the "Test all.." folder. Your ```gldas``` folder should be visible. Open it and check that all your ```.ncml``` files are visible and that the ```.nc4``` files are visible in the ```/raw``` directory. If they are not. You need to verify you completed step 2 and 3 correctly and that you have restarted your Thredds server.
 
 ## 4 Set The Custom Settings
 You need to specify 2 custom settings when you install the app. The file path to where you are storing the gldas netCDF files locally on the server and the base wms URL for the thredds server that will be serving the data.
 
-**Local File Path:** This is the path to the directory named gldas that you should have already created within the thredds data directory. You can get this by navigating to that folder in the terminal and then using the ```pwd``` command. (example: /home/tethys/Thredds/gldas/)  
+**Local File Path:** This is the full path to the directory named gldas that you should have created within the thredds data directory during step 2. You can get this by navigating to that folder in the terminal and then using the ```pwd``` command. (example: ```/tomcat/content/thredds/gldas/```)  
 
-**WMS base address:** This is the address that the app will use to get the OGC WMS layers for the netcdf datasets. You can find this by using your web browser to navigate the thredds server, typically located at ```yourserveraddress.com/thredds```. Find one of the datasets you want to show and click on the wms service link. When you see the XML, copy the address up until the name of the dataset that you clicked on and including the http. (example: https://tethys.byu.edu/thredds/wms/testAll/gldas/)
+**WMS base address:** This is the base that the app uses to build urls for each of the OGC WMS layers for the netcdf datasets. If you followed the typical configuration of thredds (these instructions) then your base url will look something like ```yourserver.com/thredds/wms/testAll/gldas/```. You can verify this by opening the thredds catalog in a web browser (typically at ```yourserver.com/thredds/catalog.html```). Navigate to one of the GLDAS netcdf files and click the WMS link. A page showing an xml document should load. Copy the url in the address bar until you get to the ```/gldas/``` folder in that url. Do not include ```/raw/name_of_dataset.nc``` or the request info that comes after it. (example: ```https://tethys.byu.edu/thredds/wms/testAll/gldas/```)
 
 ## How the app works
 The various functions of the app are split into either python or javascript files named for what they control.
