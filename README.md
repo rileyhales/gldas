@@ -73,7 +73,7 @@ gldas
         ...    
 ~~~~
 
-Verify that you have completed steps 2 and 3 correctly by viewing the Thredds catalog through a web browser. The default address will be something like ```yourserver.com/thredds/catalog.html```. Navigate to the "Test all.." folder. Your ```gldas``` folder should be visible. Open it and check that all your ```.ncml``` files are visible and that the ```.nc4``` files are visible in the ```/raw``` directory. If they are not. You need to verify you completed step 2 and 3 correctly and that you have restarted your Thredds server.
+Verify that you have completed steps 2 and 3 correctly by viewing the Thredds catalog through a web browser. The default address will be something like ```yourserver.com/thredds/catalog.html```. Navigate to the ```Test all files...``` folder. Your ```gldas``` folder should be visible. Open it and check that all your ```.ncml``` files are visible and that the ```.nc4``` files are visible in the ```/raw``` directory. If they are not, review steps 2 and 3 and restart your Thredds server.
 
 ## 4 Set The Custom Settings
 You need to specify 2 custom settings when you install the app. The file path to where you are storing the gldas netCDF files locally on the server and the base wms URL for the thredds server that will be serving the data.
