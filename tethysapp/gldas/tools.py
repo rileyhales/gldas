@@ -9,6 +9,7 @@ import netCDF4
 import numpy
 import osr
 import ogr
+import json
 
 from .app import Gldas as App
 from .model import app_configuration
@@ -136,7 +137,6 @@ def nc_to_gtiff(data):
         # actually write the data array to the tiff file and save it
         new_gtiff.GetRasterBand(1).WriteArray(array)      # write band to the raster (variable array)
         new_gtiff.FlushCache()                            # write to disk
-    print(times)
     return times
 
 
@@ -145,17 +145,17 @@ def rastermask_average_gdalwarp(data):
     Description: A function to mask/clip a raster by the boundaries of a shapefile and computer the average value of the
         resulting raster
     Dependencies:
-        gdal, gdalnumeric, numpy, os, shutil, ogr
+        gdal, gdalnumeric, numpy, os, shutil, ogr, json
         from .app import Gldas as App
     Params: View README.md
     Returns: mean value of an array within a shapefile's boundaries
     Author: Riley Hales, RCH Engineering, April 2019
     """
-    import json
     values = []
     times = data['times']
     times.sort()
 
+    print('started the gdalwarp function')
     # convert the geojson to a shapefile object
     polygon = ogr.CreateGeometryFromJson(json.dumps(data['geojson']))
 
@@ -163,14 +163,19 @@ def rastermask_average_gdalwarp(data):
     geotiffdir = os.path.join(App.get_app_workspace().path, 'geotiffs')
     geotiffs = os.listdir(geotiffdir)
     # perform the gropreccesing on each file in the geotiff directory
+    print('starting the for loop')
     for i in range(len(geotiffs)):
         # clip the raster
+        print('opening the dataset')
         inraster = gdal.Open(os.path.join(geotiffdir, 'geotiff' + str(i) + '.tif'))
+        print('clipping the raster')
         clippedraster = gdal.Warp("outraster", inraster, format='GTiff', cutlineDSName=polygon, dstNodata=numpy.nan)
         # do the averaging math on the raster as an array
+        print('doing the array math')
         array = gdalnumeric.DatasetReadAsArray(clippedraster)
         array = array.flatten()
         array = array[~numpy.isnan(array)]
         mean = array.mean()
+        print(mean)
         values.append((times[i], float(mean)))
     return values

@@ -82,10 +82,12 @@ def get_spatialaverage(request):
     from .model import gldas_variables
     import ast
 
+    response = {}
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['times'] = nc_to_gtiff(data)
-    response = {'values': rastermask_average_gdalwarp(data)}
-    print(response['values'])
+    print('got the times')
+    response['values'] = rastermask_average_gdalwarp(data)
+    print('got the values')
 
     variables = gldas_variables()
     for key in variables:

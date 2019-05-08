@@ -75,7 +75,6 @@ function newHighchart(data) {
 function getChart(drawnItems) {
 //  Compatibility if user picks something out of normal bounds
     let geojson = drawnItems.toGeoJSON()['features'];
-    console.log(geojson);
     if (geojson.length > 0) {
         chart.hideNoData();
         chart.showLoading();
