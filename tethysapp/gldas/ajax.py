@@ -20,8 +20,8 @@ def get_pointseries(request):
     for key in variables:
         if variables[key] == data['variable']:
             name = key
+            response['name'] = name
             break
-    response['name'] = name
     return JsonResponse(response)
 
 
@@ -78,12 +78,23 @@ def get_spatialaverage(request):
     """
 
     """
-    from .tools import nc_to_gtiff
+    from .tools import nc_to_gtiff, rastermask_average_gdalwarp
+    from .model import gldas_variables
     import ast
 
     data = ast.literal_eval(request.body.decode('utf-8'))
-    nc_to_gtiff(data)
-    return JsonResponse({'success': 'success'})
+    data['times'] = nc_to_gtiff(data)
+    response = {'values': rastermask_average_gdalwarp(data)}
+    print(response['values'])
+
+    variables = gldas_variables()
+    for key in variables:
+        if variables[key] == data['variable']:
+            name = key
+            response['name'] = name
+            break
+
+    return JsonResponse(response)
 
 
 @login_required()

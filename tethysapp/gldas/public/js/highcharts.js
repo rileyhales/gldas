@@ -74,13 +74,13 @@ function newHighchart(data) {
 
 function getChart(drawnItems) {
 //  Compatibility if user picks something out of normal bounds
-    let geometry = drawnItems.toGeoJSON()['features'];
-    console.log(geometry);
-    if (geometry.length > 0) {
+    let geojson = drawnItems.toGeoJSON()['features'];
+    console.log(geojson);
+    if (geojson.length > 0) {
         chart.hideNoData();
         chart.showLoading();
 
-        let coords = geometry[0]['geometry']['coordinates'];
+        let coords = geojson[0]['geometry']['coordinates'];
         for (let i in coords.length) {
             if (coords[i] < -180) {
                 coords[i] += 360;
@@ -90,11 +90,12 @@ function getChart(drawnItems) {
             }
         }
 
-        let drawtype = geometry[0]['geometry']['type'];
+        let drawtype = geojson[0]['geometry']['type'];
 
         let data = {
             shptype: drawtype,
             coords: coords,
+            geojson: geojson[0],
             variable: $('#variables').val(),
             time: $("#dates").val(),
         };
@@ -106,9 +107,8 @@ function getChart(drawnItems) {
                 dataType: 'json',
                 contentType: "application/json",
                 method: 'POST',
-                success: function (results) {
-                    console.log(results);
-                    alert("the average value is " + results['average']);
+                success: function (result) {
+                    newHighchart(result);
                 }
             })
         } else if (drawtype === 'Point') {

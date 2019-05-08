@@ -1,14 +1,29 @@
+import calendar
+import datetime
+import os
+import shutil
+
+import gdal
+import gdalnumeric
+import netCDF4
+import numpy
+import osr
+import ogr
+
+from .app import Gldas as App
+from .model import app_configuration
+
+
 def ts_plot(data):
     """
     Description: generates a timeseries for a given point and given variable defined by the user.
     Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
     Author: Riley Hales
-    Dependencies: netcdf4, numpy, datetime, random
+    Dependencies:
+        netcdf4, numpy, datetime, os, calendar
+        from .model import app_configuration
     Last Updated: Oct 11 2018
     """
-    from .model import app_configuration
-    import netCDF4, numpy, datetime, os, calendar
-
     values = []
     variable = str(data['variable'])
     coords = data['coords']
@@ -57,19 +72,19 @@ def nc_to_gtiff(data):
     """
     Description: This script accepts a netcdf file in a geographic coordinate system, specifically the NASA GLDAS
         netcdfs, and extracts the data from one variable and the lat/lon steps to create a geotiff of that information.
-    Dependencies: netCDF4, numpy, gdal, osr
+    Dependencies:
+        netCDF4, numpy, gdal, osr, os, shutil, calendar, datetime
+        from .app import Gldas as App
+        from .model import app_configuration
     Params: View README.md
     Returns: Creates a geotiff named 'geotiff.tif' in the directory specified
     Author: Riley Hales, RCH Engineering, March 2019
     """
-    import netCDF4, numpy, gdal, osr, os, shutil
-    from .model import app_configuration
-    from .app import Gldas as App
-
     var = str(data['variable'])
     tperiod = data['time']
     configs = app_configuration()
     data_dir = configs['threddsdatadir']
+    times = []
 
     path = os.path.join(data_dir, 'raw')
     allfiles = os.listdir(path)
@@ -92,6 +107,11 @@ def nc_to_gtiff(data):
         var_data = nc_obj.variables[var][:]
         lat = nc_obj.variables['lat'][:]
         lon = nc_obj.variables['lon'][:]
+
+        # create the timesteps for the highcharts plot
+        t_value = (nc_obj['time'].__dict__['begin_date'])
+        t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
+        times.append(calendar.timegm(t_step.utctimetuple()) * 1000)
 
         # format the array of information going to the tiff
         array = numpy.asarray(var_data)[0, :, :]
@@ -116,7 +136,41 @@ def nc_to_gtiff(data):
         # actually write the data array to the tiff file and save it
         new_gtiff.GetRasterBand(1).WriteArray(array)      # write band to the raster (variable array)
         new_gtiff.FlushCache()                            # write to disk
+    print(times)
+    return times
 
-    return
 
+def rastermask_average_gdalwarp(data):
+    """
+    Description: A function to mask/clip a raster by the boundaries of a shapefile and computer the average value of the
+        resulting raster
+    Dependencies:
+        gdal, gdalnumeric, numpy, os, shutil, ogr
+        from .app import Gldas as App
+    Params: View README.md
+    Returns: mean value of an array within a shapefile's boundaries
+    Author: Riley Hales, RCH Engineering, April 2019
+    """
+    import json
+    values = []
+    times = data['times']
+    times.sort()
 
+    # convert the geojson to a shapefile object
+    polygon = ogr.CreateGeometryFromJson(json.dumps(data['geojson']))
+
+    # setup the working directories for the geoprocessing
+    geotiffdir = os.path.join(App.get_app_workspace().path, 'geotiffs')
+    geotiffs = os.listdir(geotiffdir)
+    # perform the gropreccesing on each file in the geotiff directory
+    for i in range(len(geotiffs)):
+        # clip the raster
+        inraster = gdal.Open(os.path.join(geotiffdir, 'geotiff' + str(i) + '.tif'))
+        clippedraster = gdal.Warp("outraster", inraster, format='GTiff', cutlineDSName=polygon, dstNodata=numpy.nan)
+        # do the averaging math on the raster as an array
+        array = gdalnumeric.DatasetReadAsArray(clippedraster)
+        array = array.flatten()
+        array = array[~numpy.isnan(array)]
+        mean = array.mean()
+        values.append((times[i], float(mean)))
+    return values
