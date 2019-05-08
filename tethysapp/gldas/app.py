@@ -14,7 +14,7 @@ class Gldas(TethysAppBase):
     root_url = 'gldas'
     color = '#002366'
     description = 'Visualizes NASA GLDAS data through animated maps and charts'
-    tags = '&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;tseries&quot;'
+    tags = 'NASA, GLDAS, Timeseries'
     enable_feedback = False
     feedback_emails = []
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
@@ -36,14 +36,19 @@ class Gldas(TethysAppBase):
 
         # url maps for ajax calls
             UrlMap(
-                name='generatePlot',
-                url='gldas/ajax/generatePlot',
-                controller='gldas.ajax.generatePlot',
+                name='getPointSeries',
+                url='gldas/ajax/getPointSeries',
+                controller='gldas.ajax.get_pointseries',
+            ),
+            UrlMap(
+                name='getSpatialAverage',
+                url='gldas/ajax/getSpatialAverage',
+                controller='gldas.ajax.get_spatialaverage',
             ),
             UrlMap(
                 name='getBounds',
                 url='gldas/ajax/getBounds',
-                controller='gldas.ajax.getBounds',
+                controller='gldas.ajax.get_bounds',
             ),
             UrlMap(
                 name='customsettings',

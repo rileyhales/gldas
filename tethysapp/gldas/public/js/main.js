@@ -46,7 +46,7 @@ let drawControl = new L.Control.Draw({
         polyline: false,
         circlemarker:false,
         circle:false,
-        polygon:false,
+        polygon:true,
         rectangle:false,
     },
 });
@@ -58,7 +58,6 @@ mapObj.on(L.Draw.Event.CREATED, function (event) {
     drawnItems.addLayer(event.layer);
     L.Draw.Event.STOP;
     getChart(drawnItems);
-    // e.layer.addTo(drawnItems);
 });
 
 let layerObj = newLayer();              // adds the wms raster layer

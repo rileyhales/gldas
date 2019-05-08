@@ -16,7 +16,7 @@ If you are on a production server, run:
 ~~~~
 tethys manage collectstatic
 ~~~~
-Reset the server then attempt to log in as an administrator. The app should appear in the Apps Library page in grey indicating you need to configure the custom settings.
+Reset the server then attempt to log in through the web interface as an administrator. The app should appear in the Apps Library page in grey indicating you need to configure the custom settings.
 
 ## 2 Set up your Thredds Server
 Refer to the documentation for Thredds to set up an instance of Thredds on your server.

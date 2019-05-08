@@ -75,34 +75,53 @@ function newHighchart(data) {
 function getChart(drawnItems) {
 //  Compatibility if user picks something out of normal bounds
     let geometry = drawnItems.toGeoJSON()['features'];
+    console.log(geometry);
     if (geometry.length > 0) {
         chart.hideNoData();
         chart.showLoading();
 
         let coords = geometry[0]['geometry']['coordinates'];
-        if (coords[0] < -180) {
-            coords[0] += 360;
-        }
-        if(coords[0] > 180) {
-            coords[0] -= 360;
+        for (let i in coords.length) {
+            if (coords[i] < -180) {
+                coords[i] += 360;
+            }
+            if (coords[i] > 180) {
+                coords[i] -= 360;
+            }
         }
 
+        let drawtype = geometry[0]['geometry']['type'];
+
         let data = {
+            shptype: drawtype,
             coords: coords,
             variable: $('#variables').val(),
             time: $("#dates").val(),
-            };
+        };
 
+        if (drawtype === 'Polygon') {
             $.ajax({
-            url:'/apps/gldas/ajax/generatePlot/',
-            data: JSON.stringify(data),
-            dataType: 'json',
-            contentType: "application/json",
-            method: 'POST',
-            success: function(result) {
-                newHighchart(result);
+                url: '/apps/gldas/ajax/getSpatialAverage/',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: "application/json",
+                method: 'POST',
+                success: function (results) {
+                    console.log(results);
+                    alert("the average value is " + results['average']);
+                }
+            })
+        } else if (drawtype === 'Point') {
+            $.ajax({
+                url: '/apps/gldas/ajax/getPointSeries/',
+                data: JSON.stringify(data),
+                dataType: 'json',
+                contentType: "application/json",
+                method: 'POST',
+                success: function (result) {
+                    newHighchart(result);
                 },
             });
+        }
     }
-
 }

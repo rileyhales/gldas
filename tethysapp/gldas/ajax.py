@@ -3,7 +3,7 @@ from django.http import JsonResponse
 
 
 @login_required()
-def generatePlot(request):
+def get_pointseries(request):
     """
     The controller for the ajax call to create a timeseries for the area chosen by the user's drawing
     """
@@ -12,21 +12,21 @@ def generatePlot(request):
     import ast
 
     data = ast.literal_eval(request.body.decode('utf-8'))
-    response_object = {}
+    response = {}
     plot_items = ts_plot(data)
-    response_object['units'] = plot_items[0]
-    response_object['values'] = plot_items[1]
+    response['units'] = plot_items[0]
+    response['values'] = plot_items[1]
     variables = gldas_variables()
     for key in variables:
         if variables[key] == data['variable']:
             name = key
             break
-    response_object['name'] = name
-    return JsonResponse(response_object)
+    response['name'] = name
+    return JsonResponse(response)
 
 
 @login_required()
-def getBounds(request):
+def get_bounds(request):
     """
     Dynamically defines exact boundaries for the legend and wms so that they are synchronized
     This was substituted for statically defined values to improve performance on the most common values.
@@ -71,6 +71,19 @@ def getBounds(request):
     response_object['maximum'] = math.ceil(maximum)
 
     return JsonResponse(response_object)
+
+
+@login_required()
+def get_spatialaverage(request):
+    """
+
+    """
+    from .tools import nc_to_gtiff
+    import ast
+
+    data = ast.literal_eval(request.body.decode('utf-8'))
+    nc_to_gtiff(data)
+    return JsonResponse({'success': 'success'})
 
 
 @login_required()
