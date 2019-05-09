@@ -59,7 +59,7 @@ mapObj.on("draw:drawstart ", function () {     // control what happens when the 
 mapObj.on(L.Draw.Event.CREATED, function (event) {
     drawnItems.addLayer(event.layer);
     L.Draw.Event.STOP;
-    getDrawnChart(drawnItems, 'drawing');
+    getDrawnChart(drawnItems);
 });
 
 let layerObj = newLayer();              // adds the wms raster layer
@@ -80,7 +80,7 @@ $("#dates").change(function () {
     clearMap();
     layerObj = newLayer();
     controlsObj = makeControls();
-    getDrawnChart(drawnItems, 'drawing');
+    getDrawnChart(drawnItems);
     legend.addTo(mapObj);
 });
 
@@ -88,7 +88,7 @@ $("#variables").change(function () {
     clearMap();
     layerObj = newLayer();
     controlsObj = makeControls();
-    getDrawnChart(drawnItems, 'drawing');
+    getDrawnChart(drawnItems);
     legend.addTo(mapObj);
 });
 
@@ -106,9 +106,11 @@ $('#colors').change(function () {
 $("#shpaverage").click(function () {
     if ($("#dates").val() === 'alltimes') {
         if (confirm("Computing a timeseries of spatial average data requires over 200 iterations of file conversions and geoprocessing operations. This may result in a long wait or cause server errors. Are you sure you want to continue?")) {
+            drawnItems.clearLayers();
             getShapeChart();
         }
     } else {
+        drawnItems.clearLayers();
         getShapeChart();
     }
 });

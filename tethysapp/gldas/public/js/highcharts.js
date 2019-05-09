@@ -71,12 +71,13 @@ function newHighchart(data) {
 }
 
 function getDrawnChart(drawnItems) {
-//  Compatibility if user picks something out of normal bounds
+    // Verify that there is a drawing on the map
     let geojson = drawnItems.toGeoJSON()['features'];
     if (geojson.length > 0) {
         chart.hideNoData();
         chart.showLoading();
 
+        //  Compatibility if user picks something out of normal bounds
         let coords = geojson[0]['geometry']['coordinates'];
         for (let i in coords.length) {
             if (coords[i] < -180) {
@@ -87,8 +88,8 @@ function getDrawnChart(drawnItems) {
             }
         }
 
+        // setup a parameters json to generate the right timeseries
         let drawtype = geojson[0]['geometry']['type'];
-
         let data = {
             shptype: drawtype,
             coords: coords,
@@ -98,6 +99,7 @@ function getDrawnChart(drawnItems) {
             shapefile: 'false',
         };
 
+        // call the right timeseries generator function based on type
         if (drawtype === 'Polygon') {
             $.ajax({
                 url: '/apps/gldas/ajax/getSpatialAverage/',
@@ -121,6 +123,9 @@ function getDrawnChart(drawnItems) {
                 },
             });
         }
+    // If there are no drawn features, then you actually should be refreshing the shapefile chart
+    } else {
+        getShapeChart();
     }
 }
 
