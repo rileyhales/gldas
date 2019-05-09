@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import SelectInput, RangeSlider
-from .model import gldas_variables, wms_colors, get_times
+from .model import gldas_variables, wms_colors, timecoverage, worldregions
 from .app import Gldas as App
 
 
@@ -39,8 +39,16 @@ def home(request):
         name='dates',
         multiple=False,
         original=True,
-        options=get_times(),
+        options=timecoverage(),
         initial='alltimes'
+    )
+
+    regions = SelectInput(
+        display_text='World Regions',
+        name='regions',
+        multiple=False,
+        original=True,
+        options=worldregions(),
     )
 
     opacity = RangeSlider(
@@ -57,6 +65,7 @@ def home(request):
         'opacity': opacity,
         'colors': colors,
         'dates': dates,
+        'regions': regions,
         'youtubelink': App.youtubelink,
         'gldaslink': App.gldaslink,
     }

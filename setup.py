@@ -9,11 +9,11 @@ app_class = 'gldas.app:Gldas'
 app_package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', app_package)
 
 # -- Python Dependencies -- #
-dependencies = ['netCDF4', 'numpy', 'gdal', 'osr']
+dependencies = ['netCDF4', 'numpy', 'gdal', 'osr', 'pyshp', 'pyproj']
 
 setup(
     name=release_package,
-    version='2.1.0',
+    version='2.2.0',
     tags='&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;teries&quot;',
     description='Visualizes GLDAS data through maps and charts',
     long_description='Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution '

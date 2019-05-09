@@ -57,7 +57,7 @@ mapObj.on("draw:drawstart ", function () {     // control what happens when the 
 mapObj.on(L.Draw.Event.CREATED, function (event) {
     drawnItems.addLayer(event.layer);
     L.Draw.Event.STOP;
-    getChart(drawnItems);
+    getDrawnChart(drawnItems, 'drawing');
 });
 
 let layerObj = newLayer();              // adds the wms raster layer
@@ -78,7 +78,7 @@ $("#dates").change(function () {
     clearMap();
     layerObj = newLayer();
     controlsObj = makeControls();
-    getChart(drawnItems);
+    getDrawnChart(drawnItems, 'drawing');
     legend.addTo(mapObj);
 });
 
@@ -86,7 +86,7 @@ $("#variables").change(function () {
     clearMap();
     layerObj = newLayer();
     controlsObj = makeControls();
-    getChart(drawnItems);
+    getDrawnChart(drawnItems, 'drawing');
     legend.addTo(mapObj);
 });
 
@@ -99,4 +99,8 @@ $('#colors').change(function () {
     layerObj = newLayer();
     controlsObj = makeControls();
     legend.addTo(mapObj);
+});
+
+$("#shpaverage").click(function () {
+    getShapeChart();
 });

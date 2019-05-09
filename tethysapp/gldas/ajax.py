@@ -76,7 +76,7 @@ def get_bounds(request):
 @login_required()
 def get_spatialaverage(request):
     """
-
+    Used to do averaging of a variable over a polygon of area, user drawn or a shapefile
     """
     from .tools import nc_to_gtiff, rastermask_average_gdalwarp
     from .model import gldas_variables
@@ -84,10 +84,8 @@ def get_spatialaverage(request):
 
     response = {}
     data = ast.literal_eval(request.body.decode('utf-8'))
-    data['times'] = nc_to_gtiff(data)
-    print('got the times')
+    data['times'], response['units'] = nc_to_gtiff(data)
     response['values'] = rastermask_average_gdalwarp(data)
-    print('got the values')
 
     variables = gldas_variables()
     for key in variables:
@@ -95,7 +93,6 @@ def get_spatialaverage(request):
             name = key
             response['name'] = name
             break
-
     return JsonResponse(response)
 
 

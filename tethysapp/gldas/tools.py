@@ -86,6 +86,7 @@ def nc_to_gtiff(data):
     configs = app_configuration()
     data_dir = configs['threddsdatadir']
     times = []
+    units = ''
 
     path = os.path.join(data_dir, 'raw')
     allfiles = os.listdir(path)
@@ -108,6 +109,7 @@ def nc_to_gtiff(data):
         var_data = nc_obj.variables[var][:]
         lat = nc_obj.variables['lat'][:]
         lon = nc_obj.variables['lon'][:]
+        units = nc_obj[var].__dict__['units']
 
         # create the timesteps for the highcharts plot
         t_value = (nc_obj['time'].__dict__['begin_date'])
@@ -137,7 +139,7 @@ def nc_to_gtiff(data):
         # actually write the data array to the tiff file and save it
         new_gtiff.GetRasterBand(1).WriteArray(array)      # write band to the raster (variable array)
         new_gtiff.FlushCache()                            # write to disk
-    return times
+    return times, units
 
 
 def rastermask_average_gdalwarp(data):
@@ -151,31 +153,56 @@ def rastermask_average_gdalwarp(data):
     Returns: mean value of an array within a shapefile's boundaries
     Author: Riley Hales, RCH Engineering, April 2019
     """
+
     values = []
     times = data['times']
     times.sort()
+    shppath = ''
+    wrkpath = App.get_app_workspace().path
 
-    print('started the gdalwarp function')
-    # convert the geojson to a shapefile object
-    polygon = ogr.CreateGeometryFromJson(json.dumps(data['geojson']))
+    if data['shapefile'] == 'true':
+        region = data['region']
+        shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
+    else:
+        # todo: still under development- turn a geojson into a shapefile
+        import shapefile
+        from pyproj import Proj, transform
+        # convert the geojson to a shapefile object
+        coords = data['coords'][0]
+        shape = shapefile.Writer(shppath, shapeType=shapefile.POLYGON, shp=coords)
+        shape.close()
+
+        driver = ogr.GetDriverByName('ESRI Shapefile')
+        srs = osr.SpatialReference().ImportFromEPSG(4326)
+        print(srs)
+        datasource = driver.CreateDataSource(shppath)
+        polygon = ogr.CreateGeometryFromJson(json.dumps(data['geojson']))
+        fieldDefn_ = ogr.FieldDefn('id', ogr.OFTInteger)
+        layer = datasource.CreateLayer('polygon', srs, ogr.wkbPolygon)
+        layer.CreateField(fieldDefn_)
+        feature = ogr.Feature(layer.GetLayerDefn())
+        feature.SetGeometry(polygon)
+        feature.SetField('id', 1)
+        layer.CreateFeature(feature)
 
     # setup the working directories for the geoprocessing
-    geotiffdir = os.path.join(App.get_app_workspace().path, 'geotiffs')
+    geotiffdir = os.path.join(wrkpath, 'geotiffs')
     geotiffs = os.listdir(geotiffdir)
+
     # perform the gropreccesing on each file in the geotiff directory
-    print('starting the for loop')
     for i in range(len(geotiffs)):
         # clip the raster
-        print('opening the dataset')
         inraster = gdal.Open(os.path.join(geotiffdir, 'geotiff' + str(i) + '.tif'))
-        print('clipping the raster')
-        clippedraster = gdal.Warp("outraster", inraster, format='GTiff', cutlineDSName=polygon, dstNodata=numpy.nan)
+        savepath = os.path.join(geotiffdir, 'outraster.tif')
+        clippedraster = gdal.Warp(savepath, inraster, format='GTiff', cutlineDSName=shppath, dstNodata=numpy.nan)
         # do the averaging math on the raster as an array
-        print('doing the array math')
         array = gdalnumeric.DatasetReadAsArray(clippedraster)
         array = array.flatten()
         array = array[~numpy.isnan(array)]
         mean = array.mean()
-        print(mean)
         values.append((times[i], float(mean)))
+
+    if os.path.isdir(geotiffdir):
+        shutil.rmtree(geotiffdir)
+
     return values

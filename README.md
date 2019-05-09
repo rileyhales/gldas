@@ -1,5 +1,7 @@
 # GLDAS Data Visualizer Documentation
-This is a Tethys 2/3 compatible app that visualizes data from the NASA GES Disc website. It was developed using the ¼ degree resolution netcdf4 (.nc4) datasets with monthly averages. Datasets of other resolutions and for other time-periods will also work.
+This is a Tethys 2/3 compatible app that visualizes data from the NASA GES Disc website. It was developed to show ¼ degree resolution netcdf4 (.nc4) datasets with monthly averages. Datasets of other resolutions and for other time-periods may also work.
+
+The app shows time-animated maps and generates charts with a timeseries of values for a GLDAS variable either at a point or the spatial average within a polygon.
 
 Developed by Riley Hales in 2018 at the BYU Hydroinformatics Lab.
 
@@ -56,7 +58,23 @@ Scroll down toward the end of the section that says ```filter```. This is the se
     <include wildcard="*.ncml"/>
 </filter>
 ~~~~
-Press ```esc``` then type ```:x!```  and press the ```return``` key to save and quit. You'll need to reset the Thredds server so the catalog is regenerated with the edits that you've made. The command to reset your server will vary based on your installation method such as ```docker reset thredds``` or ```sudo systemctl reset tomcat```.
+Press ```esc``` then type ```:x!```  and press the ```return``` key to save and quit.
+~~~~
+vim threddsConfig.xml
+~~~~
+Find the section near the top about CORS (Cross-Origin Resource Sharing). CORS allows Thredds to serve data to servers besides the host where it is located. Depending on your exact setup, you need to enable CORS by uncommenting the tags.
+~~~~
+<CORS>
+    <enabled>true</enabled>
+    <maxAge>1728000</maxAge>
+    <allowedMethods>GET</allowedMethods>
+    <allowedHeaders>Authorization</allowedHeaders>
+    <allowedOrigin>*</allowedOrigin>
+</CORS>
+~~~~
+Press ```esc``` then type ```:x!```  and press the ```return``` key to save and quit.
+
+You'll need to reset the Thredds server so the catalog is regenerated with the edits that you've made. The command to reset your server will vary based on your installation method such as ```docker reset thredds``` or ```sudo systemctl reset tomcat```.
 
 ## 3 Get the GLDAS Data from NASA GES Disc
 The datasets shown in this app are available at: https://disc.gsfc.nasa.gov/datasets?keywords=gldas&page=1. When using this app, do not change the file names. You should use the naming conventions used by NASA for the file names. Follow the necessary steps on their website to get credentials and use the batch download commands.

@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes
 from .tools import ts_plot
-from .model import gldas_variables, get_times
+from .model import gldas_variables, timecoverage
 import ast
 
 @api_view(['GET'])
@@ -41,7 +41,7 @@ def tsPlotValues(request):
 def getTimes(request):
     """
     API Controller for getting a list of available times
-    .resources get_times
+    .resources timecoverage
     """
-    times = get_times()
+    times = timecoverage()
     return JsonResponse(times)

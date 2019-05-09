@@ -59,7 +59,7 @@ def wms_colors():
         ]
 
 
-def get_times():
+def timecoverage():
     """
     Time intervals of GLDAS data
     """
@@ -99,3 +99,12 @@ def app_configuration():
         'threddsurl': Gldas.get_custom_setting("Thredds WMS URL"),
         'threddsdatadir': Gldas.get_custom_setting("Local Thredds Folder Path"),
     }
+
+
+def worldregions():
+    from .app import Gldas as App
+    import os
+    folders = os.listdir(os.path.join(App.get_app_workspace().path, 'shapefiles'))
+    options = [(folder, folder) for folder in folders if not folder.startswith('.')]
+    options.sort()
+    return options

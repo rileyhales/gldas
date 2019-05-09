@@ -13,7 +13,7 @@ Highcharts.setOptions({
 });
 
 // Placeholder chart
-chart = Highcharts.chart('highchart', {
+let chart = Highcharts.chart('highchart', {
     title: {
         align: "center",
         text: "Your Chart Will Appear Here",
@@ -36,7 +36,6 @@ chart = Highcharts.chart('highchart', {
         }
     },
 });
-
 
 function newHighchart(data) {
     chart = Highcharts.chart('highchart', {
@@ -71,8 +70,7 @@ function newHighchart(data) {
     });
 }
 
-
-function getChart(drawnItems) {
+function getDrawnChart(drawnItems) {
 //  Compatibility if user picks something out of normal bounds
     let geojson = drawnItems.toGeoJSON()['features'];
     if (geojson.length > 0) {
@@ -97,6 +95,7 @@ function getChart(drawnItems) {
             geojson: geojson[0],
             variable: $('#variables').val(),
             time: $("#dates").val(),
+            shapefile: 'false',
         };
 
         if (drawtype === 'Polygon') {
@@ -123,4 +122,26 @@ function getChart(drawnItems) {
             });
         }
     }
+}
+
+function getShapeChart() {
+    chart.hideNoData();
+    chart.showLoading();
+    let data = {
+        variable: $('#variables').val(),
+        time: $("#dates").val(),
+        shapefile: 'true',
+        region: $("#regions").val(),
+    };
+    $.ajax({
+        url: '/apps/gldas/ajax/getSpatialAverage/',
+        data: JSON.stringify(data),
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'POST',
+        success: function (result) {
+            console.log(result);
+            newHighchart(result);
+        }
+    })
 }
