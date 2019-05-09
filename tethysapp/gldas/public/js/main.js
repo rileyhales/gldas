@@ -1,11 +1,13 @@
 // Getting the csrf token
 let csrftoken = Cookies.get('csrftoken');
+
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
+
 $.ajaxSetup({
-    beforeSend: function(xhr, settings) {
+    beforeSend: function (xhr, settings) {
         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
@@ -16,16 +18,16 @@ $.ajaxSetup({
 ////////////////////////////////////////////////////////////////////////  AJAX FUNCTIONS
 function getThreddswms() {
     $.ajax({
-        url:'/apps/gldas/ajax/customsettings/',
+        url: '/apps/gldas/ajax/customsettings/',
         async: false,
         data: '',
         dataType: 'json',
         contentType: "application/json",
         method: 'POST',
-        success: function(result) {
+        success: function (result) {
             wmsbase = result['threddsurl'];
-            },
-        });
+        },
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////  LOAD THE MAP
@@ -44,10 +46,10 @@ let drawControl = new L.Control.Draw({
     },
     draw: {
         polyline: false,
-        circlemarker:false,
-        circle:false,
-        polygon:true,
-        rectangle:false,
+        circlemarker: false,
+        circle: false,
+        polygon: true,
+        rectangle: false,
     },
 });
 mapObj.addControl(drawControl);
@@ -64,13 +66,13 @@ let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 
 ////////////////////////////////////////////////////////////////////////  CREATE/ADD LEGEND
-let legend = L.control({position:'bottomright'});
-    legend.onAdd = function(mapObj) {
-        let div = L.DomUtil.create('div', 'legend');
-        let url = wmsbase + $("#dates").val() + '.ncml' + "?REQUEST=GetLegendGraphic&LAYER=" + $("#variables").val() + "&PALETTE=" + $('#colors').val() + "&COLORSCALERANGE=" + bounds[$("#dates").val()][$("#variables").val()];
-        div.innerHTML = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
-        return div
-    };
+let legend = L.control({position: 'bottomright'});
+legend.onAdd = function (mapObj) {
+    let div = L.DomUtil.create('div', 'legend');
+    let url = wmsbase + $("#dates").val() + '.ncml' + "?REQUEST=GetLegendGraphic&LAYER=" + $("#variables").val() + "&PALETTE=" + $('#colors').val() + "&COLORSCALERANGE=" + bounds[$("#dates").val()][$("#variables").val()];
+    div.innerHTML = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
+    return div
+};
 legend.addTo(mapObj);
 
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
@@ -102,5 +104,11 @@ $('#colors').change(function () {
 });
 
 $("#shpaverage").click(function () {
-    getShapeChart();
+    if ($("#dates").val() === 'alltimes') {
+        if (confirm("Computing a timeseries of spatial average data requires over 200 iterations of file conversions and geoprocessing operations. This may result in a long wait or cause server errors. Are you sure you want to continue?")) {
+            getShapeChart();
+        }
+    } else {
+        getShapeChart();
+    }
 });

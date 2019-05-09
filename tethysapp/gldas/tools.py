@@ -91,7 +91,7 @@ def nc_to_gtiff(data):
     path = os.path.join(data_dir, 'raw')
     allfiles = os.listdir(path)
     if tperiod == 'alltimes':
-        files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(2019))]
+        files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A")]
         files.sort()
     else:
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
