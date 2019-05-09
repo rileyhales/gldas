@@ -13,8 +13,8 @@ dependencies = ['netCDF4', 'numpy', 'gdal', 'osr', 'pyshp', 'pyproj']
 
 setup(
     name=release_package,
-    version='2.2.0',
-    tags='&quot;NASA&quot;, &quot;GLDAS&quot;, &quot;LDAS&quot;, &quot;charts&quot;, &quot;maps&quot;, &quot;teries&quot;',
+    version='2.3.0',
+    tags='NASA, GLDAS, LDAS, charts, maps, timeseries',
     description='Visualizes GLDAS data through maps and charts',
     long_description='Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution '
                      'GLDAS data sets from NASA LDAS and LIS.',
