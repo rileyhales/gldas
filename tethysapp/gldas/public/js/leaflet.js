@@ -1,3 +1,12 @@
+let bnds_africa;
+let bnds_asia;
+let bnds_australia;
+let bnds_central;
+let bnds_europe;
+let bnds_mideast;
+let bnds_north;
+let bnds_south;
+
 ////////////////////////////////////////////////////////////////////////  MAP FUNCTIONS
 function map() {
     // create the map
@@ -56,17 +65,56 @@ function newLayer() {
         updateTimeDimension: true,
         updateTimeDimensionMode: 'replace',
         cache: 20,
-        }).addTo(mapObj);
+    }).addTo(mapObj);
 
     return timedLayer
 }
 
 function makeControls() {
-    return L.control.layers(basemapObj, {'GLDAS Layer': layerObj, 'Point': drawnItems}).addTo(mapObj);
+    return L.control.layers(basemapObj,
+        {'GLDAS Layer': layerObj,
+            'Drawing': drawnItems,
+            'Europe': bnds_europe,
+            'Asia': bnds_asia,
+            'Middle East': bnds_mideast,
+            'North America': bnds_north,
+            'Central America': bnds_central,
+            'South America': bnds_south,
+            'Africa': bnds_africa,
+            'Australia': bnds_australia,
+        }).addTo(mapObj);
+}
+
+function addcontinents() {
+    bnds_africa = L.geoJSON(africa);
+    bnds_asia = L.geoJSON(asia);
+    bnds_australia = L.geoJSON(australia);
+    bnds_north = L.geoJSON(northamerica);
+    bnds_central = L.geoJSON(centralamerica);
+    bnds_south = L.geoJSON(southamerica);
+    bnds_europe = L.geoJSON(europe);
+    bnds_mideast = L.geoJSON(mideast);
+    return
 }
 
 function clearMap() {
     controlsObj.removeLayer(layerObj);
+    controlsObj.removeLayer(bnds_africa);
+    controlsObj.removeLayer(bnds_asia);
+    controlsObj.removeLayer(bnds_australia);
+    controlsObj.removeLayer(bnds_north);
+    controlsObj.removeLayer(bnds_central);
+    controlsObj.removeLayer(bnds_south);
+    controlsObj.removeLayer(bnds_europe);
+    controlsObj.removeLayer(bnds_mideast);
     mapObj.removeLayer(layerObj);
+    mapObj.removeLayer(bnds_africa);
+    mapObj.removeLayer(bnds_asia);
+    mapObj.removeLayer(bnds_australia);
+    mapObj.removeLayer(bnds_north);
+    mapObj.removeLayer(bnds_central);
+    mapObj.removeLayer(bnds_south);
+    mapObj.removeLayer(bnds_europe);
+    mapObj.removeLayer(bnds_mideast);
     mapObj.removeControl(controlsObj);
 }

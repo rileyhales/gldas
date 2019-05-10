@@ -36,6 +36,7 @@ let wmsbase;
 getThreddswms();                        // sets the value of wmsbase
 const mapObj = map();                   // used by legend and draw controls
 const basemapObj = basemaps();          // used in the make controls function
+addcontinents();
 
 ////////////////////////////////////////////////////////////////////////  SETUP DRAWING AND LAYER CONTROLS
 let drawnItems = new L.FeatureGroup().addTo(mapObj);      // FeatureGroup is to store editable layers
@@ -66,7 +67,7 @@ let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 
 ////////////////////////////////////////////////////////////////////////  CREATE/ADD LEGEND
-let legend = L.control({position: 'bottomright'});
+let legend = L.control({position: 'topright'});
 legend.onAdd = function (mapObj) {
     let div = L.DomUtil.create('div', 'legend');
     let url = wmsbase + $("#dates").val() + '.ncml' + "?REQUEST=GetLegendGraphic&LAYER=" + $("#variables").val() + "&PALETTE=" + $('#colors').val() + "&COLORSCALERANGE=" + bounds[$("#dates").val()][$("#variables").val()];
@@ -79,6 +80,7 @@ legend.addTo(mapObj);
 $("#dates").change(function () {
     clearMap();
     layerObj = newLayer();
+    addcontinents();
     controlsObj = makeControls();
     getDrawnChart(drawnItems);
     legend.addTo(mapObj);
@@ -87,6 +89,7 @@ $("#dates").change(function () {
 $("#variables").change(function () {
     clearMap();
     layerObj = newLayer();
+    addcontinents();
     controlsObj = makeControls();
     getDrawnChart(drawnItems);
     legend.addTo(mapObj);
@@ -99,13 +102,14 @@ $("#opacity").change(function () {
 $('#colors').change(function () {
     clearMap();
     layerObj = newLayer();
+    addcontinents();
     controlsObj = makeControls();
     legend.addTo(mapObj);
 });
 
 $("#shpaverage").click(function () {
     if ($("#dates").val() === 'alltimes') {
-        if (confirm("Computing a timeseries of spatial average data requires over 200 iterations of file conversions and geoprocessing operations. This may result in a long wait or cause server errors. Are you sure you want to continue?")) {
+        if (confirm("Computing a timeseries of spatial average data requires over 200 iterations of file conversions and geoprocessing operations. This may result in a long wait (about 20 seconds) or cause errors. Are you sure you want to continue?")) {
             drawnItems.clearLayers();
             getShapeChart();
         }
