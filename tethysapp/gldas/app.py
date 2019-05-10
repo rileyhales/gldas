@@ -13,7 +13,7 @@ class Gldas(TethysAppBase):
     package = 'gldas'
     root_url = 'gldas'
     color = '#002366'
-    description = 'Visualizes NASA GLDAS monthly data through animated maps. ' \
+    description = 'Visualizes NASA GLDAS monthly data with time animated maps.\n' \
                   'Generates timeseries charts and datasets at points or averaged over polygons.'
     tags = 'NASA, GLDAS, Timeseries'
     enable_feedback = False
