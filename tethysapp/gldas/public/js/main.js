@@ -25,20 +25,22 @@ function getThreddswms() {
         contentType: "application/json",
         method: 'POST',
         success: function (result) {
-            wmsbase = result['threddsurl'];
+            threddsbase = result['threddsurl'];
+            geoserverbase = result['geoserverurl']
         },
     });
 }
 
 ////////////////////////////////////////////////////////////////////////  LOAD THE MAP
 //  Load initial map data as soon as the page is ready
-let wmsbase;
-getThreddswms();                        // sets the value of wmsbase
+let threddsbase;
+let geoserverbase;
+getThreddswms();                        // sets the value of threddsbase and geoserverbase
 const mapObj = map();                   // used by legend and draw controls
 const basemapObj = basemaps();          // used in the make controls function
 addcontinents();
 
-////////////////////////////////////////////////////////////////////////  SETUP DRAWING AND LAYER CONTROLS
+////////////////////////////////////////////////////////////////////////  DRAWING/LAYER CONTROLS, LEGEND
 let drawnItems = new L.FeatureGroup().addTo(mapObj);      // FeatureGroup is to store editable layers
 let drawControl = new L.Control.Draw({
     edit: {
@@ -49,8 +51,8 @@ let drawControl = new L.Control.Draw({
         polyline: false,
         circlemarker: false,
         circle: false,
-        polygon: true,
-        rectangle: false,
+        polygon: false,
+        rectangle: true,
     },
 });
 mapObj.addControl(drawControl);
@@ -65,15 +67,6 @@ mapObj.on(L.Draw.Event.CREATED, function (event) {
 
 let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
-
-////////////////////////////////////////////////////////////////////////  CREATE/ADD LEGEND
-let legend = L.control({position: 'topright'});
-legend.onAdd = function (mapObj) {
-    let div = L.DomUtil.create('div', 'legend');
-    let url = wmsbase + $("#dates").val() + '.ncml' + "?REQUEST=GetLegendGraphic&LAYER=" + $("#variables").val() + "&PALETTE=" + $('#colors').val() + "&COLORSCALERANGE=" + bounds[$("#dates").val()][$("#variables").val()];
-    div.innerHTML = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
-    return div
-};
 legend.addTo(mapObj);
 
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS

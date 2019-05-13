@@ -68,6 +68,7 @@ def home(request):
         'regions': regions,
         'youtubelink': App.youtubelink,
         'gldaslink': App.gldaslink,
+        'version': App.version,
     }
 
     return render(request, 'gldas/home.html', context)

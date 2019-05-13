@@ -97,6 +97,7 @@ def app_configuration():
     return {
         'app_wksp_path': os.path.join(Gldas.get_app_workspace().path, ''),
         'threddsurl': Gldas.get_custom_setting("Thredds WMS URL"),
+        'geoserverurl': Gldas.get_custom_setting("Geoserver Workspace URL"),
         'threddsdatadir': Gldas.get_custom_setting("Local Thredds Folder Path"),
     }
 

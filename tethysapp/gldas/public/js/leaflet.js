@@ -44,7 +44,7 @@ function basemaps() {
 }
 
 function newLayer() {
-    let wmsurl = wmsbase + $("#dates").val() + '.ncml';
+    let wmsurl = threddsbase + $("#dates").val() + '.ncml';
     let wmsLayer = L.tileLayer.wms(wmsurl, {
         // version: '1.3.0',
         layers: $("#variables").val(),
@@ -86,15 +86,14 @@ function makeControls() {
 }
 
 function addcontinents() {
-    bnds_africa = L.geoJSON(africa);
-    bnds_asia = L.geoJSON(asia);
-    bnds_australia = L.geoJSON(australia);
-    bnds_north = L.geoJSON(northamerica);
-    bnds_central = L.geoJSON(centralamerica);
-    bnds_south = L.geoJSON(southamerica);
-    bnds_europe = L.geoJSON(europe);
-    bnds_mideast = L.geoJSON(mideast);
-    return
+    bnds_africa = L.tileLayer.wms(geoserverbase, {layers: 'gldas:africa', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
+    bnds_asia = L.tileLayer.wms(geoserverbase, {layers: 'gldas:asia', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
+    bnds_australia = L.tileLayer.wms(geoserverbase, {layers: 'gldas:australia', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
+    bnds_north = L.tileLayer.wms(geoserverbase, {layers: 'gldas:northamerica', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
+    bnds_central = L.tileLayer.wms(geoserverbase, {layers: 'gldas:centralamerica', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
+    bnds_south = L.tileLayer.wms(geoserverbase, {layers: 'gldas:southamerica', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
+    bnds_europe = L.tileLayer.wms(geoserverbase, {layers: 'gldas:europe', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
+    bnds_mideast = L.tileLayer.wms(geoserverbase, {layers: 'gldas:middleeast', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
 }
 
 function clearMap() {
@@ -118,3 +117,11 @@ function clearMap() {
     mapObj.removeLayer(bnds_mideast);
     mapObj.removeControl(controlsObj);
 }
+
+let legend = L.control({position: 'topright'});
+legend.onAdd = function (mapObj) {
+    let div = L.DomUtil.create('div', 'legend');
+    let url = threddsbase + $("#dates").val() + '.ncml' + "?REQUEST=GetLegendGraphic&LAYER=" + $("#variables").val() + "&PALETTE=" + $('#colors').val() + "&COLORSCALERANGE=" + bounds[$("#dates").val()][$("#variables").val()];
+    div.innerHTML = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
+    return div
+};

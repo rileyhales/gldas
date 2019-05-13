@@ -20,6 +20,7 @@ class Gldas(TethysAppBase):
     feedback_emails = []
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
+    version = 'Version 2.4.2 - 13 May 2019'
 
     def url_maps(self):
         """
@@ -76,16 +77,20 @@ class Gldas(TethysAppBase):
             CustomSetting(
                 name='Local Thredds Folder Path',
                 type=CustomSetting.TYPE_STRING,
-                description="Path to data in the folder mounted by Thredds (e.g. /home/thredds/myDataFolder/)",
+                description="Local file path to datasets (same as used by Thredds) (e.g. /home/thredds/myDataFolder/)",
                 required=True,
-                # /home/rchales/thredds/gldas/
             ),
             CustomSetting(
                 name='Thredds WMS URL',
                 type=CustomSetting.TYPE_STRING,
-                description="URL to the folder of GLDAS data and .ncml files on the thredds server (e.g. tethys.byu.edu/thredds/myDataFolder/)",
+                description="URL to the GLDAS folder on the thredds server (e.g. http://[host]/thredds/gldas/)",
                 required=True,
-                # http://127.0.0.1:7000/thredds/wms/testAll/
+            ),
+            CustomSetting(
+                name='Geoserver Workspace URL',
+                type=CustomSetting.TYPE_STRING,
+                description="URL (wms) of the workspace on geoserver (e.g. https://tethys.byu.edu/geoserver/test/wms)",
+                required=True,
             ),
         )
         return CustomSettings
