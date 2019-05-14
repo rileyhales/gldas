@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes
-from .tools import ts_plot
+from .tools import pointchart
 from .model import gldas_variables, timecoverage
 import ast
 
@@ -32,7 +32,7 @@ def tsPlotValues(request):
     """
     data = ast.literal_eval(request.body)
     response_object = {}
-    response_object['values'] = ts_plot(data)
+    response_object['values'] = pointchart(data)
     return JsonResponse(response_object)
 
 

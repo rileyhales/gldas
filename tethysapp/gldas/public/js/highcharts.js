@@ -102,7 +102,7 @@ function getDrawnChart(drawnItems) {
         // call the right timeseries generator function based on type
         if (drawtype === 'Polygon') {
             $.ajax({
-                url: '/apps/gldas/ajax/getSpatialAverage/',
+                url: '/apps/gldas/ajax/getPolygonAverage/',
                 data: JSON.stringify(data),
                 dataType: 'json',
                 contentType: "application/json",
@@ -139,7 +139,7 @@ function getShapeChart() {
         region: $("#regions").val(),
     };
     $.ajax({
-        url: '/apps/gldas/ajax/getSpatialAverage/',
+        url: '/apps/gldas/ajax/getShapeAverage/',
         data: JSON.stringify(data),
         dataType: 'json',
         contentType: "application/json",

@@ -43,9 +43,14 @@ class Gldas(TethysAppBase):
                 controller='gldas.ajax.get_pointseries',
             ),
             UrlMap(
-                name='getSpatialAverage',
-                url='gldas/ajax/getSpatialAverage',
-                controller='gldas.ajax.get_spatialaverage',
+                name='getPolygonAverage',
+                url='gldas/ajax/getPolygonAverage',
+                controller='gldas.ajax.get_polygonaverage',
+            ),
+            UrlMap(
+                name='getShapeAverage',
+                url='gldas/ajax/getShapeAverage',
+                controller='gldas.ajax.get_shapeaverage',
             ),
             UrlMap(
                 name='getBounds',

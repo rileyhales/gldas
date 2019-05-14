@@ -1,28 +1,15 @@
+import ast
+import math
+import os
+
+import netCDF4
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
-
-@login_required()
-def get_pointseries(request):
-    """
-    The controller for the ajax call to create a timeseries for the area chosen by the user's drawing
-    """
-    from .model import gldas_variables
-    from .tools import ts_plot
-    import ast
-
-    data = ast.literal_eval(request.body.decode('utf-8'))
-    response = {}
-    plot_items = ts_plot(data)
-    response['units'] = plot_items[0]
-    response['values'] = plot_items[1]
-    variables = gldas_variables()
-    for key in variables:
-        if variables[key] == data['variable']:
-            name = key
-            response['name'] = name
-            break
-    return JsonResponse(response)
+from .model import app_configuration
+from .model import gldas_variables
+from .tools import nc_to_gtiff, rastermask_average_gdalwarp
+from .tools import pointchart, polychart
 
 
 @login_required()
@@ -31,14 +18,10 @@ def get_bounds(request):
     Dynamically defines exact boundaries for the legend and wms so that they are synchronized
     This was substituted for statically defined values to improve performance on the most common values.
     Will be reimplemented when the app supports custom time values
-    Requires netcdf4, os, ast, math
+    Dependencies
+        netcdf4, os, ast, math
+        from .model import app_configuration
     """
-    from .model import app_configuration
-    import ast
-    import math
-    import netCDF4
-    import os
-
     configs = app_configuration()
     thredds_data_dir = configs['thredds_data_dir']
 
@@ -74,14 +57,47 @@ def get_bounds(request):
 
 
 @login_required()
-def get_spatialaverage(request):
+def get_pointseries(request):
+    """
+    The controller for the ajax call to create a timeseries for the area chosen by the user's drawing
+    Dependencies: gldas_variables (model), pointchart (tools), ast
+    """
+    data = ast.literal_eval(request.body.decode('utf-8'))
+    response = {}
+    response['units'], response['values'] = pointchart(data)
+    variables = gldas_variables()
+    for key in variables:
+        if variables[key] == data['variable']:
+            name = key
+            response['name'] = name
+            break
+    return JsonResponse(response)
+
+
+@login_required()
+def get_polygonaverage(request):
     """
     Used to do averaging of a variable over a polygon of area, user drawn or a shapefile
+    Dependencies: polychart (tools), gldas_variables (model), ast
     """
-    from .tools import nc_to_gtiff, rastermask_average_gdalwarp
-    from .model import gldas_variables
-    import ast
+    data = ast.literal_eval(request.body.decode('utf-8'))
+    response = {}
+    response['units'], response['values'] = polychart(data)
+    variables = gldas_variables()
+    for key in variables:
+        if variables[key] == data['variable']:
+            name = key
+            response['name'] = name
+            break
+    return JsonResponse(response)
 
+
+@login_required()
+def get_shapeaverage(request):
+    """
+    Used to do averaging of a variable over a polygon of area, user drawn or a shapefile
+    Dependencies: nc_to_gtiff (tools), rastermask_average_gdalwarp (tools), gldas_variables (model), ast
+    """
     response = {}
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['times'], response['units'] = nc_to_gtiff(data)
@@ -100,6 +116,6 @@ def get_spatialaverage(request):
 def customsettings(request):
     """
     returns the paths to the data/thredds services taken from the custom settings and gives it to the javascript
+    Dependencies: app_configuration (model)
     """
-    from .model import app_configuration
     return JsonResponse(app_configuration())

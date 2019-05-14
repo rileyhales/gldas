@@ -1,3 +1,4 @@
+////////////////////////////////////////////////////////////////////////  MAP VARIABLES
 let africa = L.geoJSON();
 let asia = L.geoJSON();
 let australia = L.geoJSON();
@@ -143,6 +144,7 @@ function clearMap() {
     mapObj.removeControl(controlsObj);
 }
 
+////////////////////////////////////////////////////////////////////////  LEGEND DEFINITIONS
 let legend = L.control({position: 'topright'});
 legend.onAdd = function (mapObj) {
     let div = L.DomUtil.create('div', 'legend');

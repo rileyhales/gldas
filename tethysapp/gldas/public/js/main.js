@@ -66,14 +66,13 @@ mapObj.on(L.Draw.Event.CREATED, function (event) {
 
 let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
-legend.addTo(mapObj);
-updateGEOJSON();
+legend.addTo(mapObj);                   // add the legend graphic to the map
+updateGEOJSON();                        // asynchronously get geoserver wfs data for the regions
 
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
 $("#dates").change(function () {
     clearMap();
     layerObj = newLayer();
-    addcontinents();
     controlsObj = makeControls();
     getDrawnChart(drawnItems);
     legend.addTo(mapObj);
@@ -82,7 +81,6 @@ $("#dates").change(function () {
 $("#variables").change(function () {
     clearMap();
     layerObj = newLayer();
-    addcontinents();
     controlsObj = makeControls();
     getDrawnChart(drawnItems);
     legend.addTo(mapObj);
@@ -95,7 +93,6 @@ $("#opacity").change(function () {
 $('#colors').change(function () {
     clearMap();
     layerObj = newLayer();
-    addcontinents();
     controlsObj = makeControls();
     legend.addTo(mapObj);
 });

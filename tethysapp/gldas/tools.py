@@ -15,14 +15,12 @@ from .app import Gldas as App
 from .model import app_configuration
 
 
-def ts_plot(data):
+def pointchart(data):
     """
     Description: generates a timeseries for a given point and given variable defined by the user.
     Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
     Author: Riley Hales
-    Dependencies:
-        netcdf4, numpy, datetime, os, calendar
-        from .model import app_configuration
+    Dependencies: netcdf4, numpy, datetime, os, calendar, app_configuration (model)
     Last Updated: Oct 11 2018
     """
     values = []
@@ -64,6 +62,62 @@ def ts_plot(data):
             values.append((t_step, val))
         dataset.close()
 
+    return units, values
+
+
+def polychart(data):
+    """
+    Description: generates a timeseries for a given point and given variable defined by the user.
+    Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
+    Author: Riley Hales
+    Dependencies: netcdf4, numpy, datetime, os, calendar, app_configuration (model)
+    Last Updated: May 14 2019
+    """
+    values = []
+    variable = str(data['variable'])
+    coords = data['coords'][0]          # 5x2 array 1 row of lat/lon per corner, 1st duplicated (start/stop)
+    tperiod = data['time']
+
+    configs = app_configuration()
+    data_dir = configs['threddsdatadir']
+
+    path = os.path.join(data_dir, 'raw')
+    if tperiod == 'alltimes':
+        files = os.listdir(path)
+        files.sort()
+    else:
+        allfiles = os.listdir(path)
+        files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
+        files.sort()
+
+    # find the point of data array that corresponds to the user's choice, get the units of that variable
+    dataset = netCDF4.Dataset(os.path.join(path, str(files[0])), 'r')
+    nc_lons = dataset['lon'][:]
+    nc_lats = dataset['lat'][:]
+    # get a lat/lon bounding box for the drawing
+    minlon = (numpy.abs(nc_lons - coords[1][0])).argmin()
+    maxlon = (numpy.abs(nc_lons - coords[3][0])).argmin()
+    maxlat = (numpy.abs(nc_lats - coords[1][1])).argmin()
+    minlat = (numpy.abs(nc_lats - coords[3][1])).argmin()
+    units = dataset[variable].__dict__['units']
+    dataset.close()
+
+    # extract values at each timestep
+    for nc in files:
+        # set the time value for each file
+        dataset = netCDF4.Dataset(path + '/' + nc, 'r')
+        t_value = (dataset['time'].__dict__['begin_date'])
+        t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
+        t_step = calendar.timegm(t_step.utctimetuple()) * 1000
+        for time, var in enumerate(dataset['time'][:]):
+            # get the value at the point
+            array = dataset[variable][0, minlat:maxlat, minlon:maxlon].data
+            array[array < -9000] = numpy.nan  # If you have fill values, change the comparator to git rid of it
+            array = array.flatten()
+            array = array[~numpy.isnan(array)]
+            values.append((t_step, float(array.mean())))
+        dataset.close()
+
     return_items = [units, values]
 
     return return_items
@@ -73,10 +127,7 @@ def nc_to_gtiff(data):
     """
     Description: This script accepts a netcdf file in a geographic coordinate system, specifically the NASA GLDAS
         netcdfs, and extracts the data from one variable and the lat/lon steps to create a geotiff of that information.
-    Dependencies:
-        netCDF4, numpy, gdal, osr, os, shutil, calendar, datetime
-        from .app import Gldas as App
-        from .model import app_configuration
+    Dependencies: netCDF4, numpy, gdal, osr, os, shutil, calendar, datetime, App (app), app_configuration (model)
     Params: View README.md
     Returns: Creates a geotiff named 'geotiff.tif' in the directory specified
     Author: Riley Hales, RCH Engineering, March 2019
