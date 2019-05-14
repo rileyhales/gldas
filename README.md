@@ -20,8 +20,8 @@ tethys manage collectstatic
 ~~~~
 Reset the server then attempt to log in through the web interface as an administrator. The app should appear in the Apps Library page in grey indicating you need to configure the custom settings.
 
-## 2 Set up your Thredds Server
-Refer to the documentation for Thredds to set up an instance of Thredds on your server.
+## 2 Set up a Thredds Server (GLDAS Rasters)
+Refer to the documentation for Thredds to set up an instance of Thredds on your tethys server.
 
 In the public folder where your datasets are stored, create a new folder called ```gldas```. Within that folder, place all the contents of the ncml folder in the app you downloaded in the previous step. Create a new folder called ```raw``` and leave it empty. You will fill it with data in the next step. 
 
@@ -93,12 +93,29 @@ gldas
 
 Verify that you have completed steps 2 and 3 correctly by viewing the Thredds catalog through a web browser. The default address will be something like ```yourserver.com/thredds/catalog.html```. Navigate to the ```Test all files...``` folder. Your ```gldas``` folder should be visible. Open it and check that all your ```.ncml``` files are visible and that the ```.nc4``` files are visible in the ```/raw``` directory. If they are not, review steps 2 and 3 and restart your Thredds server.
 
-## 4 Set The Custom Settings
-You need to specify 2 custom settings when you install the app. The file path to where you are storing the gldas netCDF files locally on the server and the base wms URL for the thredds server that will be serving the data.
+## 4 Set up a GeoServer (World Region Boundaries)
+Refer to the documentation for GeoServer to set up an instance of GeoServer on your tethys server.
+
+This app can display and perform spatial averaging for 8 world regions. The app will perform the raster operations and averaging using shapefiles that cover general regions of the globe in as few points as possible to increase computation speed, reduce file sizes, and prevent computation errors related to larger and more complex polygon shapefiles. More accurate boundaries for the region are available for visualization as a Web Feature Service (WFS) through GeoServer. A copy of the shapefiles you need, in the properly formatted zip archives, is found in the ```workspaces/app_workspace``` directory of the app.   
+
+Use a web browser to log in to your GeoServer. Use the web interface to create a workspace. Name the Workspace and the Workspace URI ```gldas```. Use the command line to navigate to the directory containing the GeoServerFiles zip archive you got from the app. Extract the contents of that zip archive, but do not unzip the 8 zip archives that it contains. Upload each of those 8 zip archives to GeoServer using the cURL commands (e.g. run this command 8 times). The general format of that command is
+~~~~
+curl -v -u [user]:[password] -XPUT -H "Content-type: application/zip" --data-binary @[name_of_zip].zip https://[hostname]/geoserver/rest/workspaces/[workspaceURI]/datastores/[name_of_zip]/file.shp
+~~~~
+This command asks you to specify:
+* Geoserver Username and Password. If you have not changed it, the default is admin and geoserver.
+* Name of the Zip Archive you're uploading. Be sure you spell it correctly and that you put it in each of the 2 places it is asked for.
+* Hostname. The host website, e.g. ```tethys.byu.edu```.
+* The Workspace URI. The URI that you specified when you created the new workspace through the web interface. If you followed these instructions it should be ```gldas```. You can verify the name using the web interface.
+
+## 5 Set The Custom Settings
+You need to specify 3 custom settings when you install the app. The file path to where you are storing the gldas netCDF files locally on the server and the base wms URL for the thredds server that will be serving the data.
 
 **Local File Path:** This is the full path to the directory named gldas that you should have created within the thredds data directory during step 2. You can get this by navigating to that folder in the terminal and then using the ```pwd``` command. (example: ```/tomcat/content/thredds/gldas/```)  
 
-**WMS base address:** This is the base that the app uses to build urls for each of the OGC WMS layers for the netcdf datasets. If you followed the typical configuration of thredds (these instructions) then your base url will look something like ```yourserver.com/thredds/wms/testAll/gldas/```. You can verify this by opening the thredds catalog in a web browser (typically at ```yourserver.com/thredds/catalog.html```). Navigate to one of the GLDAS netcdf files and click the WMS link. A page showing an xml document should load. Copy the url in the address bar until you get to the ```/gldas/``` folder in that url. Do not include ```/raw/name_of_dataset.nc``` or the request info that comes after it. (example: ```https://tethys.byu.edu/thredds/wms/testAll/gldas/```)
+**Thredds Base Address:** This is the base URL to Thredds WMS services that the app uses to build urls for each of the WMS layers generated for the netcdf datasets. If you followed the typical configuration of thredds (these instructions) then your base url will look something like ```yourserver.com/thredds/wms/testAll/gldas/```. You can verify this by opening the thredds catalog in a web browser (typically at ```yourserver.com/thredds/catalog.html```). Navigate to one of the GLDAS netcdf files and click the WMS link. A page showing an xml document should load. Copy the url in the address bar until you get to the ```/gldas/``` folder in that url. Do not include ```/raw/name_of_dataset.nc``` or the request info that comes after it. (example: ```https://tethys.byu.edu/thredds/wms/testAll/gldas/```)
+
+**Geoserver Workspace Address:** This is the WFS (ows) url to the workspace on geoserver where the shapefiles for the world region boundaries are served. This geoserver workspace needs to have at minimum WFS services enabled. (example: ```https://tethys.byu.edu/geoserver/gldas/ows```)
 
 ## How the app works
 The various functions of the app are split into either python or javascript files named for what they control.
