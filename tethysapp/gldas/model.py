@@ -1,3 +1,6 @@
+from .app import Gldas
+import os
+
 def gldas_variables():
     """
     List of the plottable variables from the GLDAS 2.1 datasets used
@@ -90,10 +93,9 @@ def timecoverage():
 
 def app_configuration():
     """
-    gets the settings for the app for use in other functions and ajax for leaflet
+    Gets the settings for the app for use in other functions and ajax for leaflet
+    Dependencies: os, App (app)
     """
-    import os
-    from .app import Gldas
     return {
         'app_wksp_path': os.path.join(Gldas.get_app_workspace().path, ''),
         'threddsurl': Gldas.get_custom_setting("Thredds WMS URL"),
@@ -103,9 +105,11 @@ def app_configuration():
 
 
 def worldregions():
-    from .app import Gldas as App
-    import os
-    folders = os.listdir(os.path.join(App.get_app_workspace().path, 'shapefiles'))
+    """
+    Populates the drop down menu with the list of available shapefiles to use for averaging
+    Dependencies: os, App (app)
+    """
+    folders = os.listdir(os.path.join(Gldas.get_app_workspace().path, 'shapefiles'))
     options = [(folder, folder) for folder in folders if not folder.startswith('.')]
     options.sort()
     return options

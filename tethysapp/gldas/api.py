@@ -10,7 +10,7 @@ import ast
 def get_variables(request):
     """
     API Controller for getting a list of available variables
-    .resources gldas_variables
+    Dependencies: gldas_variables (model)
     """
     variables = gldas_variables()
     return JsonResponse(variables)
@@ -26,9 +26,7 @@ def tsPlotValues(request):
         type: Point or Rectangle
         coords: a list of coordinates [lat, lon]
     }
-    Dependencies:
-        ast: to decode the request that contains the dictionary
-        .resources ts_plot
+    Dependencies: pointchart (tools), ast
     """
     data = ast.literal_eval(request.body)
     response_object = {}
@@ -41,7 +39,7 @@ def tsPlotValues(request):
 def getTimes(request):
     """
     API Controller for getting a list of available times
-    .resources timecoverage
+    timecoverage (model)
     """
     times = timecoverage()
     return JsonResponse(times)
