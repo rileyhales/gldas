@@ -20,7 +20,7 @@ class Gldas(TethysAppBase):
     feedback_emails = []
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'Version 2.4.2 - 13 May 2019'
+    version = 'Version 2.4.3 - 14 May 2019'
 
     def url_maps(self):
         """
@@ -89,7 +89,7 @@ class Gldas(TethysAppBase):
             CustomSetting(
                 name='Geoserver Workspace URL',
                 type=CustomSetting.TYPE_STRING,
-                description="URL (wms) of the workspace on geoserver (e.g. https://tethys.byu.edu/geoserver/test/wms)",
+                description="URL (wms) of the workspace on geoserver (e.g. https://[host]/geoserver/gldas/wms)",
                 required=True,
             ),
         )

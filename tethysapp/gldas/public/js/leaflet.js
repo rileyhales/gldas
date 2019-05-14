@@ -1,11 +1,11 @@
-let bnds_africa;
-let bnds_asia;
-let bnds_australia;
-let bnds_central;
-let bnds_europe;
-let bnds_mideast;
-let bnds_north;
-let bnds_south;
+let africa = L.geoJSON();
+let asia = L.geoJSON();
+let australia = L.geoJSON();
+let centralamerica = L.geoJSON();
+let europe = L.geoJSON();
+let middleeast = L.geoJSON();
+let northamerica = L.geoJSON();
+let southamerica = L.geoJSON();
 
 ////////////////////////////////////////////////////////////////////////  MAP FUNCTIONS
 function map() {
@@ -70,51 +70,76 @@ function newLayer() {
     return timedLayer
 }
 
-function makeControls() {
-    return L.control.layers(basemapObj,
-        {'GLDAS Layer': layerObj,
-            'Drawing': drawnItems,
-            'Europe': bnds_europe,
-            'Asia': bnds_asia,
-            'Middle East': bnds_mideast,
-            'North America': bnds_north,
-            'Central America': bnds_central,
-            'South America': bnds_south,
-            'Africa': bnds_africa,
-            'Australia': bnds_australia,
-        }).addTo(mapObj);
+function getWFSData(geoserverlayer, leafletlayer) {
+    // http://jsfiddle.net/1f2Lxey4/2/
+    let parameters = L.Util.extend({
+        service: 'WFS',
+        version: '1.0.0',
+        request: 'GetFeature',
+        typeName: 'gldas:' + geoserverlayer,
+        maxFeatures: 10000,
+        outputFormat: 'application/json',
+        parseResponse: 'getJson',
+        srsName: 'EPSG:4326',
+        crossOrigin: 'anonymous'
+    });
+    $.ajax({
+        async: true,
+        jsonp: false,
+        url: geoserverbase + L.Util.getParamString(parameters),
+        contentType: 'application/json',
+        jsonpCallback: 'getJson',  // name of the function to fire on jsonpCallback
+        success: function (data) {
+            leafletlayer.addData(data);
+        },
+    });
 }
 
-function addcontinents() {
-    bnds_africa = L.tileLayer.wms(geoserverbase, {layers: 'gldas:africa', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
-    bnds_asia = L.tileLayer.wms(geoserverbase, {layers: 'gldas:asia', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
-    bnds_australia = L.tileLayer.wms(geoserverbase, {layers: 'gldas:australia', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
-    bnds_north = L.tileLayer.wms(geoserverbase, {layers: 'gldas:northamerica', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
-    bnds_central = L.tileLayer.wms(geoserverbase, {layers: 'gldas:centralamerica', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
-    bnds_south = L.tileLayer.wms(geoserverbase, {layers: 'gldas:southamerica', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
-    bnds_europe = L.tileLayer.wms(geoserverbase, {layers: 'gldas:europe', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
-    bnds_mideast = L.tileLayer.wms(geoserverbase, {layers: 'gldas:middleeast', format: 'image/png', transparent: true, opacity: .75, BGCOLOR: '0x000000',});
+function updateGEOJSON() {
+    getWFSData('africa', africa);
+    getWFSData('asia', asia);
+    getWFSData('australia', australia);
+    getWFSData('centralamerica', centralamerica);
+    getWFSData('europe', europe);
+    getWFSData('middleeast', middleeast);
+    getWFSData('northamerica', northamerica);
+    getWFSData('southamerica', southamerica);
+}
+
+function makeControls() {
+    return L.control.layers(basemapObj, {
+        'GLDAS Layer': layerObj,
+        'Drawing': drawnItems,
+        'Europe': europe,
+        'Asia': asia,
+        'Middle East': middleeast,
+        'North America': northamerica,
+        'Central America': centralamerica,
+        'South America': southamerica,
+        'Africa': africa,
+        'Australia': australia,
+    }).addTo(mapObj);
 }
 
 function clearMap() {
     controlsObj.removeLayer(layerObj);
-    controlsObj.removeLayer(bnds_africa);
-    controlsObj.removeLayer(bnds_asia);
-    controlsObj.removeLayer(bnds_australia);
-    controlsObj.removeLayer(bnds_north);
-    controlsObj.removeLayer(bnds_central);
-    controlsObj.removeLayer(bnds_south);
-    controlsObj.removeLayer(bnds_europe);
-    controlsObj.removeLayer(bnds_mideast);
+    controlsObj.removeLayer(africa);
+    controlsObj.removeLayer(asia);
+    controlsObj.removeLayer(australia);
+    controlsObj.removeLayer(northamerica);
+    controlsObj.removeLayer(centralamerica);
+    controlsObj.removeLayer(southamerica);
+    controlsObj.removeLayer(europe);
+    controlsObj.removeLayer(middleeast);
     mapObj.removeLayer(layerObj);
-    mapObj.removeLayer(bnds_africa);
-    mapObj.removeLayer(bnds_asia);
-    mapObj.removeLayer(bnds_australia);
-    mapObj.removeLayer(bnds_north);
-    mapObj.removeLayer(bnds_central);
-    mapObj.removeLayer(bnds_south);
-    mapObj.removeLayer(bnds_europe);
-    mapObj.removeLayer(bnds_mideast);
+    mapObj.removeLayer(africa);
+    mapObj.removeLayer(asia);
+    mapObj.removeLayer(australia);
+    mapObj.removeLayer(northamerica);
+    mapObj.removeLayer(centralamerica);
+    mapObj.removeLayer(southamerica);
+    mapObj.removeLayer(europe);
+    mapObj.removeLayer(middleeast);
     mapObj.removeControl(controlsObj);
 }
 

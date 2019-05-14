@@ -38,7 +38,6 @@ let geoserverbase;
 getThreddswms();                        // sets the value of threddsbase and geoserverbase
 const mapObj = map();                   // used by legend and draw controls
 const basemapObj = basemaps();          // used in the make controls function
-addcontinents();
 
 ////////////////////////////////////////////////////////////////////////  DRAWING/LAYER CONTROLS, LEGEND
 let drawnItems = new L.FeatureGroup().addTo(mapObj);      // FeatureGroup is to store editable layers
@@ -68,6 +67,7 @@ mapObj.on(L.Draw.Event.CREATED, function (event) {
 let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 legend.addTo(mapObj);
+updateGEOJSON();
 
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
 $("#dates").change(function () {
