@@ -39,7 +39,7 @@ getThreddswms();                        // sets the value of threddsbase and geo
 const mapObj = map();                   // used by legend and draw controls
 const basemapObj = basemaps();          // used in the make controls function
 
-////////////////////////////////////////////////////////////////////////  DRAWING/LAYER CONTROLS, LEGEND
+////////////////////////////////////////////////////////////////////////  DRAWING/LAYER CONTROLS, MAP EVENTS, LEGEND
 let drawnItems = new L.FeatureGroup().addTo(mapObj);      // FeatureGroup is to store editable layers
 let drawControl = new L.Control.Draw({
     edit: {
@@ -62,6 +62,10 @@ mapObj.on(L.Draw.Event.CREATED, function (event) {
     drawnItems.addLayer(event.layer);
     L.Draw.Event.STOP;
     getDrawnChart(drawnItems);
+});
+
+mapObj.on("mousemove", function (event) {
+    $("#mouse-position").html('Lat: ' + event.latlng.lat.toFixed(5) + ', Lon: ' + event.latlng.lng.toFixed(5));
 });
 
 let layerObj = newLayer();              // adds the wms raster layer
