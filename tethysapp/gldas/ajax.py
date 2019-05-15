@@ -63,6 +63,8 @@ def get_pointseries(request):
     data = ast.literal_eval(request.body.decode('utf-8'))
     response = {}
     response['units'], response['values'] = pointchart(data)
+    response['type'] = '(Values at a Point)'
+
     variables = gldas_variables()
     for key in variables:
         if variables[key] == data['variable']:
@@ -78,9 +80,11 @@ def get_polygonaverage(request):
     Used to do averaging of a variable over a polygon of area, user drawn or a shapefile
     Dependencies: polychart (tools), gldas_variables (model), ast
     """
-    data = ast.literal_eval(request.body.decode('utf-8'))
     response = {}
+    data = ast.literal_eval(request.body.decode('utf-8'))
     response['units'], response['values'] = polychart(data)
+    response['type'] = '(Averaged over a Polygon)'
+
     variables = gldas_variables()
     for key in variables:
         if variables[key] == data['variable']:
@@ -100,6 +104,7 @@ def get_shapeaverage(request):
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['times'], response['units'] = nc_to_gtiff(data)
     response['values'] = rastermask_average_gdalwarp(data)
+    response['type'] = '(Average for ' + data['region'] + ')'
 
     variables = gldas_variables()
     for key in variables:

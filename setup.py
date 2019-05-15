@@ -13,14 +13,14 @@ dependencies = ['netCDF4', 'numpy', 'gdal', 'osr']
 
 setup(
     name=release_package,
-    version='2.5.0',
+    version='2.5.1',
     tags='NASA, GLDAS, LDAS, charts, maps, timeseries',
     description='Visualizes GLDAS data through maps and charts',
     long_description='Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution, '
                      'GLDAS data sets from NASA LDAS and LIS.',
     keywords='GLDAS',
     author='Riley Hales',
-    author_email='rileyhales1@gmail.com',
+    author_email='',
     url='rileyhales.com',
     license='BSD-3 Clause',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),

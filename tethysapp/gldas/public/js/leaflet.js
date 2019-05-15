@@ -110,11 +110,13 @@ legend.onAdd = function (mapObj) {
     return div
 };
 
-////////////////////////////////////////////////////////////////////////  GEOJSON LAYERS - GEOSERVER + WFS
+////////////////////////////////////////////////////////////////////////  GEOJSON LAYERS - GEOSERVER + WFS / GEOJSON
 let currentregion;
 function layerPopups(feature, layer) {
-    layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart()">Get timeseries of averages for ' + feature.properties.name + '</a>')
+    let region = feature.properties.name;
+    layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries of averages for ' + region + '</a>');
 }
+
 let africa = L.geoJSON(false, {onEachFeature: layerPopups});
 let asia = L.geoJSON(false, {onEachFeature: layerPopups});
 let australia = L.geoJSON(false, {onEachFeature: layerPopups});
@@ -150,24 +152,24 @@ function getWFSData(geoserverlayer, leafletlayer) {
 }
 
 function updateGEOJSON() {
-    getWFSData('africa', africa);
-    getWFSData('asia', asia);
-    getWFSData('australia', australia);
-    getWFSData('centralamerica', centralamerica);
-    getWFSData('europe', europe);
-    getWFSData('middleeast', middleeast);
-    getWFSData('northamerica', northamerica);
-    getWFSData('southamerica', southamerica);
-}
+    if (geoserverbase === 'geojson') {
+        africa.addData(africajson);
+        asia.addData(asiajson);
+        australia.addData(australiajson);
+        centralamerica.addData(centralamericajson);
+        europe.addData(europejson);
+        middleeast.addData(middleeastjson);
+        northamerica.addData(northamericajson);
+        southamerica.addData(southamericajson);
+    } else {
+        getWFSData('africa', africa);
+        getWFSData('asia', asia);
+        getWFSData('australia', australia);
+        getWFSData('centralamerica', centralamerica);
+        getWFSData('europe', europe);
+        getWFSData('middleeast', middleeast);
+        getWFSData('northamerica', northamerica);
+        getWFSData('southamerica', southamerica);
+    }
 
-////////////////////////////////////////////////////////////////////////  GEOJSON LAYERS - LOCAL JS FILES
-/*
-let africa = L.geoJSON(false, {onEachFeature: layerPopups});
-let asia = L.geoJSON(false, {onEachFeature: layerPopups});
-let australia = L.geoJSON(false, {onEachFeature: layerPopups});
-let centralamerica = L.geoJSON(false, {onEachFeature: layerPopups});
-let europe = L.geoJSON(false, {onEachFeature: layerPopups});
-let middleeast = L.geoJSON(false, {onEachFeature: layerPopups});
-let northamerica = L.geoJSON(false, {onEachFeature: layerPopups});
-let southamerica = L.geoJSON(false, {onEachFeature: layerPopups});
- */
+}

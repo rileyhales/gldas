@@ -20,7 +20,7 @@ class Gldas(TethysAppBase):
     feedback_emails = []
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'Version 2.5.0 - 14 May 2019'
+    version = 'Version 2.5.1 - 15 May 2019'
 
     def url_maps(self):
         """
@@ -94,7 +94,8 @@ class Gldas(TethysAppBase):
             CustomSetting(
                 name='Geoserver Workspace URL',
                 type=CustomSetting.TYPE_STRING,
-                description="URL (wms) of the workspace on geoserver (e.g. https://[host]/geoserver/gldas/wms)",
+                description="URL (wfs) of the workspace on geoserver (e.g. https://[host]/geoserver/gldas/ows). \n"
+                            "Enter geojson instead of a url if you experience GeoServer problems.",
                 required=True,
             ),
         )

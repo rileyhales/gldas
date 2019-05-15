@@ -41,7 +41,7 @@ function newHighchart(data) {
     chart = Highcharts.chart('highchart', {
         title: {
             align: "center",
-            text: data['name'] + ' v Time',
+            text: data['name'] + ' v Time ' + data['type'],
         },
         xAxis: {
             type: 'datetime',
@@ -123,35 +123,46 @@ function getDrawnChart(drawnItems) {
                 },
             });
         }
-        // If there are no drawn features, then you actually should be refreshing the shapefile chart
+        // If there are no drawn features, then you actually should be refreshing the shapefile chart (ie the boundary you want is the lastregion chosen)
     } else {
-        getShapeChart();
+        getShapeChart('lastregion');
     }
 }
 
-function getShapeChart() {
+function getShapeChart(selectedregion) {
+    // if the time range is all times then confirm before executing the spatial averaging
     if ($("#dates").val() === 'alltimes') {
         if (!confirm("Computing a timeseries of spatial averages for all available times requires over 200 iterations of file conversions and geoprocessing operations. This may result in a long wait (15+ seconds) or cause errors. Are you sure you want to continue?")) {
             return
         }
-        drawnItems.clearLayers();
-        chart.hideNoData();
-        chart.showLoading();
-        let data = {
-            variable: $('#variables').val(),
-            time: $("#dates").val(),
-            shapefile: 'true',
-            region: $("#regions").val(),
-        };
-        $.ajax({
-            url: '/apps/gldas/ajax/getShapeAverage/',
-            data: JSON.stringify(data),
-            dataType: 'json',
-            contentType: "application/json",
-            method: 'POST',
-            success: function (result) {
-                newHighchart(result);
-            }
-        })
     }
+
+    drawnItems.clearLayers();
+    chart.hideNoData();
+    chart.showLoading();
+
+    let data = {
+        variable: $('#variables').val(),
+        time: $("#dates").val(),
+        shapefile: 'true',
+        region: selectedregion,
+    };
+    if (selectedregion === 'lastregion') {
+        // if we want to update, change the region to the last completed region
+        data['region'] = currentregion;
+    } else {
+        // otherwise, the new selection is the current region on the chart
+        currentregion = selectedregion;
+    }
+
+    $.ajax({
+        url: '/apps/gldas/ajax/getShapeAverage/',
+        data: JSON.stringify(data),
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'POST',
+        success: function (result) {
+            newHighchart(result);
+        }
+    })
 }
