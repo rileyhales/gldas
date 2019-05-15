@@ -98,13 +98,5 @@ $('#colors').change(function () {
 });
 
 $("#shpaverage").click(function () {
-    if ($("#dates").val() === 'alltimes') {
-        if (confirm("Computing a timeseries of spatial average data requires over 200 iterations of file conversions and geoprocessing operations. This may result in a long wait (about 20 seconds) or cause errors. Are you sure you want to continue?")) {
-            drawnItems.clearLayers();
-            getShapeChart();
-        }
-    } else {
-        drawnItems.clearLayers();
-        getShapeChart();
-    }
+    getShapeChart();
 });

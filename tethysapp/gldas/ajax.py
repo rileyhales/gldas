@@ -6,10 +6,8 @@ import netCDF4
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
-from .model import app_configuration
-from .model import gldas_variables
-from .tools import nc_to_gtiff, rastermask_average_gdalwarp
-from .tools import pointchart, polychart
+from .model import app_configuration, gldas_variables
+from .tools import nc_to_gtiff, rastermask_average_gdalwarp, pointchart, polychart
 
 
 @login_required()

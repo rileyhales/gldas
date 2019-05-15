@@ -123,30 +123,35 @@ function getDrawnChart(drawnItems) {
                 },
             });
         }
-    // If there are no drawn features, then you actually should be refreshing the shapefile chart
+        // If there are no drawn features, then you actually should be refreshing the shapefile chart
     } else {
         getShapeChart();
     }
 }
 
 function getShapeChart() {
-    chart.hideNoData();
-    chart.showLoading();
-    let data = {
-        variable: $('#variables').val(),
-        time: $("#dates").val(),
-        shapefile: 'true',
-        region: $("#regions").val(),
-    };
-    $.ajax({
-        url: '/apps/gldas/ajax/getShapeAverage/',
-        data: JSON.stringify(data),
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'POST',
-        success: function (result) {
-            console.log(result);
-            newHighchart(result);
+    if ($("#dates").val() === 'alltimes') {
+        if (!confirm("Computing a timeseries of spatial averages for all available times requires over 200 iterations of file conversions and geoprocessing operations. This may result in a long wait (15+ seconds) or cause errors. Are you sure you want to continue?")) {
+            return
         }
-    })
+        drawnItems.clearLayers();
+        chart.hideNoData();
+        chart.showLoading();
+        let data = {
+            variable: $('#variables').val(),
+            time: $("#dates").val(),
+            shapefile: 'true',
+            region: $("#regions").val(),
+        };
+        $.ajax({
+            url: '/apps/gldas/ajax/getShapeAverage/',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: "application/json",
+            method: 'POST',
+            success: function (result) {
+                newHighchart(result);
+            }
+        })
+    }
 }
