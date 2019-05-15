@@ -113,3 +113,17 @@ def worldregions():
     options = [(folder, folder) for folder in folders if not folder.startswith('.')]
     options.sort()
     return options
+
+
+def geojson_colors():
+    return [
+        ('White', '#ffffff'),
+        ('Red', '#ff0000'),
+        ('Green', '#00ff00'),
+        ('Blue', '#0000ff'),
+        ('Black', '#000000'),
+        ('Pink', '#ff69b4'),
+        ('Orange', '#ffa500'),
+        ('Teal', '#008080'),
+        ('Purple', '#800080'),
+    ]

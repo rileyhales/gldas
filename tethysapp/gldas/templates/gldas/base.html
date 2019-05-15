@@ -88,15 +88,15 @@
 {% endblock %}
 
 {% block app_navigation_items %}
-    <li class="title">Map Controls</li>
+    <li class="title">GLDAS Data (Raster) Controls</li>
     {% gizmo select_input variables %}
-    {% gizmo select_input colors %}
     {% gizmo select_input dates %}
-    {% gizmo range_slider opacity %}
+    {% gizmo select_input colorscheme %}
+    {% gizmo range_slider opacity_raster %}
 
-    <li class="title">Chart Controls</li>
-    {% gizmo select_input regions %}
-    <a class="btn btn-default btn-block" role="button" id="shpaverage">Average Over This Region</a>
+    <li class="title">Boundary (GeoJSON) Controls</li>
+    {% gizmo select_input colors_geojson %}
+    {% gizmo range_slider opacity_geojson %}
 
     <li class="title">Help and Resources</li>
     <a class="btn btn-default btn-block" role="button" data-toggle="modal" data-target="#help-modal">How to use this app</a>
@@ -115,6 +115,7 @@
     <link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
     <!-- styling for the leaflet draw plugin -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
+
     <!-- styling generated for the app -->
     <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
 {% endblock %}

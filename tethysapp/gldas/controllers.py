@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import SelectInput, RangeSlider
-from .model import gldas_variables, wms_colors, timecoverage, worldregions
+from .model import gldas_variables, wms_colors, geojson_colors, timecoverage, worldregions
 from .app import Gldas as App
 
 
@@ -25,9 +25,9 @@ def home(request):
         options=options,
     )
 
-    colors = SelectInput(
-        display_text='Color Scheme',
-        name='colors',
+    colorscheme = SelectInput(
+        display_text='Raster Color Scheme',
+        name='colorscheme',
         multiple=False,
         original=True,
         options=wms_colors(),
@@ -51,21 +51,41 @@ def home(request):
         options=worldregions(),
     )
 
-    opacity = RangeSlider(
-        display_text='Layer Opacity',
-        name='opacity',
-        min=.4,
+    opacity_raster = RangeSlider(
+        display_text='Raster Opacity',
+        name='opacity_raster',
+        min=.5,
         max=1,
         step=.05,
         initial=.8,
     )
 
+    colors_geojson = SelectInput(
+        display_text='Boundary Colors',
+        name='colors_geojson',
+        multiple=False,
+        original=True,
+        options=geojson_colors(),
+        initial='#ffffff'
+    )
+
+    opacity_geojson = RangeSlider(
+        display_text='Boundary Opacity',
+        name='opacity_geojson',
+        min=.0,
+        max=1,
+        step=.05,
+        initial=.25,
+    )
+
     context = {
         'variables': variables,
-        'opacity': opacity,
-        'colors': colors,
+        'opacity_raster': opacity_raster,
+        'colorscheme': colorscheme,
         'dates': dates,
         'regions': regions,
+        'opacity_geojson': opacity_geojson,
+        'colors_geojson': colors_geojson,
         'youtubelink': App.youtubelink,
         'gldaslink': App.gldaslink,
         'version': App.version,

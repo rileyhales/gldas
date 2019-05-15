@@ -86,13 +86,21 @@ $("#variables").change(function () {
     legend.addTo(mapObj);
 });
 
-$("#opacity").change(function () {
-    layerObj.setOpacity($('#opacity').val());
+$("#opacity_raster").change(function () {
+    layerObj.setOpacity($('#opacity_raster').val());
 });
 
-$('#colors').change(function () {
+$('#colorscheme').change(function () {
     clearMap();
     layerObj = newLayer();
     controlsObj = makeControls();
     legend.addTo(mapObj);
+});
+
+$("#opacity_geojson").change(function () {
+    styleGeoJSON();
+});
+
+$('#colors_geojson').change(function () {
+    styleGeoJSON();
 });

@@ -44,9 +44,9 @@ function newLayer() {
         crossOrigin: false,
         format: 'image/png',
         transparent: true,
-        opacity: $("#opacity").val(),
+        opacity: $("#opacity_raster").val(),
         BGCOLOR: '0x000000',
-        styles: 'boxfill/' + $('#colors').val(),
+        styles: 'boxfill/' + $('#colorscheme').val(),
         colorscalerange: bounds[$("#dates").val()][$("#variables").val()],
     });
 
@@ -105,7 +105,7 @@ function clearMap() {
 let legend = L.control({position: 'topright'});
 legend.onAdd = function (mapObj) {
     let div = L.DomUtil.create('div', 'legend');
-    let url = threddsbase + $("#dates").val() + '.ncml' + "?REQUEST=GetLegendGraphic&LAYER=" + $("#variables").val() + "&PALETTE=" + $('#colors').val() + "&COLORSCALERANGE=" + bounds[$("#dates").val()][$("#variables").val()];
+    let url = threddsbase + $("#dates").val() + '.ncml' + "?REQUEST=GetLegendGraphic&LAYER=" + $("#variables").val() + "&PALETTE=" + $('#colorscheme').val() + "&COLORSCALERANGE=" + bounds[$("#dates").val()][$("#variables").val()];
     div.innerHTML = '<img src="' + url + '" alt="legend" style="width:100%; float:right;">';
     return div
 };
@@ -117,14 +117,22 @@ function layerPopups(feature, layer) {
     layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries of averages for ' + region + '</a>');
 }
 
-let africa = L.geoJSON(false, {onEachFeature: layerPopups});
-let asia = L.geoJSON(false, {onEachFeature: layerPopups});
-let australia = L.geoJSON(false, {onEachFeature: layerPopups});
-let centralamerica = L.geoJSON(false, {onEachFeature: layerPopups});
-let europe = L.geoJSON(false, {onEachFeature: layerPopups});
-let middleeast = L.geoJSON(false, {onEachFeature: layerPopups});
-let northamerica = L.geoJSON(false, {onEachFeature: layerPopups});
-let southamerica = L.geoJSON(false, {onEachFeature: layerPopups});
+let jsonparams = {
+    onEachFeature: layerPopups,
+    style: {
+        color: $("#colors_geojson").val(),
+        opacity: $("#opacity_geojson").val(),
+        fill: "#00000000",
+    }
+};
+let africa = L.geoJSON(false, jsonparams);
+let asia = L.geoJSON(false, jsonparams);
+let australia = L.geoJSON(false, jsonparams);
+let centralamerica = L.geoJSON(false, jsonparams);
+let europe = L.geoJSON(false, jsonparams);
+let middleeast = L.geoJSON(false, jsonparams);
+let northamerica = L.geoJSON(false, jsonparams);
+let southamerica = L.geoJSON(false, jsonparams);
 
 function getWFSData(geoserverlayer, leafletlayer) {
     // http://jsfiddle.net/1f2Lxey4/2/
@@ -144,9 +152,8 @@ function getWFSData(geoserverlayer, leafletlayer) {
         jsonp: false,
         url: geoserverbase + L.Util.getParamString(parameters),
         contentType: 'application/json',
-        jsonpCallback: 'getJson',  // name of the function to fire on jsonpCallback
         success: function (data) {
-            leafletlayer.addData(data); //.addTo(mapObj);
+            leafletlayer.addData(data).addTo(mapObj);
         },
     });
 }
@@ -171,5 +178,20 @@ function updateGEOJSON() {
         getWFSData('northamerica', northamerica);
         getWFSData('southamerica', southamerica);
     }
+}
 
+function styleGeoJSON() {
+    let style = {
+        color: $("#colors_geojson").val(),
+        opacity: $("#opacity_geojson").val(),
+        fill: "#00000000",
+    };
+    africa.setStyle(style);
+    asia.setStyle(style);
+    australia.setStyle(style);
+    centralamerica.setStyle(style);
+    europe.setStyle(style);
+    middleeast.setStyle(style);
+    northamerica.setStyle(style);
+    southamerica.setStyle(style);
 }
