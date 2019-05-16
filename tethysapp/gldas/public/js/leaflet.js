@@ -61,46 +61,6 @@ function newLayer() {
     return timedLayer
 }
 
-function makeControls() {
-    return L.control.layers(basemapObj, {
-        'GLDAS Layer': layerObj,
-        'Drawing': drawnItems,
-        'Europe': europe,
-        'Asia': asia,
-        'Middle East': middleeast,
-        'North America': northamerica,
-        'Central America': centralamerica,
-        'South America': southamerica,
-        'Africa': africa,
-        'Australia': australia,
-    }).addTo(mapObj);
-}
-
-function clearMap() {
-    // remove the controls for the wms and wfs/geojson layers you have
-    controlsObj.removeLayer(layerObj);
-    controlsObj.removeLayer(africa);
-    controlsObj.removeLayer(asia);
-    controlsObj.removeLayer(australia);
-    controlsObj.removeLayer(northamerica);
-    controlsObj.removeLayer(centralamerica);
-    controlsObj.removeLayer(southamerica);
-    controlsObj.removeLayer(europe);
-    controlsObj.removeLayer(middleeast);
-    // now remove them from the map
-    mapObj.removeLayer(layerObj);
-    mapObj.removeLayer(africa);
-    mapObj.removeLayer(asia);
-    mapObj.removeLayer(australia);
-    mapObj.removeLayer(northamerica);
-    mapObj.removeLayer(centralamerica);
-    mapObj.removeLayer(southamerica);
-    mapObj.removeLayer(europe);
-    mapObj.removeLayer(middleeast);
-    // now delete the controls object
-    mapObj.removeControl(controlsObj);
-}
-
 ////////////////////////////////////////////////////////////////////////  LEGEND DEFINITIONS
 let legend = L.control({position: 'topright'});
 legend.onAdd = function (mapObj) {
@@ -117,13 +77,10 @@ function layerPopups(feature, layer) {
     layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries of averages for ' + region + '</a>');
 }
 
+// declare a placeholder layer for all the geojson layers you want to add
 let jsonparams = {
     onEachFeature: layerPopups,
-    style: {
-        color: $("#colors_geojson").val(),
-        opacity: $("#opacity_geojson").val(),
-        fill: "#00000000",
-    }
+    style: {color: $("#colors_geojson").val(), opacity: $("#opacity_geojson").val()}
 };
 let africa = L.geoJSON(false, jsonparams);
 let asia = L.geoJSON(false, jsonparams);
@@ -133,6 +90,17 @@ let europe = L.geoJSON(false, jsonparams);
 let middleeast = L.geoJSON(false, jsonparams);
 let northamerica = L.geoJSON(false, jsonparams);
 let southamerica = L.geoJSON(false, jsonparams);
+// create this reference array and everything else auto populates
+const geojsons = [
+    [africa, 'africa', africa_json],
+    [asia, 'asia', asia_json],
+    [australia, 'australia', australia_json],
+    [centralamerica, 'centralamerica', centralamerica_json],
+    [europe, 'europe', europe_json],
+    [middleeast, 'middleeast', middleeast_json],
+    [northamerica, 'northamerica', northamerica_json],
+    [southamerica, 'southamerica', southamerica_json],
+];
 
 function getWFSData(geoserverlayer, leafletlayer) {
     // http://jsfiddle.net/1f2Lxey4/2/
@@ -160,38 +128,53 @@ function getWFSData(geoserverlayer, leafletlayer) {
 
 function updateGEOJSON() {
     if (geoserverbase === 'geojson') {
-        africa.addData(africajson);
-        asia.addData(asiajson);
-        australia.addData(australiajson);
-        centralamerica.addData(centralamericajson);
-        europe.addData(europejson);
-        middleeast.addData(middleeastjson);
-        northamerica.addData(northamericajson);
-        southamerica.addData(southamericajson);
+        for (let i = 0; i < geojsons.length; i++) {
+            geojsons[i][0].addData(geojsons[i][2]).addTo(mapObj);
+        }
     } else {
-        getWFSData('africa', africa);
-        getWFSData('asia', asia);
-        getWFSData('australia', australia);
-        getWFSData('centralamerica', centralamerica);
-        getWFSData('europe', europe);
-        getWFSData('middleeast', middleeast);
-        getWFSData('northamerica', northamerica);
-        getWFSData('southamerica', southamerica);
+        for (let i = 0; i < geojsons.length; i++) {
+            getWFSData(geojsons[i][1], geojsons[i][0]);
+        }
     }
 }
 
 function styleGeoJSON() {
+    // determine the styling to apply
     let style = {
         color: $("#colors_geojson").val(),
         opacity: $("#opacity_geojson").val(),
-        fill: "#00000000",
     };
-    africa.setStyle(style);
-    asia.setStyle(style);
-    australia.setStyle(style);
-    centralamerica.setStyle(style);
-    europe.setStyle(style);
-    middleeast.setStyle(style);
-    northamerica.setStyle(style);
-    southamerica.setStyle(style);
+    // apply it to all the geojson layers
+    for (let i = 0; i < geojsons.length; i++) {
+        geojsons[i][0].setStyle(style);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////  MAP CONTROLS AND CLEARINGSS
+function makeControls() {
+    return L.control.layers(basemapObj, {
+        'GLDAS Layer': layerObj,
+        'Drawing': drawnItems,
+        'Europe': europe,
+        'Asia': asia,
+        'Middle East': middleeast,
+        'North America': northamerica,
+        'Central America': centralamerica,
+        'South America': southamerica,
+        'Africa': africa,
+        'Australia': australia,
+    }).addTo(mapObj);
+}
+
+function clearMap() {
+    // remove the controls for the wms layer then remove it from the map
+    controlsObj.removeLayer(layerObj);
+    mapObj.removeLayer(layerObj);
+    // now do it for all the geojson layers
+    for (let i = 0; i < geojsons.length; i++) {
+        controlsObj.removeLayer(geojsons[0]);
+        mapObj.removeLayer(geojsons[0]);
+    }
+    // now delete the controls object
+    mapObj.removeControl(controlsObj);
 }
