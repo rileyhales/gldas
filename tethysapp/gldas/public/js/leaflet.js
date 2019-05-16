@@ -34,6 +34,7 @@ function basemaps() {
     }
 }
 
+////////////////////////////////////////////////////////////////////////  WMS LAYERS FOR GLDAS
 function newLayer() {
     let wmsurl = threddsbase + $("#dates").val() + '.ncml';
     let wmsLayer = L.tileLayer.wms(wmsurl, {
@@ -71,7 +72,7 @@ legend.onAdd = function (mapObj) {
 };
 
 ////////////////////////////////////////////////////////////////////////  GEOJSON LAYERS - GEOSERVER + WFS / GEOJSON
-let currentregion;
+let currentregion;              // tracks which region is on the chart for updates not caused by the user picking a new region
 function layerPopups(feature, layer) {
     let region = feature.properties.name;
     layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries of averages for ' + region + '</a>');
@@ -90,7 +91,7 @@ let europe = L.geoJSON(false, jsonparams);
 let middleeast = L.geoJSON(false, jsonparams);
 let northamerica = L.geoJSON(false, jsonparams);
 let southamerica = L.geoJSON(false, jsonparams);
-// create this reference array and everything else auto populates
+// create this reference array that other functions will build on
 const geojsons = [
     [africa, 'africa', africa_json],
     [asia, 'asia', asia_json],
@@ -102,6 +103,7 @@ const geojsons = [
     [southamerica, 'southamerica', southamerica_json],
 ];
 
+// gets the geojson layers from geoserver wfs and updates the layer
 function getWFSData(geoserverlayer, leafletlayer) {
     // http://jsfiddle.net/1f2Lxey4/2/
     let parameters = L.Util.extend({
@@ -150,7 +152,8 @@ function styleGeoJSON() {
     }
 }
 
-////////////////////////////////////////////////////////////////////////  MAP CONTROLS AND CLEARINGSS
+////////////////////////////////////////////////////////////////////////  MAP CONTROLS AND CLEARING
+// the layers box on the top right of the map
 function makeControls() {
     return L.control.layers(basemapObj, {
         'GLDAS Layer': layerObj,
@@ -166,6 +169,7 @@ function makeControls() {
     }).addTo(mapObj);
 }
 
+// you need to remove layers when you make changes so duplicates dont persist and accumulate
 function clearMap() {
     // remove the controls for the wms layer then remove it from the map
     controlsObj.removeLayer(layerObj);

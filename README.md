@@ -5,8 +5,8 @@ This is a Tethys 2/3 compatible app that visualizes data from the NASA GES Disc 
 
 ## App Features
 * Show time-animated maps across multiple time intervals and across all GLDAS variables.
-* Generates charts with timeseries values either for a point, the spatial average within a polygon, or predifined world regions.
-* Calculates simple statistical, historical analysis on values at the user chosen location.
+* Generates charts with timeseries values either for a point, the spatial average within a polygon, or predefined world regions.
+* Calculates simple statistical analysis on historical data at the user's chosen location.
 
 ## Installation Instructions
 ### 1 Install the Tethys App
@@ -119,7 +119,7 @@ Log in to your Tethys portal as an admin. Click on the grey GLDAS box and specif
 
 **Thredds Base Address:** This is the base URL to Thredds WMS services that the app uses to build urls for each of the WMS layers generated for the netcdf datasets. If you followed the typical configuration of thredds (these instructions) then your base url will look something like ```yourserver.com/thredds/wms/testAll/gldas/```. You can verify this by opening the thredds catalog in a web browser (typically at ```yourserver.com/thredds/catalog.html```). Navigate to one of the GLDAS netcdf files and click the WMS link. A page showing an xml document should load. Copy the url in the address bar until you get to the ```/gldas/``` folder in that url. Do not include ```/raw/name_of_dataset.nc``` or the request that comes after. (example: ```https://tethys.byu.edu/thredds/wms/testAll/gldas/```)
 
-**Geoserver Workspace Address:** This is the WFS (ows) url to the workspace on geoserver where the shapefiles for the world region boundaries are served. This geoserver workspace needs to have at minimum WFS services enabled. You can find it by using the layer preview interface of GeoServer and choosing GeoJSON as the format. (example: ```https://tethys.byu.edu/geoserver/gldas/ows```)
+**Geoserver Workspace Address:** This is the WFS (ows) url to the workspace on geoserver where the shapefiles for the world region boundaries are served. This geoserver workspace needs to have at minimum WFS services enabled. You can find it by using the layer preview interface of GeoServer and choosing GeoJSON as the format. If you chose not to use geoserver, enter ```geojson``` as your url. (example: ```https://tethys.byu.edu/geoserver/gldas/ows```)
 
 ## How the app works
 The various functions of the app are split into either python or javascript files named for what they control.

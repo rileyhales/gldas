@@ -5,6 +5,7 @@
             <values start="0" increment="1" />
     </variable>
     <aggregation dimName="time" type="joinExisting" recheckEvery="1 day">
+        <!-- <netcdf location="raw/GLDAS_NOAH025_M.A201901.021.nc4"/>   Option for explicitly specifying files to aggregate -->
         <scan location="raw/"/>
     </aggregation>
 </netcdf>

@@ -5,18 +5,10 @@
             <values start="0" increment="1" />
     </variable>
     <aggregation dimName="time" type="joinExisting" recheckEvery="1 day">
-        <netcdf location="raw/GLDAS_NOAH025_M.A201001.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201002.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201003.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201004.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201005.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201005.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201006.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201007.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201008.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201009.021.nc4"/>
-        <netcdf location="raw/GLDAS_NOAH025_M.A201010.021.nc4"/>
-	    <netcdf location="raw/GLDAS_NOAH025_M.A201011.021.nc4"/>
-	    <netcdf location="raw/GLDAS_NOAH025_M.A201012.021.nc4"/>
+        <scan location="raw/">
+            <filter>
+                <include wildcard="GLDAS_NOAH025_M.A2010*"/>
+            </filter>
+        </scan>
     </aggregation>
 </netcdf>

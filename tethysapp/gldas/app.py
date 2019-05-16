@@ -14,13 +14,14 @@ class Gldas(TethysAppBase):
     root_url = 'gldas'
     color = '#002366'
     description = 'Visualizes NASA GLDAS monthly data with time animated maps.\n' \
-                  'Generates timeseries charts and datasets at points or averaged over polygons.'
+                  'Generates timeseries charts and datasets at points or averaged over polygons.\n' \
+                  'Perform simple statistical analysis on historical data.'
     tags = 'NASA, GLDAS, Timeseries'
     enable_feedback = False
     feedback_emails = []
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'Version 2.5.4 - 16 May 2019'
+    version = 'Version 2.5.5 - 16 May 2019'
 
     def url_maps(self):
         """
