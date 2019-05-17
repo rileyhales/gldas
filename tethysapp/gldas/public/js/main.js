@@ -116,12 +116,8 @@ $('#charttype').change(function () {
     makechart();
 });
 
-$("#rastertoggle").click(function() {
-    $("#rastercontrols").toggle();
-});
-
-$("#geojsontoggle").click(function() {
-    $("#geojsoncontrols").toggle();
+$("#datatoggle").click(function() {
+    $("#datacontrols").toggle();
 });
 
 $("#displaytoggle").click(function() {

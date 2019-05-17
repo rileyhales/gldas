@@ -79,7 +79,7 @@ def polychart(data):
     """
     values = []
     variable = str(data['variable'])
-    coords = data['coords'][0]          # 5x2 array 1 row of lat/lon per corner, 1st duplicated (start/stop)
+    coords = data['coords'][0]  # 5x2 array 1 row of lat/lon per corner, 1st duplicated (start/stop)
     tperiod = data['time']
 
     configs = app_configuration()
@@ -171,8 +171,8 @@ def nc_to_gtiff(data):
 
         # format the array of information going to the tiff
         array = numpy.asarray(var_data)[0, :, :]
-        array[array < -9000] = numpy.nan                # change the comparator to git rid of the fill value
-        array = array[::-1]       # vertically flip the array so the orientation is right (you just have to, try it)
+        array[array < -9000] = numpy.nan  # change the comparator to git rid of the fill value
+        array = array[::-1]  # vertically flip the array so the orientation is right (you just have to, try it)
 
         # Creates geotiff raster file (filepath, x-dimensions, y-dimensions, number of bands, datatype)
         gtiffpath = os.path.join(geotiffdir, 'geotiff' + str(i) + '.tif')
@@ -190,8 +190,8 @@ def nc_to_gtiff(data):
         new_gtiff.SetProjection(osr.SRS_WKT_WGS84)
 
         # actually write the data array to the tiff file and save it
-        new_gtiff.GetRasterBand(1).WriteArray(array)      # write band to the raster (variable array)
-        new_gtiff.FlushCache()                            # write to disk
+        new_gtiff.GetRasterBand(1).WriteArray(array)  # write band to the raster (variable array)
+        new_gtiff.FlushCache()  # write to disk
     return times, units
 
 
@@ -260,25 +260,37 @@ def rastermask_average_gdalwarp(data):
 
     return values
 
+
 def makestatplots(data):
     """
     Calculates statistics for the array of timeseries values and returns arrays for a highcharts boxplot
     Dependencies: statistics, pandas, datetime
     """
     df = pandas.DataFrame(data['values'], columns=['dates', 'values', 'month', 'year'])
-    data['multiline'] = {'min': [], 'max': [], 'mean': []}
-    data['boxplot'] = []
+    data['multiline'] = {'yearmulti': {'min': [], 'max': [], 'mean': []},
+                         'monthmulti': {'min': [], 'max': [], 'mean': []}}
+    data['boxplot'] = {'yearbox': [], 'monthbox': []}
 
     if data['time'] == 'alltimes':
         for i in range(1, 13):
             tmp = df[df['month'] == i]['values']
             std = statistics.stdev(tmp)
-            mean = sum(tmp)/len(tmp)
-            data['boxplot'].append([i, min(tmp), mean - std, mean, mean + std, max(tmp)])
+            ymin = min(tmp)
+            ymax = max(tmp)
+            mean = sum(tmp) / len(tmp)
+            data['boxplot']['monthbox'].append([i, ymin, mean - std, mean, mean + std, ymax])
+            data['multiline']['monthmulti']['min'].append((i + 2000, ymin))
+            data['multiline']['monthmulti']['mean'].append((i + 2000, mean))
+            data['multiline']['monthmulti']['max'].append((i + 2000, ymax))
         for i in range(20):
             tmp = df[df['year'] == i + 2000]['values']
-            data['multiline']['min'].append((i + 2000, min(tmp)))
-            data['multiline']['mean'].append((i + 2000, sum(tmp)/len(tmp)))
-            data['multiline']['max'].append((i + 2000, max(tmp)))
+            std = statistics.stdev(tmp)
+            ymin = min(tmp)
+            ymax = max(tmp)
+            mean = sum(tmp) / len(tmp)
+            data['boxplot']['yearbox'].append([i, ymin, mean - std, mean, mean + std, ymax])
+            data['multiline']['yearmulti']['min'].append((i + 2000, ymin))
+            data['multiline']['yearmulti']['mean'].append((i + 2000, mean))
+            data['multiline']['yearmulti']['max'].append((i + 2000, ymax))
 
     return data

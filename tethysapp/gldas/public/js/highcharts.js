@@ -73,6 +73,7 @@ function newHighchart(data) {
 }
 
 function newMultilineChart(data) {
+    let charttype = $("#charttype").val();
     chart = Highcharts.chart('highchart', {
         title: {
             align: "center",
@@ -87,19 +88,19 @@ function newMultilineChart(data) {
         },
         series: [
             {
-                data: data['multiline']['min'],
+                data: data['multiline'][charttype]['min'],
                 type: "line",
                 name: 'Yearly Minimum',
                 tooltip: {xDateFormat: '%A, %b %e, %Y'},
             },
             {
-                data: data['multiline']['max'],
+                data: data['multiline'][charttype]['max'],
                 type: "line",
                 name: 'Yearly Maximum',
                 tooltip: {xDateFormat: '%A, %b %e, %Y'},
             },
             {
-                data: data['multiline']['mean'],
+                data: data['multiline'][charttype]['mean'],
                 type: "line",
                 name: 'Yearly Average',
                 tooltip: {xDateFormat: '%A, %b %e, %Y'},
@@ -126,7 +127,7 @@ function newBoxPlot(data) {
             borderColor: '#000000',
             borderWidth: 2,
         },
-        title: {align: "center", text: 'Monthly ' + data['name'] + ' Statistics ' + data['type']},
+        title: {align: "center", text: data['name'] + ' Statistics ' + data['type']},
         legend: {enabled: false},
         xAxis: {
             type: 'datetime',
@@ -136,7 +137,7 @@ function newBoxPlot(data) {
         yAxis: {title: {text: data['units']}},
         series: [{
             name: data['name'],
-            data: data['boxplot'],
+            data: data['boxplot'][$("#charttype").val()],
             tooltip: {xDateFormat: '%b',},
         }]
 
@@ -252,9 +253,9 @@ function makechart() {
         let type = $("#charttype").val();
         if (type === 'timeseries') {
             newHighchart(chartdata);
-        } else if (type === 'multiline') {
+        } else if (type === 'yearmulti' || type === 'monthmulti') {
             newMultilineChart(chartdata);
-        } else if (type === 'boxplot') {
+        } else if (type === 'yearbox' || type === 'monthbox') {
             newBoxPlot(chartdata);
         }
     }

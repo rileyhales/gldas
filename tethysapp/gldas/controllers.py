@@ -25,15 +25,6 @@ def home(request):
         options=options,
     )
 
-    colorscheme = SelectInput(
-        display_text='Raster Color Scheme',
-        name='colorscheme',
-        multiple=False,
-        original=True,
-        options=wms_colors(),
-        initial='rainbow'
-    )
-
     dates = SelectInput(
         display_text='Time Interval',
         name='dates',
@@ -43,12 +34,13 @@ def home(request):
         initial='alltimes'
     )
 
-    regions = SelectInput(
-        display_text='World Regions',
-        name='regions',
+    colorscheme = SelectInput(
+        display_text='Raster Color Scheme',
+        name='colorscheme',
         multiple=False,
         original=True,
-        options=worldregions(),
+        options=wms_colors(),
+        initial='rainbow'
     )
 
     opacity_raster = RangeSlider(
@@ -57,7 +49,7 @@ def home(request):
         min=.5,
         max=1,
         step=.05,
-        initial=.8,
+        initial=1,
     )
 
     colors_geojson = SelectInput(
@@ -74,8 +66,8 @@ def home(request):
         name='opacity_geojson',
         min=.0,
         max=1,
-        step=.05,
-        initial=.25,
+        step=.1,
+        initial=.2,
     )
 
     charttype = SelectInput(
@@ -88,12 +80,11 @@ def home(request):
 
     context = {
         'variables': variables,
-        'opacity_raster': opacity_raster,
-        'colorscheme': colorscheme,
         'dates': dates,
-        'regions': regions,
-        'opacity_geojson': opacity_geojson,
+        'colorscheme': colorscheme,
+        'opacity_raster': opacity_raster,
         'colors_geojson': colors_geojson,
+        'opacity_geojson': opacity_geojson,
         'charttype': charttype,
         'youtubelink': App.youtubelink,
         'githublink': App.githublink,
