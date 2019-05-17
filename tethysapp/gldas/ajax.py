@@ -18,10 +18,8 @@ def get_pointseries(request):
     """
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['units'], data['values'] = pointchart(data)
-    print(data['values'])
     data['type'] = '(Values at a Point)'
     data = determinestats(data)
-    print(data['statistics'])
 
     variables = gldas_variables()
     for key in variables:
@@ -42,7 +40,6 @@ def get_polygonaverage(request):
     data['units'], data['values'] = polychart(data)
     data['type'] = '(Averaged over a Polygon)'
     data = determinestats(data)
-    print(data['statistics'])
 
     variables = gldas_variables()
     for key in variables:

@@ -32,7 +32,6 @@ function getThreddswms() {
 }
 
 ////////////////////////////////////////////////////////////////////////  LOAD THE MAP
-//  Load initial map data as soon as the page is ready
 let threddsbase;
 let geoserverbase;
 getThreddswms();                        // sets the value of threddsbase and geoserverbase

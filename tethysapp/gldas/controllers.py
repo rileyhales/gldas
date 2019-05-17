@@ -87,6 +87,7 @@ def home(request):
         'opacity_geojson': opacity_geojson,
         'colors_geojson': colors_geojson,
         'youtubelink': App.youtubelink,
+        'githublink': App.githublink,
         'gldaslink': App.gldaslink,
         'version': App.version,
     }

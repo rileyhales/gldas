@@ -21,7 +21,7 @@
         <a href="{{ youtubelink }}" target="_blank"><span class="glyphicon glyphicon-play-circle"></span></a>
     </div>
     <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Source Code and Documentation">
-        <a href="https://github.com/rileyhales/gldas" target="_blank"><span class="glyphicon glyphicon-hdd"></span></a>
+        <a href="{{ githublink }}" target="_blank"><span class="glyphicon glyphicon-hdd"></span></a>
     </div>
 {% endblock %}
 
@@ -113,7 +113,7 @@
     <a class="btn btn-default" role="button" data-toggle="modal" data-target="#help-modal">How to use this app</a>
     <a class="btn btn-default" role="button" href="{{ youtubelink }}" target="_blank">Watch a demonstration on YouTube</a>
     <a class="btn btn-default" role="button" data-toggle="modal" data-target="#data-modal">About the GLDAS data</a>
-    <a class="btn btn-default" role="button" href="https://github.com/rileyhales/gldas" target="_blank">View the source code on GitHub</a>
+    <a class="btn btn-default" role="button" href="{{ githublink}}" target="_blank">View the source code on GitHub</a>
 {% endblock %}
 
 {% block content_dependent_styles %}

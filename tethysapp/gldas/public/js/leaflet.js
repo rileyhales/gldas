@@ -72,7 +72,7 @@ legend.onAdd = function (mapObj) {
 };
 
 ////////////////////////////////////////////////////////////////////////  GEOJSON LAYERS - GEOSERVER + WFS / GEOJSON
-let currentregion;              // tracks which region is on the chart for updates not caused by the user picking a new region
+let currentregion = '';              // tracks which region is on the chart for updates not caused by the user picking a new region
 function layerPopups(feature, layer) {
     let region = feature.properties.name;
     layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries of averages for ' + region + '</a>');

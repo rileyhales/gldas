@@ -106,7 +106,7 @@ function newStatisticalChart(data) {
         xAxis: {
             type: 'datetime',
             title: {text: 'Time'},
-            minTickInterval: 28*24*3600*1000,
+            minTickInterval: 28 * 24 * 3600 * 1000,
         },
         yAxis: {title: {text: data['units']}},
         series: [{
@@ -121,6 +121,10 @@ function newStatisticalChart(data) {
 function getDrawnChart(drawnItems) {
     // Verify that there is a drawing on the map
     let geojson = drawnItems.toGeoJSON()['features'];
+    if (geojson.length === 0 && currentregion === '') {
+        // if theres nothing to get charts for then quit
+        return
+    }
     if (geojson.length > 0) {
         histchart.hideNoData();
         histchart.showLoading();

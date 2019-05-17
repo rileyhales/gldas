@@ -20,6 +20,7 @@ class Gldas(TethysAppBase):
     enable_feedback = False
     feedback_emails = []
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
+    githublink = 'https://github.com/rileyhales/gldas'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
     version = 'Version 2.6.0 - 16 May 2019'
 
