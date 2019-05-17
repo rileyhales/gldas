@@ -11,162 +11,192 @@
 
 
 {% block header_buttons %}
-    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="How To Use This Page">
-        <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
-    </div>
-    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Download GLDAS Data">
-        <a href="{{ gldaslink }}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span></a>
-    </div>
-    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Tutorial on YouTube">
-        <a href="{{ youtubelink }}" target="_blank"><span class="glyphicon glyphicon-play-circle"></span></a>
-    </div>
-    <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="View Source Code and Documentation">
-        <a href="{{ githublink }}" target="_blank"><span class="glyphicon glyphicon-hdd"></span></a>
-    </div>
+  <div style="text-align: center; color: white; padding: 8px"><strong>{{ version }}</strong></div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"
+       title="How To Use This Page">
+    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+  </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Download GLDAS Data">
+    <a href="{{ gldaslink }}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span></a>
+  </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"
+       title="View Tutorial on YouTube">
+    <a href="{{ youtubelink }}" target="_blank"><span class="glyphicon glyphicon-play-circle"></span></a>
+  </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"
+       title="View Source Code and Documentation">
+    <a href="{{ githublink }}" target="_blank"><span class="glyphicon glyphicon-hdd"></span></a>
+  </div>
 {% endblock %}
 
 {% block after_app_content %}
-    <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title" id="help-modal-label">How To Use This Page</h5>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        This app contains 4 primary areas.
-                        <ol>
-                            <li>A column of controls on the left side of the screen</li>
-                            <li>A map showing the date the user specifies</li>
-                            <li>Space for a graph of timeseries information</li>
-                            <li>Help buttons with links to this help modal, GLDAS data downloads, help videos, source code, and error reporting</li>
-                        </ol>
-                        <div id="imgwrapper" style="text-align: center;"><img src="{% static 'gldas/images/helpdiagram.png' %}" style="width: 100%"></div>
-                    </p
-                    <p>
-                        To use this app you should:
-                        <ol>
-                            <li>Pick the date range for which you want to see GLDAS data <b>(area 1)</b></li>
-                            <li>Change the color scheme and opacity as desired <b>(area 1)</b></li>
-                            <li>Use the controls on the bottom left corner of the map to control the map's animation. The animation will show monthly timesteps of averaged values each month in the date range you chose <b>(area 2)</b></li>
-                            <li>Use the controls on the top left corner of the map to place a marker on any point on the map for which there is data <b>(area 2)</b></li>
-                            <li>Look at the chart at the bottom of the screen to view a timeseries of values plotted for the variable-date-location combo that you chose <b>(area 3)</b></li>
-                            <li>Use the options found at the top right corner of the chart box to download the data in the chart <b>(area 3)</b></li>
-                            <li>Use the controls on the top right corner of the screen to access help, data, and more <b>(area 4)</b></li>
-                        </ol>
-                    </p>
-                    <p>By default, the data shown is for all available timesteps (January 1 2000 through the present). Data may also be shown in 1-year intervals. Performance and loading times will vary based on the time and variable combination you choose. Charts will take longer to load if you choose All Available Times as a your time interval.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-                </div>
-            </div>
+  <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="help-modal-label">How To Use This Page</h5>
         </div>
+        <div class="modal-body">
+          <p>
+            This app contains 4 primary areas.
+          <ol>
+            <li>A column of controls on the left side of the screen</li>
+            <li>A map showing the date the user specifies</li>
+            <li>Space for a graph of timeseries information</li>
+            <li>Help buttons with links to this help modal, GLDAS data downloads, help videos, source code, and error
+              reporting
+            </li>
+          </ol>
+          <div id="imgwrapper" style="text-align: center;"><img src="{% static 'gldas/images/helpdiagram.png' %}"
+                                                                style="width: 100%"></div>
+          </p
+          <p>
+            To use this app you should:
+          <ol>
+            <li>Pick the date range for which you want to see GLDAS data <b>(area 1)</b></li>
+            <li>Change the color scheme and opacity as desired <b>(area 1)</b></li>
+            <li>Use the controls on the bottom left corner of the map to control the map's animation. The animation will
+              show monthly timesteps of averaged values each month in the date range you chose <b>(area 2)</b></li>
+            <li>Use the controls on the top left corner of the map to place a marker on any point on the map for which
+              there is data <b>(area 2)</b></li>
+            <li>Look at the chart at the bottom of the screen to view a timeseries of values plotted for the
+              variable-date-location combo that you chose <b>(area 3)</b></li>
+            <li>Use the options found at the top right corner of the chart box to download the data in the chart <b>(area
+              3)</b></li>
+            <li>Use the controls on the top right corner of the screen to access help, data, and more <b>(area 4)</b>
+            </li>
+          </ol>
+          </p>
+          <p>By default, the data shown is for all available timesteps (January 1 2000 through the present). Data may
+            also be shown in 1-year intervals. Performance and loading times will vary based on the time and variable
+            combination you choose. Charts will take longer to load if you choose All Available Times as a your time
+            interval.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="modal fade" id="data-modal" tabindex="-1" role="dialog" aria-labelledby="data-modal-label">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h5 class="modal-title" id="data-modal-label">GLDAS Data</h5>
-                </div>
-                <div class="modal-body">
-                    <p>The data shown in this app are Global datasets from the Land Data Assimilation System, or GLDAS data. The data shown here are 1/4 degree resolution, monthly averages. You can download this data for yourself from <a href="{{ gldaslink }}" target="_blank">NASA GES Disc</a>. Refer to the documentation for downloads to find batch download instructions and forms to sign up for credentials to GES Disc.</p>
-                    <p>The data are in netCDF format and shown on the map through OGC WMS using the Thredds Data Server and netCDF Markup Language (ncml).</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-                </div>
-            </div>
+  <div class="modal fade" id="data-modal" tabindex="-1" role="dialog" aria-labelledby="data-modal-label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="data-modal-label">GLDAS Data</h5>
         </div>
+        <div class="modal-body">
+          <p>The data shown in this app are Global datasets from the Land Data Assimilation System, or GLDAS data. The
+            data shown here are 1/4 degree resolution, monthly averages. You can download this data for yourself from <a
+                    href="{{ gldaslink }}" target="_blank">NASA GES Disc</a>. Refer to the documentation for downloads
+            to find batch download instructions and forms to sign up for credentials to GES Disc.</p>
+          <p>The data are in netCDF format and shown on the map through OGC WMS using the Thredds Data Server and netCDF
+            Markup Language (ncml).</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
     </div>
+  </div>
 {% endblock %}
 
 {% block app_navigation_items %}
-    <li class="title">GLDAS Data (Raster) Controls</li>
+  <li class="title" role="button" id="rastertoggle">GLDAS Data (Raster) Controls</li>
+  <div id="rastercontrols">
     {% gizmo select_input variables %}
     {% gizmo select_input dates %}
     {% gizmo select_input colorscheme %}
     {% gizmo range_slider opacity_raster %}
+  </div>
 
-    <li class="title">Boundary (GeoJSON) Controls</li>
+  <li class="title" role="button" id="geojsontoggle">Boundary (GeoJSON) Controls</li>
+  <div id="geojsoncontrols">
     {% gizmo select_input colors_geojson %}
     {% gizmo range_slider opacity_geojson %}
+  </div>
 
+  <li class="title" role="button" id="displaytoggle">Display Options</li>
+  <div id="displaycontrols">
+    {% gizmo select_input charttype %}
     <div id="mouse-position" class="well well-sm" style="text-align: center"></div>
-
-    <li class="title">Help and Resources</li>
-    <a class="btn btn-default btn-block" role="button" data-toggle="modal" data-target="#help-modal">How to use this app</a>
-    <a class="btn btn-default btn-block" role="button" href="{{ youtubelink }}" target="_blank">Watch a demonstration on YouTube</a>
-    <a class="btn btn-default btn-block" role="button" data-toggle="modal" data-target="#data-modal">About the GLDAS data</a>
-    <a class="btn btn-default btn-block" role="button" href="https://github.com/rileyhales/gldas" target="_blank">View the source code on GitHub</a>
-    <div style="text-align: center">{{ version }}</div>
-
+    {#    <a class="btn btn-default btn-block" id="mouse-position" style="text-align: center"></a>#}
+  </div>
 {% endblock %}
 
 {% block app_actions %}
-    <strong style="color: white; font-size: large">Help and Resources</strong>
-    <a class="btn btn-default" role="button" data-toggle="modal" data-target="#help-modal">How to use this app</a>
-    <a class="btn btn-default" role="button" href="{{ youtubelink }}" target="_blank">Watch a demonstration on YouTube</a>
-    <a class="btn btn-default" role="button" data-toggle="modal" data-target="#data-modal">About the GLDAS data</a>
-    <a class="btn btn-default" role="button" href="{{ githublink}}" target="_blank">View the source code on GitHub</a>
+  <strong style="color: white; font-size: large">Help and Resources</strong>
+  <a class="btn btn-default" role="button" data-toggle="modal" data-target="#help-modal">How to use this app</a>
+  <a class="btn btn-default" role="button" href="{{ youtubelink }}" target="_blank">Watch a demonstration on YouTube</a>
+  <a class="btn btn-default" role="button" data-toggle="modal" data-target="#data-modal">About the GLDAS data</a>
+  <a class="btn btn-default" role="button" href="{{ githublink }}" target="_blank">View the source code on GitHub</a>
 {% endblock %}
 
 {% block content_dependent_styles %}
-{{ block.super }}
-    <!-- styling for leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" />
-    <!-- styling for timeseries controls -->
-    <link rel="stylesheet" href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css" />
-    <!-- styling for the leaflet draw plugin -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css" />
+  {{ block.super }}
+  <!-- styling for leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
+  <!-- styling for timeseries controls -->
+  <link rel="stylesheet"
+        href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css"/>
+  <!-- styling for the leaflet draw plugin -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css"/>
 
-    <!-- styling generated for the app -->
-    <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
+  <!-- styling generated for the app -->
+  <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
 {% endblock %}
 
 {% block scripts %}
-{{ block.super }}
-    <!-- Allows csrf verification with AJAX -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  {{ block.super }}
+  <!-- Allows csrf verification with AJAX -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
-    <!-- script for leaflet -->
-    <script type="text/javascript" src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
-    <!-- Leadlet with Esri -->
-    <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js" integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g==" crossorigin=""></script>
-    <!-- script for timeseries controls in leaflet -->
-    <script type="text/javascript" src="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.min.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
-    <!-- allows you to use the leaflet draw plugin -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.js"></script>
+  <!-- script for leaflet -->
+  <script type="text/javascript" src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+  <!-- Leadlet with Esri -->
+  <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"
+          integrity="sha512-YZ6b5bXRVwipfqul5krehD9qlbJzc6KOGXYsDjU9HHXW2gK57xmWl2gU6nAegiErAqFXhygKIsWPKbjLPXVb2g=="
+          crossorigin=""></script>
+  <!-- script for timeseries controls in leaflet -->
+  <script type="text/javascript"
+          src="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.min.js"></script>
+  <script type="text/javascript" src="https://cdn.rawgit.com/nezasa/iso8601-js-period/master/iso8601.min.js"></script>
+  <!-- allows you to use the leaflet draw plugin -->
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.js"></script>
 
-    <!-- script for using highcharts (display timeseries plot) -->
-    <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
-    <script type="text/javascript" src="https://code.highcharts.com/highcharts-more.js">
-    </script><script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script type="text/javascript" src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script type="text/javascript" src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
+  <!-- script for using highcharts (display timeseries plot) -->
+  <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+  <script type="text/javascript" src="https://code.highcharts.com/highcharts-more.js">
+  </script>
+  <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script type="text/javascript" src="https://code.highcharts.com/modules/export-data.js"></script>
+  <script type="text/javascript" src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
 
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128273217-2"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'UA-128273217-2');
-    </script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128273217-2"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
 
-    <!-- scripts I wrote for the app, main should go last -->
-    <script src="{% static 'gldas/js/geojsons1.js' %}" type="text/javascript"></script>
-    <script src="{% static 'gldas/js/geojsons2.js' %}" type="text/javascript"></script>
-    <script src="{% static 'gldas/js/geojsons3.js' %}" type="text/javascript"></script>
-    <script src="{% static 'gldas/js/bounds.js' %}" type="text/javascript"></script>
+      function gtag() {
+          dataLayer.push(arguments);
+      }
 
-    <script src="{% static 'gldas/js/highcharts.js' %}" type="text/javascript"></script>
-    <script src="{% static 'gldas/js/leaflet.js' %}" type="text/javascript"></script>
-    <script src="{% static 'gldas/js/main.js' %}" type="text/javascript"></script>
+      gtag('js', new Date());
+      gtag('config', 'UA-128273217-2');
+  </script>
+
+  <!-- scripts I wrote for the app, main should go last -->
+  <script src="{% static 'gldas/js/geojsons1.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/geojsons2.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/geojsons3.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/bounds.js' %}" type="text/javascript"></script>
+
+  <script src="{% static 'gldas/js/highcharts.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/leaflet.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/main.js' %}" type="text/javascript"></script>
 {% endblock %}

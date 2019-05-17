@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import SelectInput, RangeSlider
-from .model import gldas_variables, wms_colors, geojson_colors, timecoverage, worldregions
+from .model import gldas_variables, wms_colors, geojson_colors, timecoverage, worldregions, get_charttypes
 from .app import Gldas as App
 
 
@@ -78,6 +78,14 @@ def home(request):
         initial=.25,
     )
 
+    charttype = SelectInput(
+        display_text='Choose a Plot Type',
+        name='charttype',
+        multiple=False,
+        original=True,
+        options=get_charttypes(),
+    )
+
     context = {
         'variables': variables,
         'opacity_raster': opacity_raster,
@@ -86,6 +94,7 @@ def home(request):
         'regions': regions,
         'opacity_geojson': opacity_geojson,
         'colors_geojson': colors_geojson,
+        'charttype': charttype,
         'youtubelink': App.youtubelink,
         'githublink': App.githublink,
         'gldaslink': App.gldaslink,

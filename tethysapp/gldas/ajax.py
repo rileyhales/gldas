@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 from .model import app_configuration, gldas_variables
-from .tools import nc_to_gtiff, rastermask_average_gdalwarp, pointchart, polychart, determinestats
+from .tools import nc_to_gtiff, rastermask_average_gdalwarp, pointchart, polychart, makestatplots
 
 
 @login_required()
@@ -19,7 +19,7 @@ def get_pointseries(request):
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['units'], data['values'] = pointchart(data)
     data['type'] = '(Values at a Point)'
-    data = determinestats(data)
+    data = makestatplots(data)
 
     variables = gldas_variables()
     for key in variables:
@@ -39,7 +39,7 @@ def get_polygonaverage(request):
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['units'], data['values'] = polychart(data)
     data['type'] = '(Averaged over a Polygon)'
-    data = determinestats(data)
+    data = makestatplots(data)
 
     variables = gldas_variables()
     for key in variables:
@@ -61,7 +61,7 @@ def get_shapeaverage(request):
     data['times'], data['units'] = nc_to_gtiff(data)
     data['values'] = rastermask_average_gdalwarp(data)
     data['type'] = '(Average for ' + data['region'] + ')'
-    data['statistics'] = determinestats(data)
+    data = makestatplots(data)
 
     variables = gldas_variables()
     for key in variables:

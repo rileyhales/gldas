@@ -13,7 +13,7 @@ html, body, #app-content, #inner-app-content, #outer-container {
     padding: 1px;
 }
 
-#historicalchart, #statisticschart {
+#highchart {
     height: 40%;
     padding: 1px;
 }

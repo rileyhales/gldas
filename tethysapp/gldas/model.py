@@ -127,3 +127,10 @@ def geojson_colors():
         ('Teal', '#008080'),
         ('Purple', '#800080'),
     ]
+
+def get_charttypes():
+    return [
+        ('Full Timeseries (Single-Line Plot)', 'timeseries'),
+        ('Monthly Analysis (Box Plot)', 'boxplot'),
+        ('Yearly Analysis (Multi-Line Plot)', 'multiline'),
+    ]

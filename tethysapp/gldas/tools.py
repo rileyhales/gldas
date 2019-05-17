@@ -167,7 +167,7 @@ def nc_to_gtiff(data):
         # create the timesteps for the highcharts plot
         t_value = (nc_obj['time'].__dict__['begin_date'])
         t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
-        times.append(calendar.timegm(t_step.utctimetuple()) * 1000)
+        times.append((calendar.timegm(t_step.utctimetuple()) * 1000, t_step.month, t_step.year))
 
         # format the array of information going to the tiff
         array = numpy.asarray(var_data)[0, :, :]
@@ -253,26 +253,32 @@ def rastermask_average_gdalwarp(data):
         array = array.flatten()
         array = array[~numpy.isnan(array)]
         mean = array.mean()
-        values.append((times[i], float(mean)))
+        values.append((times[i][0], float(mean), times[i][1], times[i][2]))
 
     if os.path.isdir(geotiffdir):
         shutil.rmtree(geotiffdir)
 
     return values
 
-def determinestats(data):
+def makestatplots(data):
     """
     Calculates statistics for the array of timeseries values and returns arrays for a highcharts boxplot
     Dependencies: statistics, pandas, datetime
     """
     df = pandas.DataFrame(data['values'], columns=['dates', 'values', 'month', 'year'])
-    data['statistics'] = []
+    data['multiline'] = {'min': [], 'max': [], 'mean': []}
+    data['boxplot'] = []
 
     if data['time'] == 'alltimes':
         for i in range(1, 13):
             tmp = df[df['month'] == i]['values']
             std = statistics.stdev(tmp)
             mean = sum(tmp)/len(tmp)
-            data['statistics'].append([i, min(tmp), mean - std, mean, mean + std, max(tmp)])
+            data['boxplot'].append([i, min(tmp), mean - std, mean, mean + std, max(tmp)])
+        for i in range(20):
+            tmp = df[df['year'] == i + 2000]['values']
+            data['multiline']['min'].append((i + 2000, min(tmp)))
+            data['multiline']['mean'].append((i + 2000, sum(tmp)/len(tmp)))
+            data['multiline']['max'].append((i + 2000, max(tmp)))
 
     return data

@@ -13,7 +13,7 @@ dependencies = ['netCDF4', 'numpy', 'gdal', 'osr']
 
 setup(
     name=release_package,
-    version='2.6.0',
+    version='2.6.1',
     tags='NASA, GLDAS, LDAS, charts, maps, timeseries',
     description='Visualizes GLDAS data through maps and charts',
     long_description='Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution, '
@@ -21,7 +21,7 @@ setup(
     keywords='GLDAS',
     author='Riley Hales',
     author_email='',
-    url='rileyhales.com',
+    url='',
     license='BSD-3 Clause',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
     namespace_packages=['tethysapp', 'tethysapp.' + app_package],

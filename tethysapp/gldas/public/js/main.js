@@ -107,3 +107,23 @@ $("#opacity_geojson").change(function () {
 $('#colors_geojson').change(function () {
     styleGeoJSON();
 });
+
+$('#colors_geojson').change(function () {
+    styleGeoJSON();
+});
+
+$('#charttype').change(function () {
+    makechart();
+});
+
+$("#rastertoggle").click(function() {
+    $("#rastercontrols").toggle();
+});
+
+$("#geojsontoggle").click(function() {
+    $("#geojsoncontrols").toggle();
+});
+
+$("#displaytoggle").click(function() {
+    $("#displaycontrols").toggle();
+});

@@ -7,13 +7,15 @@ Highcharts.setOptions({
         downloadPNG: "Download PNG image",
         downloadSVG: "Download SVG vector image",
         downloadXLS: "Download XLS",
-        loading: "Loading timeseries, please wait...",
+        loading: "Timeseries loading, please wait...",
         noData: "No Data Selected. Place a point, draw a polygon, or select a region."
     },
 });
 
+let chartdata = null;
+
 // Placeholder chart
-let histchart = Highcharts.chart('historicalchart', {
+let chart = Highcharts.chart('highchart', {
     title: {
         align: "center",
         text: "Historical Data Chart Placeholder",
@@ -36,31 +38,9 @@ let histchart = Highcharts.chart('historicalchart', {
         }
     },
 });
-// Statistical data chart placeholder and function
-let statschart = Highcharts.chart('statisticschart', {
-    title: {
-        align: "center",
-        text: "Statistical Analysis Chart Placeholder",
-    },
-    series: [{
-        data: [],
-    }],
-    chart: {
-        borderColor: '#000000',
-        borderWidth: 2,
-        type: 'boxplot',
-    },
-    noData: {
-        style: {
-            fontWeight: 'bold',
-            fontSize: '15px',
-            color: '#303030'
-        }
-    },
-});
 
 function newHighchart(data) {
-    histchart = Highcharts.chart('historicalchart', {
+    chart = Highcharts.chart('highchart', {
         title: {
             align: "center",
             text: data['name'] + ' v Time ' + data['type'],
@@ -92,8 +72,53 @@ function newHighchart(data) {
     });
 }
 
-function newStatisticalChart(data) {
-    statschart = Highcharts.chart('statisticschart', {
+function newMultilineChart(data) {
+    chart = Highcharts.chart('highchart', {
+        title: {
+            align: "center",
+            text: data['name'] + ' v Time ' + data['type'],
+        },
+        xAxis: {
+            type: 'datetime',
+            title: {text: "Time"},
+        },
+        yAxis: {
+            title: {text: data['units']}
+        },
+        series: [
+            {
+                data: data['multiline']['min'],
+                type: "line",
+                name: 'Yearly Minimum',
+                tooltip: {xDateFormat: '%A, %b %e, %Y'},
+            },
+            {
+                data: data['multiline']['max'],
+                type: "line",
+                name: 'Yearly Maximum',
+                tooltip: {xDateFormat: '%A, %b %e, %Y'},
+            },
+            {
+                data: data['multiline']['mean'],
+                type: "line",
+                name: 'Yearly Average',
+                tooltip: {xDateFormat: '%A, %b %e, %Y'},
+            }
+        ],
+        chart: {
+            animation: true,
+            zoomType: 'xy',
+            borderColor: '#000000',
+            borderWidth: 2,
+            type: 'area',
+
+        },
+
+    });
+}
+
+function newBoxPlot(data) {
+    chart = Highcharts.chart('highchart', {
         chart: {
             type: 'boxplot',
             animation: true,
@@ -111,7 +136,7 @@ function newStatisticalChart(data) {
         yAxis: {title: {text: data['units']}},
         series: [{
             name: data['name'],
-            data: data['statistics'],
+            data: data['boxplot'],
             tooltip: {xDateFormat: '%b',},
         }]
 
@@ -126,10 +151,8 @@ function getDrawnChart(drawnItems) {
         return
     }
     if (geojson.length > 0) {
-        histchart.hideNoData();
-        histchart.showLoading();
-        statschart.hideNoData();
-        statschart.showLoading();
+        chart.hideNoData();
+        chart.showLoading();
 
         //  Compatibility if user picks something out of normal bounds
         let coords = geojson[0]['geometry']['coordinates'];
@@ -162,8 +185,8 @@ function getDrawnChart(drawnItems) {
                 contentType: "application/json",
                 method: 'POST',
                 success: function (result) {
-                    newHighchart(result);
-                    newStatisticalChart(result);
+                    chartdata = result;
+                    makechart();
                 }
             })
         } else if (drawtype === 'Point') {
@@ -174,8 +197,8 @@ function getDrawnChart(drawnItems) {
                 contentType: "application/json",
                 method: 'POST',
                 success: function (result) {
-                    newHighchart(result);
-                    newStatisticalChart(result);
+                    chartdata = result;
+                    makechart();
                 },
             });
         }
@@ -194,10 +217,8 @@ function getShapeChart(selectedregion) {
     }
 
     drawnItems.clearLayers();
-    histchart.hideNoData();
-    histchart.showLoading();
-    statschart.hideNoData();
-    statschart.showLoading();
+    chart.hideNoData();
+    chart.showLoading();
 
     let data = {
         variable: $('#variables').val(),
@@ -220,8 +241,21 @@ function getShapeChart(selectedregion) {
         contentType: "application/json",
         method: 'POST',
         success: function (result) {
-            newHighchart(result);
-            newStatisticalChart(result);
+            chartdata = result;
+            makechart();
         }
     })
+}
+
+function makechart() {
+    if (chartdata !== null) {
+        let type = $("#charttype").val();
+        if (type === 'timeseries') {
+            newHighchart(chartdata);
+        } else if (type === 'multiline') {
+            newMultilineChart(chartdata);
+        } else if (type === 'boxplot') {
+            newBoxPlot(chartdata);
+        }
+    }
 }
