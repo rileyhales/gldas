@@ -9,7 +9,6 @@ import netCDF4
 import numpy
 import osr
 import ogr
-import json
 import statistics
 import pandas
 
@@ -200,7 +199,7 @@ def rastermask_average_gdalwarp(data):
     Description: A function to mask/clip a raster by the boundaries of a shapefile and computer the average value of the
         resulting raster
     Dependencies:
-        gdal, gdalnumeric, numpy, os, shutil, ogr, json
+        gdal, gdalnumeric, numpy, os, shutil, ogr
         from .app import Gldas as App
     Params: View README.md
     Returns: mean value of an array within a shapefile's boundaries
@@ -219,7 +218,8 @@ def rastermask_average_gdalwarp(data):
     else:
         # todo: still under development- turn a geojson into a shapefile
         import shapefile
-        from pyproj import Proj, transform
+        import json
+        # from pyproj import Proj, transform
         # convert the geojson to a shapefile object
         coords = data['coords'][0]
         shape = shapefile.Writer(shppath, shapeType=shapefile.POLYGON, shp=coords)
@@ -264,12 +264,17 @@ def rastermask_average_gdalwarp(data):
 def makestatplots(data):
     """
     Calculates statistics for the array of timeseries values and returns arrays for a highcharts boxplot
-    Dependencies: statistics, pandas, datetime
+    Dependencies: statistics, pandas, datetime, calendar
     """
     df = pandas.DataFrame(data['values'], columns=['dates', 'values', 'month', 'year'])
     data['multiline'] = {'yearmulti': {'min': [], 'max': [], 'mean': []},
                          'monthmulti': {'min': [], 'max': [], 'mean': []}}
     data['boxplot'] = {'yearbox': [], 'monthbox': []}
+
+    months = dict((n, m) for n, m in enumerate(calendar.month_name))
+    data['categories'] = {}
+    data['categories']['month'] = [months[i + 1] for i in range(12)]
+    data['categories']['year'] = [i + 2000 for i in range(20)]
 
     if data['time'] == 'alltimes':
         for i in range(1, 13):
@@ -278,10 +283,10 @@ def makestatplots(data):
             ymin = min(tmp)
             ymax = max(tmp)
             mean = sum(tmp) / len(tmp)
-            data['boxplot']['monthbox'].append([i, ymin, mean - std, mean, mean + std, ymax])
-            data['multiline']['monthmulti']['min'].append((i + 2000, ymin))
-            data['multiline']['monthmulti']['mean'].append((i + 2000, mean))
-            data['multiline']['monthmulti']['max'].append((i + 2000, ymax))
+            data['boxplot']['monthbox'].append([months[i], ymin, mean - std, mean, mean + std, ymax])
+            data['multiline']['monthmulti']['min'].append((months[i], ymin))
+            data['multiline']['monthmulti']['mean'].append((months[i], mean))
+            data['multiline']['monthmulti']['max'].append((months[i], ymax))
         for i in range(20):
             tmp = df[df['year'] == i + 2000]['values']
             std = statistics.stdev(tmp)

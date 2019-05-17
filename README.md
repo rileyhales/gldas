@@ -4,9 +4,18 @@ This is a Tethys 2/3 compatible app that visualizes data from the NASA GES Disc 
 © Riley Hales, 2018. Developed at the BYU Hydroinformatics Lab.
 
 ## App Features
-* Show time-animated maps across multiple time intervals and across all GLDAS variables.
-* Generates charts with timeseries values either for a point, the spatial average within a polygon, or predefined world regions.
-* Calculates simple statistical analysis on historical data at the user's chosen location.
+1. View time-animated maps of all GLDAS variables. Customize color scheme, opacity, animation/playback speed, time period.
+2. View world region boundaries. Customize color scheme and opacity.
+3. View the Latitude/Longitude Coordinates of anywhere on the planet by hovering your mouse over the map.
+4. Toggle visibility of controls and the controls menu.
+5. Use drawing controls to place a point or draw a rectangle on the globe and generate a chart with timeseries values at that point or of the spatial average within the box.
+6. Click on a landmass and a pop-up bubble gives you the name of the region and the option to generate a timeseries of average values in that region. 
+7. Choose between 4 additional chart options using box plots and multi-line plots to view statistical analysis of historical data.
+8. Export timeseries charts as graphics.
+9. Export timeseries data to csv.
+10. Link to demonstration video on YouTube.
+11. In-App tutorial explaining app features.
+12. Links to source code, installation instructions, and GLDAS data downloads.
 
 ## Installation Instructions
 ### 1 Install the Tethys App

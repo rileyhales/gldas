@@ -1,4 +1,4 @@
-from .app import Gldas
+from .app import Gldas as App
 import os
 
 
@@ -8,10 +8,10 @@ def app_configuration():
     Dependencies: os, App (app)
     """
     return {
-        'app_wksp_path': os.path.join(Gldas.get_app_workspace().path, ''),
-        'threddsurl': Gldas.get_custom_setting("Thredds WMS URL"),
-        'geoserverurl': Gldas.get_custom_setting("Geoserver Workspace URL"),
-        'threddsdatadir': Gldas.get_custom_setting("Local Thredds Folder Path"),
+        'app_wksp_path': os.path.join(App.get_app_workspace().path, ''),
+        'threddsurl': App.get_custom_setting("Thredds WMS URL"),
+        'geoserverurl': App.get_custom_setting("Geoserver Workspace URL"),
+        'threddsdatadir': App.get_custom_setting("Local Thredds Folder Path"),
     }
 
 
@@ -134,7 +134,7 @@ def worldregions():
     Populates the drop down menu with the list of available shapefiles to use for averaging
     Dependencies: os, App (app)
     """
-    folders = os.listdir(os.path.join(Gldas.get_app_workspace().path, 'shapefiles'))
+    folders = os.listdir(os.path.join(App.get_app_workspace().path, 'shapefiles'))
     options = [(folder, folder) for folder in folders if not folder.startswith('.')]
     options.sort()
     return options

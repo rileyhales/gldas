@@ -74,14 +74,16 @@ function newHighchart(data) {
 
 function newMultilineChart(data) {
     let charttype = $("#charttype").val();
+    let categories;
+    if (charttype.includes('month')) {categories = 'month'} else { categories = 'year'}
     chart = Highcharts.chart('highchart', {
         title: {
             align: "center",
             text: data['name'] + ' v Time ' + data['type'],
         },
         xAxis: {
-            type: 'datetime',
             title: {text: "Time"},
+            categories: data['categories'][categories],
         },
         yAxis: {
             title: {text: data['units']}
@@ -91,19 +93,16 @@ function newMultilineChart(data) {
                 data: data['multiline'][charttype]['min'],
                 type: "line",
                 name: 'Yearly Minimum',
-                tooltip: {xDateFormat: '%A, %b %e, %Y'},
             },
             {
                 data: data['multiline'][charttype]['max'],
                 type: "line",
                 name: 'Yearly Maximum',
-                tooltip: {xDateFormat: '%A, %b %e, %Y'},
             },
             {
                 data: data['multiline'][charttype]['mean'],
                 type: "line",
                 name: 'Yearly Average',
-                tooltip: {xDateFormat: '%A, %b %e, %Y'},
             }
         ],
         chart: {
@@ -119,6 +118,9 @@ function newMultilineChart(data) {
 }
 
 function newBoxPlot(data) {
+    let charttype = $("#charttype").val();
+    let categories;
+    if (charttype.includes('month')) {categories = 'month'} else { categories = 'year'}
     chart = Highcharts.chart('highchart', {
         chart: {
             type: 'boxplot',
@@ -130,14 +132,13 @@ function newBoxPlot(data) {
         title: {align: "center", text: data['name'] + ' Statistics ' + data['type']},
         legend: {enabled: false},
         xAxis: {
-            type: 'datetime',
             title: {text: 'Time'},
-            minTickInterval: 28 * 24 * 3600 * 1000,
+            categories: data['categories'][categories],
         },
         yAxis: {title: {text: data['units']}},
         series: [{
             name: data['name'],
-            data: data['boxplot'][$("#charttype").val()],
+            data: data['boxplot'][charttype],
             tooltip: {xDateFormat: '%b',},
         }]
 
