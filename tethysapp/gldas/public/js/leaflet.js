@@ -176,8 +176,8 @@ function clearMap() {
     mapObj.removeLayer(layerObj);
     // now do it for all the geojson layers
     for (let i = 0; i < geojsons.length; i++) {
-        controlsObj.removeLayer(geojsons[0]);
-        mapObj.removeLayer(geojsons[0]);
+        controlsObj.removeLayer(geojsons[i][0]);
+        mapObj.removeLayer(geojsons[i][0]);
     }
     // now delete the controls object
     mapObj.removeControl(controlsObj);

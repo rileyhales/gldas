@@ -8,15 +8,15 @@ Highcharts.setOptions({
         downloadSVG: "Download SVG vector image",
         downloadXLS: "Download XLS",
         loading: "Loading timeseries, please wait...",
-        noData: "No Data Selected"
+        noData: "No Data Selected. Place a point, draw a polygon, or select a region."
     },
 });
 
 // Placeholder chart
-let chart = Highcharts.chart('highchart', {
+let histchart = Highcharts.chart('historicalchart', {
     title: {
         align: "center",
-        text: "Your Chart Will Appear Here",
+        text: "Historical Data Chart Placeholder",
     },
     series: [{
         data: [],
@@ -36,9 +36,31 @@ let chart = Highcharts.chart('highchart', {
         }
     },
 });
+// Statistical data chart placeholder and function
+let statschart = Highcharts.chart('statisticschart', {
+    title: {
+        align: "center",
+        text: "Statistical Analysis Chart Placeholder",
+    },
+    series: [{
+        data: [],
+    }],
+    chart: {
+        borderColor: '#000000',
+        borderWidth: 2,
+        type: 'boxplot',
+    },
+    noData: {
+        style: {
+            fontWeight: 'bold',
+            fontSize: '15px',
+            color: '#303030'
+        }
+    },
+});
 
 function newHighchart(data) {
-    chart = Highcharts.chart('highchart', {
+    histchart = Highcharts.chart('historicalchart', {
         title: {
             align: "center",
             text: data['name'] + ' v Time ' + data['type'],
@@ -60,7 +82,7 @@ function newHighchart(data) {
         }],
         chart: {
             animation: true,
-            zoomType: 'x',
+            zoomType: 'xy',
             borderColor: '#000000',
             borderWidth: 2,
             type: 'area',
@@ -70,12 +92,40 @@ function newHighchart(data) {
     });
 }
 
+function newStatisticalChart(data) {
+    statschart = Highcharts.chart('statisticschart', {
+        chart: {
+            type: 'boxplot',
+            animation: true,
+            zoomType: 'xy',
+            borderColor: '#000000',
+            borderWidth: 2,
+        },
+        title: {align: "center", text: 'Monthly ' + data['name'] + ' Statistics ' + data['type']},
+        legend: {enabled: false},
+        xAxis: {
+            type: 'datetime',
+            title: {text: 'Time'},
+            minTickInterval: 28*24*3600*1000,
+        },
+        yAxis: {title: {text: data['units']}},
+        series: [{
+            name: data['name'],
+            data: data['statistics'],
+            tooltip: {xDateFormat: '%b',},
+        }]
+
+    });
+}
+
 function getDrawnChart(drawnItems) {
     // Verify that there is a drawing on the map
     let geojson = drawnItems.toGeoJSON()['features'];
     if (geojson.length > 0) {
-        chart.hideNoData();
-        chart.showLoading();
+        histchart.hideNoData();
+        histchart.showLoading();
+        statschart.hideNoData();
+        statschart.showLoading();
 
         //  Compatibility if user picks something out of normal bounds
         let coords = geojson[0]['geometry']['coordinates'];
@@ -109,6 +159,7 @@ function getDrawnChart(drawnItems) {
                 method: 'POST',
                 success: function (result) {
                     newHighchart(result);
+                    newStatisticalChart(result);
                 }
             })
         } else if (drawtype === 'Point') {
@@ -120,6 +171,7 @@ function getDrawnChart(drawnItems) {
                 method: 'POST',
                 success: function (result) {
                     newHighchart(result);
+                    newStatisticalChart(result);
                 },
             });
         }
@@ -138,8 +190,10 @@ function getShapeChart(selectedregion) {
     }
 
     drawnItems.clearLayers();
-    chart.hideNoData();
-    chart.showLoading();
+    histchart.hideNoData();
+    histchart.showLoading();
+    statschart.hideNoData();
+    statschart.showLoading();
 
     let data = {
         variable: $('#variables').val(),
@@ -163,6 +217,7 @@ function getShapeChart(selectedregion) {
         method: 'POST',
         success: function (result) {
             newHighchart(result);
+            newStatisticalChart(result);
         }
     })
 }

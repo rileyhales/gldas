@@ -10,6 +10,8 @@ import numpy
 import osr
 import ogr
 import json
+import statistics
+import pandas
 
 from .app import Gldas as App
 from .model import app_configuration
@@ -32,11 +34,11 @@ def pointchart(data):
     data_dir = configs['threddsdatadir']
 
     path = os.path.join(data_dir, 'raw')
+    allfiles = os.listdir(path)
     if tperiod == 'alltimes':
-        files = os.listdir(path)
+        files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A")]
         files.sort()
     else:
-        allfiles = os.listdir(path)
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
         files.sort()
 
@@ -55,11 +57,13 @@ def pointchart(data):
         dataset = netCDF4.Dataset(path + '/' + nc, 'r')
         t_value = (dataset['time'].__dict__['begin_date'])
         t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
+        month = t_step.month
+        year = t_step.year
         t_step = calendar.timegm(t_step.utctimetuple()) * 1000
         for time, var in enumerate(dataset['time'][:]):
             # get the value at the point
             val = float(dataset[variable][0, adj_lat_ind, adj_lon_ind].data)
-            values.append((t_step, val))
+            values.append((t_step, val, month, year))
         dataset.close()
 
     return units, values
@@ -82,13 +86,12 @@ def polychart(data):
     data_dir = configs['threddsdatadir']
 
     path = os.path.join(data_dir, 'raw')
+    allfiles = os.listdir(path)
     if tperiod == 'alltimes':
-        files = os.listdir(path)
-        files.sort()
+        files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A")]
     else:
-        allfiles = os.listdir(path)
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
-        files.sort()
+    files.sort()
 
     # find the point of data array that corresponds to the user's choice, get the units of that variable
     dataset = netCDF4.Dataset(os.path.join(path, str(files[0])), 'r')
@@ -108,6 +111,8 @@ def polychart(data):
         dataset = netCDF4.Dataset(path + '/' + nc, 'r')
         t_value = (dataset['time'].__dict__['begin_date'])
         t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
+        month = t_step.month
+        year = t_step.year
         t_step = calendar.timegm(t_step.utctimetuple()) * 1000
         for time, var in enumerate(dataset['time'][:]):
             # get the value at the point
@@ -115,12 +120,10 @@ def polychart(data):
             array[array < -9000] = numpy.nan  # If you have fill values, change the comparator to git rid of it
             array = array.flatten()
             array = array[~numpy.isnan(array)]
-            values.append((t_step, float(array.mean())))
+            values.append((t_step, float(array.mean()), month, year))
         dataset.close()
 
-    return_items = [units, values]
-
-    return return_items
+    return units, values
 
 
 def nc_to_gtiff(data):
@@ -143,10 +146,9 @@ def nc_to_gtiff(data):
     allfiles = os.listdir(path)
     if tperiod == 'alltimes':
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A")]
-        files.sort()
     else:
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
-        files.sort()
+    files.sort()
 
     # Remove old geotiffs before filling it
     geotiffdir = os.path.join(App.get_app_workspace().path, 'geotiffs')
@@ -257,3 +259,20 @@ def rastermask_average_gdalwarp(data):
         shutil.rmtree(geotiffdir)
 
     return values
+
+def determinestats(data):
+    """
+    Calculates statistics for the array of timeseries values and returns arrays for a highcharts boxplot
+    Dependencies: statistics, pandas, datetime
+    """
+    df = pandas.DataFrame(data['values'], columns=['dates', 'values', 'month', 'year'])
+    data['statistics'] = []
+
+    if data['time'] == 'alltimes':
+        for i in range(1, 13):
+            tmp = df[df['month'] == i]['values']
+            std = statistics.stdev(tmp)
+            mean = sum(tmp)/len(tmp)
+            data['statistics'].append([i, min(tmp), mean - std, mean, mean + std, max(tmp)])
+
+    return data

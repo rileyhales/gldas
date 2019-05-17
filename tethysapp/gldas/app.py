@@ -21,7 +21,7 @@ class Gldas(TethysAppBase):
     feedback_emails = []
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'Version 2.5.5 - 16 May 2019'
+    version = 'Version 2.6.0 - 16 May 2019'
 
     def url_maps(self):
         """

@@ -8,7 +8,6 @@
 {% block app_icon %}<img src="{% static tethys_app.icon %}">{% endblock %}
 {% block app_title %}{{ tethys_app.name }}{% endblock %}
 {% block app_content %}{% endblock %}
-{% block app_actions %}{% endblock %}
 
 
 {% block header_buttons %}
@@ -109,6 +108,14 @@
 
 {% endblock %}
 
+{% block app_actions %}
+    <strong style="color: white; font-size: large">Help and Resources</strong>
+    <a class="btn btn-default" role="button" data-toggle="modal" data-target="#help-modal">How to use this app</a>
+    <a class="btn btn-default" role="button" href="{{ youtubelink }}" target="_blank">Watch a demonstration on YouTube</a>
+    <a class="btn btn-default" role="button" data-toggle="modal" data-target="#data-modal">About the GLDAS data</a>
+    <a class="btn btn-default" role="button" href="https://github.com/rileyhales/gldas" target="_blank">View the source code on GitHub</a>
+{% endblock %}
+
 {% block content_dependent_styles %}
 {{ block.super }}
     <!-- styling for leaflet -->
@@ -121,7 +128,6 @@
     <!-- styling generated for the app -->
     <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
 {% endblock %}
-
 
 {% block scripts %}
 {{ block.super }}
@@ -140,7 +146,8 @@
 
     <!-- script for using highcharts (display timeseries plot) -->
     <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
-    <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script type="text/javascript" src="https://code.highcharts.com/highcharts-more.js">
+    </script><script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
     <script type="text/javascript" src="https://code.highcharts.com/modules/export-data.js"></script>
     <script type="text/javascript" src="https://code.highcharts.com/modules/no-data-to-display.js"></script>
 

@@ -1,10 +1,7 @@
 html, body, #app-content, #inner-app-content, #outer-container {
     margin: 0px;
+    padding: 2px;
     height: 100%;
-}
-
-#app-actions {
-    display: none !important;
 }
 
 #app-navigation-items {
@@ -12,9 +9,11 @@ html, body, #app-content, #inner-app-content, #outer-container {
 }
 
 #map {
-    height: 65%;
+    height: 60%;
+    padding: 1px;
 }
 
-#highchart {
+#historicalchart, #statisticschart {
     height: 40%;
+    padding: 1px;
 }
