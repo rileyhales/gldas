@@ -67,14 +67,14 @@ class Gldas(TethysAppBase):
 
         # url map for api calls
             UrlMap(
-                name='tsPlotValues',
-                url='gldas/api/tsPlotValues',
-                controller='gldas.api.tsPlotValues',
+                name='gldasvariables',
+                url='gldas/api/gldasvariables',
+                controller='gldas.api.gldasvariables',
             ),
             UrlMap(
-                name='getTimes',
-                url='gldas/api/getTimes',
-                controller='gldas.api.getTimes',
+                name='timecoverage',
+                url='gldas/api/timecoverage',
+                controller='gldas.api.timecoverage',
             ),
         )
         return url_maps
