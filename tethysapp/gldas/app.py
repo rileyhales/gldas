@@ -22,7 +22,7 @@ class Gldas(TethysAppBase):
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
     githublink = 'https://github.com/rileyhales/gldas'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'Version 2.6.3 - 17 May 2019'
+    version = 'Version 2.6.4 - 17 May 2019'
 
     def url_maps(self):
         """

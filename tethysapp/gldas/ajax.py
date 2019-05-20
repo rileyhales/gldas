@@ -6,7 +6,7 @@ import netCDF4
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
-from .model import app_configuration, gldas_variables
+from .options import app_configuration, gldas_variables
 from .tools import nc_to_gtiff, rastermask_average_gdalwarp, pointchart, polychart, makestatplots
 
 
@@ -14,7 +14,7 @@ from .tools import nc_to_gtiff, rastermask_average_gdalwarp, pointchart, polycha
 def get_pointseries(request):
     """
     The controller for the ajax call to create a timeseries for the area chosen by the user's drawing
-    Dependencies: gldas_variables (model), pointchart (tools), ast, determinestats (tools)
+    Dependencies: gldas_variables (options), pointchart (tools), ast, determinestats (tools)
     """
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['units'], data['values'] = pointchart(data)
@@ -34,7 +34,7 @@ def get_pointseries(request):
 def get_polygonaverage(request):
     """
     Used to do averaging of a variable over a polygon of area, user drawn or a shapefile
-    Dependencies: polychart (tools), gldas_variables (model), ast, determinestats (tools)
+    Dependencies: polychart (tools), gldas_variables (options), ast, determinestats (tools)
     """
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['units'], data['values'] = polychart(data)
@@ -54,7 +54,7 @@ def get_polygonaverage(request):
 def get_shapeaverage(request):
     """
     Used to do averaging of a variable over a polygon of area, user drawn or a shapefile
-    Dependencies: nc_to_gtiff (tools), rastermask_average_gdalwarp (tools), gldas_variables (model), ast,
+    Dependencies: nc_to_gtiff (tools), rastermask_average_gdalwarp (tools), gldas_variables (options), ast,
         determinestats (tools)
     """
     data = ast.literal_eval(request.body.decode('utf-8'))
@@ -76,7 +76,7 @@ def get_shapeaverage(request):
 def customsettings(request):
     """
     returns the paths to the data/thredds services taken from the custom settings and gives it to the javascript
-    Dependencies: app_configuration (model)
+    Dependencies: app_configuration (options)
     """
     return JsonResponse(app_configuration())
 
@@ -89,7 +89,7 @@ def get_bounds(request):
     Will be reimplemented when the app supports custom time values
     Dependencies
         netcdf4, os, ast, math
-        from .model import app_configuration
+        from .options import app_configuration
     """
     configs = app_configuration()
     thredds_data_dir = configs['thredds_data_dir']

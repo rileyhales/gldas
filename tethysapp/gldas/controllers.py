@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from tethys_sdk.gizmos import SelectInput, RangeSlider
-from .model import gldas_variables, wms_colors, geojson_colors, timecoverage, worldregions, get_charttypes
+from .options import gldas_variables, wms_colors, geojson_colors, timecoverage, get_charttypes
 from .app import Gldas as App
 
 

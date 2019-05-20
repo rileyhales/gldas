@@ -8,12 +8,11 @@ import gdalnumeric
 import netCDF4
 import numpy
 import osr
-import ogr
 import statistics
 import pandas
 
 from .app import Gldas as App
-from .model import app_configuration
+from .options import app_configuration
 
 
 def pointchart(data):
@@ -21,7 +20,7 @@ def pointchart(data):
     Description: generates a timeseries for a given point and given variable defined by the user.
     Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
     Author: Riley Hales
-    Dependencies: netcdf4, numpy, datetime, os, calendar, app_configuration (model)
+    Dependencies: netcdf4, numpy, datetime, os, calendar, app_configuration (options)
     Last Updated: Oct 11 2018
     """
     values = []
@@ -73,7 +72,7 @@ def polychart(data):
     Description: generates a timeseries for a given point and given variable defined by the user.
     Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
     Author: Riley Hales
-    Dependencies: netcdf4, numpy, datetime, os, calendar, app_configuration (model)
+    Dependencies: netcdf4, numpy, datetime, os, calendar, app_configuration (options)
     Last Updated: May 14 2019
     """
     values = []
@@ -129,7 +128,7 @@ def nc_to_gtiff(data):
     """
     Description: This script accepts a netcdf file in a geographic coordinate system, specifically the NASA GLDAS
         netcdfs, and extracts the data from one variable and the lat/lon steps to create a geotiff of that information.
-    Dependencies: netCDF4, numpy, gdal, osr, os, shutil, calendar, datetime, App (app), app_configuration (model)
+    Dependencies: netCDF4, numpy, gdal, osr, os, shutil, calendar, datetime, App (app), app_configuration (options)
     Params: View README.md
     Returns: Creates a geotiff named 'geotiff.tif' in the directory specified
     Author: Riley Hales, RCH Engineering, March 2019
@@ -209,34 +208,9 @@ def rastermask_average_gdalwarp(data):
     values = []
     times = data['times']
     times.sort()
-    shppath = ''
     wrkpath = App.get_app_workspace().path
-
-    if data['shapefile'] == 'true':
-        region = data['region']
-        shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
-    else:
-        # todo: still under development- turn a geojson into a shapefile
-        import shapefile
-        import json
-        # from pyproj import Proj, transform
-        # convert the geojson to a shapefile object
-        coords = data['coords'][0]
-        shape = shapefile.Writer(shppath, shapeType=shapefile.POLYGON, shp=coords)
-        shape.close()
-
-        driver = ogr.GetDriverByName('ESRI Shapefile')
-        srs = osr.SpatialReference().ImportFromEPSG(4326)
-        print(srs)
-        datasource = driver.CreateDataSource(shppath)
-        polygon = ogr.CreateGeometryFromJson(json.dumps(data['geojson']))
-        fieldDefn_ = ogr.FieldDefn('id', ogr.OFTInteger)
-        layer = datasource.CreateLayer('polygon', srs, ogr.wkbPolygon)
-        layer.CreateField(fieldDefn_)
-        feature = ogr.Feature(layer.GetLayerDefn())
-        feature.SetGeometry(polygon)
-        feature.SetField('id', 1)
-        layer.CreateFeature(feature)
+    region = data['region']
+    shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
 
     # setup the working directories for the geoprocessing
     geotiffdir = os.path.join(wrkpath, 'geotiffs')

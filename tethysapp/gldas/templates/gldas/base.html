@@ -40,33 +40,27 @@
         </div>
         <div class="modal-body">
           <p>
-            This app contains 4 primary areas.
+            This app contains 5 primary areas.
           <ol>
-            <li>A column of controls on the left side of the screen</li>
-            <li>A map showing the date the user specifies</li>
-            <li>Space for a graph of timeseries information</li>
-            <li>Help buttons with links to this help modal, GLDAS data downloads, help videos, source code, and error
-              reporting
-            </li>
+            <li>GLDAS Data Controls- Options for switching the variable and time interval shown on the map</li>
+            <li>Display Options- Color and opacity options for the GLDAS data and world region boundaries, and chart type options</li>
+            <li>Leaflet Map- A map that shows the data chosen in the data controls with the styling chosen in the display options. Displays an animation of the spatial data vs time. Has controls for drawing points and boxes. Allows toggling of layers.</li>
+            <li>Highchart- A chart that can show 5 different plots of timeseries information over either the point, box, or region chosen in the map.</li>
+            <li>Help and Resources- Buttons to find tutorials and video demonstrations as well as links to data and source code.</li>
           </ol>
-          <div id="imgwrapper" style="text-align: center;"><img src="{% static 'gldas/images/helpdiagram.png' %}"
-                                                                style="width: 100%"></div>
+          <div id="imgwrapper" style="text-align: center;"><img src="{% static 'gldas/images/helpdiagram.png' %}" style="width: 100%"></div>
           </p
           <p>
             To use this app you should:
           <ol>
-            <li>Pick the date range for which you want to see GLDAS data <b>(area 1)</b></li>
-            <li>Change the color scheme and opacity as desired <b>(area 1)</b></li>
-            <li>Use the controls on the bottom left corner of the map to control the map's animation. The animation will
-              show monthly timesteps of averaged values each month in the date range you chose <b>(area 2)</b></li>
-            <li>Use the controls on the top left corner of the map to place a marker on any point on the map for which
-              there is data <b>(area 2)</b></li>
-            <li>Look at the chart at the bottom of the screen to view a timeseries of values plotted for the
-              variable-date-location combo that you chose <b>(area 3)</b></li>
-            <li>Use the options found at the top right corner of the chart box to download the data in the chart <b>(area
-              3)</b></li>
-            <li>Use the controls on the top right corner of the screen to access help, data, and more <b>(area 4)</b>
-            </li>
+            <li>Use the "GLDAS Data Controls" to pick the variable and time interval you're interested in. <b>(1)</b></li>
+            <li>Use the "Display Options" to change the color and opacity of the GLDAS data and the world region boundaries. <b>(2)</b></li>
+            <li>Use the controls on the bottom left of the map to animate the data vs time. <b>(2)</b></li>
+            <li>Select a region of the map by either placing a point, drawing a box, or clicking on a region.<b>(3)</b></li>
+            <li>Look at the timeseries generated in the chart region. <b>(3)</b></li>
+            <li>Use the chart display choices to switch between the 5 chart types <b>(2)</b></li>
+            <li>Use the menu on the top right of the highchart section to download the chart data as a graphic, csv, or excel sheet. <b>(3)</b></li>
+            <li>Use the help links to view tutorials and demonstrations and find access to data and source code. <b>(4)</b></li>
           </ol>
           </p>
           <p>By default, the data shown is for all available timesteps (January 1 2000 through the present). Data may

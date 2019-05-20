@@ -170,12 +170,10 @@ function getDrawnChart(drawnItems) {
         // setup a parameters json to generate the right timeseries
         let drawtype = geojson[0]['geometry']['type'];
         let data = {
-            shptype: drawtype,
             coords: coords,
             geojson: geojson[0],
             variable: $('#variables').val(),
             time: $("#dates").val(),
-            shapefile: 'false',
         };
 
         // call the right timeseries generator function based on type
@@ -225,7 +223,6 @@ function getShapeChart(selectedregion) {
     let data = {
         variable: $('#variables').val(),
         time: $("#dates").val(),
-        shapefile: 'true',
         region: selectedregion,
     };
     if (selectedregion === 'lastregion') {
