@@ -22,14 +22,19 @@ def pointchart(data):
     Dependencies: netcdf4, numpy, datetime, os, calendar, app_configuration (options)
     Last Updated: Oct 11 2018
     """
-    values = []
-    variable = str(data['variable'])
-    coords = data['coords']
+    # input parameters
+    var = str(data['variable'])
     tperiod = data['time']
+    coords = data['coords']
 
+    # environment settings
     configs = app_configuration()
     data_dir = configs['threddsdatadir']
 
+    # return items
+    data['values'] = []
+
+    # list the netcdfs to be processed
     path = os.path.join(data_dir, 'raw')
     allfiles = os.listdir(path)
     if tperiod == 'alltimes':
@@ -38,31 +43,31 @@ def pointchart(data):
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
     files.sort()
 
-    # find the point of data array that corresponds to the user's choice, get the units of that variable
+    # get a list of the latitudes and longitudes and the units
     dataset = netCDF4.Dataset(os.path.join(path, str(files[0])), 'r')
     nc_lons = dataset['lon'][:]
     nc_lats = dataset['lat'][:]
+    data['units'] = dataset[var].__dict__['units']
+    # get the index number of the lat/lon for the point
     adj_lon_ind = (numpy.abs(nc_lons - coords[0])).argmin()
     adj_lat_ind = (numpy.abs(nc_lats - coords[1])).argmin()
-    units = dataset[variable].__dict__['units']
     dataset.close()
 
     # extract values at each timestep
     for nc in files:
-        # set the time value for each file
+        # get the time value for each file
         dataset = netCDF4.Dataset(path + '/' + nc, 'r')
         t_value = (dataset['time'].__dict__['begin_date'])
-        t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
-        month = t_step.month
-        year = t_step.year
-        t_step = calendar.timegm(t_step.utctimetuple()) * 1000
+        t_value = datetime.datetime.strptime(t_value, "%Y%m%d")
+        t_step = calendar.timegm(t_value.utctimetuple()) * 1000
+        # slice the array at the area you want
         for time, var in enumerate(dataset['time'][:]):
-            # get the value at the point
-            val = float(dataset[variable][0, adj_lat_ind, adj_lon_ind].data)
-            values.append((t_step, val, month, year))
+            # slice the array, drop nan values, get the mean, append to list of values
+            val = float(dataset[var][0, adj_lat_ind, adj_lon_ind].data)
+            data['values'].append((t_step, val, t_value.month, t_value.year))
         dataset.close()
 
-    return units, values
+    return data
 
 
 def polychart(data):
@@ -73,14 +78,19 @@ def polychart(data):
     Dependencies: netcdf4, numpy, datetime, os, calendar, app_configuration (options)
     Last Updated: May 14 2019
     """
-    values = []
-    variable = str(data['variable'])
-    coords = data['coords'][0]  # 5x2 array 1 row of lat/lon per corner, 1st duplicated (start/stop)
+    # input parameters
+    var = str(data['variable'])
     tperiod = data['time']
+    coords = data['coords'][0]  # 5x2 array 1 row/[lat,lon]/corner (1st repeated), clockwise from bottom-left
 
+    # environment settings
     configs = app_configuration()
     data_dir = configs['threddsdatadir']
 
+    # return items
+    data['values'] = []
+
+    # list the netcdfs to be processed
     path = os.path.join(data_dir, 'raw')
     allfiles = os.listdir(path)
     if tperiod == 'alltimes':
@@ -89,16 +99,16 @@ def polychart(data):
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
     files.sort()
 
-    # find the point of data array that corresponds to the user's choice, get the units of that variable
+    # get a list of the latitudes and longitudes and the units
     dataset = netCDF4.Dataset(os.path.join(path, str(files[0])), 'r')
     nc_lons = dataset['lon'][:]
     nc_lats = dataset['lat'][:]
-    # get a lat/lon bounding box for the drawing
+    data['units'] = dataset[var].__dict__['units']
+    # get a bounding box of the rectangle in terms of the index number of their lat/lons
     minlon = (numpy.abs(nc_lons - coords[1][0])).argmin()
     maxlon = (numpy.abs(nc_lons - coords[3][0])).argmin()
     maxlat = (numpy.abs(nc_lats - coords[1][1])).argmin()
     minlat = (numpy.abs(nc_lats - coords[3][1])).argmin()
-    units = dataset[variable].__dict__['units']
     dataset.close()
 
     # extract values at each timestep
@@ -106,20 +116,18 @@ def polychart(data):
         # set the time value for each file
         dataset = netCDF4.Dataset(path + '/' + nc, 'r')
         t_value = (dataset['time'].__dict__['begin_date'])
-        t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
-        month = t_step.month
-        year = t_step.year
-        t_step = calendar.timegm(t_step.utctimetuple()) * 1000
+        t_value = datetime.datetime.strptime(t_value, "%Y%m%d")
+        t_step = calendar.timegm(t_value.utctimetuple()) * 1000
         for time, var in enumerate(dataset['time'][:]):
-            # get the value at the point
-            array = dataset[variable][0, minlat:maxlat, minlon:maxlon].data
+            # slice the array, drop nan values, get the mean, append to list of values
+            array = dataset[var][0, minlat:maxlat, minlon:maxlon].data
             array[array < -9000] = numpy.nan  # If you have fill values, change the comparator to git rid of it
             array = array.flatten()
             array = array[~numpy.isnan(array)]
-            values.append((t_step, float(array.mean()), month, year))
+            data['values'].append((t_step, float(array.mean()), t_value.month, t_value.year))
         dataset.close()
 
-    return units, values
+    return data
 
 
 def shpchart(data):

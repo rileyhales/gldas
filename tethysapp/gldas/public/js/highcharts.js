@@ -18,7 +18,7 @@ let chartdata = null;
 let chart = Highcharts.chart('highchart', {
     title: {
         align: "center",
-        text: "Historical Data Chart Placeholder",
+        text: "Timeseries Data Chart Placeholder",
     },
     series: [{
         data: [],
@@ -75,7 +75,11 @@ function newHighchart(data) {
 function newMultilineChart(data) {
     let charttype = $("#charttype").val();
     let categories;
-    if (charttype.includes('month')) {categories = 'month'} else { categories = 'year'}
+    if (charttype.includes('month')) {
+        categories = 'month'
+    } else {
+        categories = 'year'
+    }
     chart = Highcharts.chart('highchart', {
         title: {
             align: "center",
@@ -120,7 +124,11 @@ function newMultilineChart(data) {
 function newBoxPlot(data) {
     let charttype = $("#charttype").val();
     let categories;
-    if (charttype.includes('month')) {categories = 'month'} else { categories = 'year'}
+    if (charttype.includes('month')) {
+        categories = 'month'
+    } else {
+        categories = 'year'
+    }
     chart = Highcharts.chart('highchart', {
         chart: {
             type: 'boxplot',
@@ -146,12 +154,13 @@ function newBoxPlot(data) {
 }
 
 function getDrawnChart(drawnItems) {
-    // Verify that there is a drawing on the map
+    // if there's nothing to get charts for then quit
     let geojson = drawnItems.toGeoJSON()['features'];
     if (geojson.length === 0 && currentregion === '') {
-        // if theres nothing to get charts for then quit
         return
     }
+
+    // if there's geojson data, update that chart
     if (geojson.length > 0) {
         chart.hideNoData();
         chart.showLoading();
@@ -168,7 +177,6 @@ function getDrawnChart(drawnItems) {
         }
 
         // setup a parameters json to generate the right timeseries
-        let drawtype = geojson[0]['geometry']['type'];
         let data = {
             coords: coords,
             geojson: geojson[0],
@@ -176,33 +184,27 @@ function getDrawnChart(drawnItems) {
             time: $("#dates").val(),
         };
 
-        // call the right timeseries generator function based on type
-        if (drawtype === 'Polygon') {
-            $.ajax({
-                url: '/apps/gldas/ajax/getPolygonAverage/',
-                data: JSON.stringify(data),
-                dataType: 'json',
-                contentType: "application/json",
-                method: 'POST',
-                success: function (result) {
-                    chartdata = result;
-                    makechart();
-                }
-            })
-        } else if (drawtype === 'Point') {
-            $.ajax({
-                url: '/apps/gldas/ajax/getPointSeries/',
-                data: JSON.stringify(data),
-                dataType: 'json',
-                contentType: "application/json",
-                method: 'POST',
-                success: function (result) {
-                    chartdata = result;
-                    makechart();
-                },
-            });
+        // decide which ajax url you need based on drawing type
+        let url;
+        let drawtype = geojson[0]['geometry']['type'];
+        if (drawtype === 'Point') {
+            url = '/apps/gldas/ajax/getPointSeries/';
+        } else {
+            url = '/apps/gldas/ajax/getPolygonAverage/';
         }
-        // If there are no drawn features, then you actually should be refreshing the shapefile chart (ie the boundary you want is the lastregion chosen)
+
+        $.ajax({
+            url: url,
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: "application/json",
+            method: 'POST',
+            success: function (result) {
+                chartdata = result;
+                makechart();
+            }
+        })
+        // If there isn't any geojson, then you actually should refresh the shapefile chart (ie the data is the lastregion)
     } else {
         getShapeChart('lastregion');
     }
