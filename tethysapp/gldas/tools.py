@@ -3,13 +3,12 @@ import datetime
 import os
 import shutil
 
-import gdal
-import gdalnumeric
+import rasterio
+import rasterstats
 import netCDF4
 import numpy
-import osr
-import statistics
 import pandas
+import statistics
 
 from .app import Gldas as App
 from .options import app_configuration
@@ -35,10 +34,9 @@ def pointchart(data):
     allfiles = os.listdir(path)
     if tperiod == 'alltimes':
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A")]
-        files.sort()
     else:
         files = [nc for nc in allfiles if nc.startswith("GLDAS_NOAH025_M.A" + str(tperiod))]
-        files.sort()
+    files.sort()
 
     # find the point of data array that corresponds to the user's choice, get the units of that variable
     dataset = netCDF4.Dataset(os.path.join(path, str(files[0])), 'r')
@@ -124,22 +122,29 @@ def polychart(data):
     return units, values
 
 
-def nc_to_gtiff(data):
+def shpchart(data):
     """
     Description: This script accepts a netcdf file in a geographic coordinate system, specifically the NASA GLDAS
         netcdfs, and extracts the data from one variable and the lat/lon steps to create a geotiff of that information.
-    Dependencies: netCDF4, numpy, gdal, osr, os, shutil, calendar, datetime, App (app), app_configuration (options)
+    Dependencies: netCDF4, numpy, rasterio, rasterstats, os, shutil, calendar, datetime, app_configuration (options)
     Params: View README.md
     Returns: Creates a geotiff named 'geotiff.tif' in the directory specified
     Author: Riley Hales, RCH Engineering, March 2019
     """
+    # input parameters
     var = str(data['variable'])
+    region = data['region']
     tperiod = data['time']
+
+    # environment settings
     configs = app_configuration()
     data_dir = configs['threddsdatadir']
-    times = []
-    units = ''
+    wrkpath = configs['app_wksp_path']
 
+    # return items
+    data['values'] = []
+
+    # list the netcdfs to be processed
     path = os.path.join(data_dir, 'raw')
     allfiles = os.listdir(path)
     if tperiod == 'alltimes':
@@ -154,85 +159,41 @@ def nc_to_gtiff(data):
         shutil.rmtree(geotiffdir)
     os.mkdir(geotiffdir)
 
+    # read netcdf, create geotiff, zonal statistics, format outputs for highcharts plotting
     for i in range(len(files)):
-        # open the netcdf and copy data from it
+        # open the netcdf and get metadata
         nc_obj = netCDF4.Dataset(os.path.join(path, str(files[i])), 'r')
-        var_data = nc_obj.variables[var][:]
         lat = nc_obj.variables['lat'][:]
         lon = nc_obj.variables['lon'][:]
-        units = nc_obj[var].__dict__['units']
+        data['units'] = nc_obj[var].__dict__['units']
+
+        # get the variable's data array
+        var_data = nc_obj.variables[var][:]  # this is the array of values for the dataset
+        array = numpy.asarray(var_data)[0, :, :]  # converting the data type
+        array[array < -9000] = numpy.nan  # use the comparator to drop nodata fills
+        array = array[::-1]  # vertically flip array so tiff orientation is right (you just have to, try it)
 
         # create the timesteps for the highcharts plot
         t_value = (nc_obj['time'].__dict__['begin_date'])
         t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
-        times.append((calendar.timegm(t_step.utctimetuple()) * 1000, t_step.month, t_step.year))
+        time = calendar.timegm(t_step.utctimetuple()) * 1000, t_step.month, t_step.year
 
-        # format the array of information going to the tiff
-        array = numpy.asarray(var_data)[0, :, :]
-        array[array < -9000] = numpy.nan  # change the comparator to git rid of the fill value
-        array = array[::-1]  # vertically flip the array so the orientation is right (you just have to, try it)
+        # file paths and settings
+        shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
+        gtiffpath = os.path.join(wrkpath, 'geotiffs', 'geotiff.tif')
+        geotransform = rasterio.transform.from_origin(lon.min(), lat.max(), lat[1] - lat[0], lon[1] - lon[0])
 
-        # Creates geotiff raster file (filepath, x-dimensions, y-dimensions, number of bands, datatype)
-        gtiffpath = os.path.join(geotiffdir, 'geotiff' + str(i) + '.tif')
-        gtiffdriver = gdal.GetDriverByName('GTiff')
-        new_gtiff = gtiffdriver.Create(gtiffpath, len(lon), len(lat), 1, gdal.GDT_Float32)
+        with rasterio.open(gtiffpath, 'w', driver='GTiff', height=len(lat), width=len(lon), count=1, dtype='float32',
+                           nodata=numpy.nan, crs='+proj=latlong', transform=geotransform) as newtiff:
+            newtiff.write(array, 1)
 
-        # geotransform (sets coordinates) = (x-origin(left), x-width, x-rotation, y-origin(top), y-rotation, y-width)
-        yorigin = lat.max()
-        xorigin = lon.min()
-        xres = lat[1] - lat[0]
-        yres = lon[1] - lon[0]
-        new_gtiff.SetGeoTransform((xorigin, xres, 0, yorigin, 0, -yres))
-
-        # Set projection of the geotiff (Projection EPSG:4326, Geographic Coordinate System WGS 1984 (degrees lat/lon)
-        new_gtiff.SetProjection(osr.SRS_WKT_WGS84)
-
-        # actually write the data array to the tiff file and save it
-        new_gtiff.GetRasterBand(1).WriteArray(array)  # write band to the raster (variable array)
-        new_gtiff.FlushCache()  # write to disk
-    return times, units
-
-
-def rastermask_average_gdalwarp(data):
-    """
-    Description: A function to mask/clip a raster by the boundaries of a shapefile and computer the average value of the
-        resulting raster
-    Dependencies:
-        gdal, gdalnumeric, numpy, os, shutil, ogr
-        from .app import Gldas as App
-    Params: View README.md
-    Returns: mean value of an array within a shapefile's boundaries
-    Author: Riley Hales, RCH Engineering, April 2019
-    """
-
-    values = []
-    times = data['times']
-    times.sort()
-    wrkpath = App.get_app_workspace().path
-    region = data['region']
-    shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
-
-    # setup the working directories for the geoprocessing
-    geotiffdir = os.path.join(wrkpath, 'geotiffs')
-    geotiffs = os.listdir(geotiffdir)
-
-    # perform the gropreccesing on each file in the geotiff directory
-    for i in range(len(geotiffs)):
-        # clip the raster
-        inraster = gdal.Open(os.path.join(geotiffdir, 'geotiff' + str(i) + '.tif'))
-        savepath = os.path.join(geotiffdir, 'outraster.tif')
-        clippedraster = gdal.Warp(savepath, inraster, format='GTiff', cutlineDSName=shppath, dstNodata=numpy.nan)
-        # do the averaging math on the raster as an array
-        array = gdalnumeric.DatasetReadAsArray(clippedraster)
-        array = array.flatten()
-        array = array[~numpy.isnan(array)]
-        mean = array.mean()
-        values.append((times[i][0], float(mean), times[i][1], times[i][2]))
+        stats = rasterstats.zonal_stats(shppath, gtiffpath, stats="mean")
+        data['values'].append((time, stats[0]['mean'], t_step.month, t_step.year))
 
     if os.path.isdir(geotiffdir):
         shutil.rmtree(geotiffdir)
 
-    return values
+    return data
 
 
 def makestatplots(data):
@@ -246,9 +207,7 @@ def makestatplots(data):
     data['boxplot'] = {'yearbox': [], 'monthbox': []}
 
     months = dict((n, m) for n, m in enumerate(calendar.month_name))
-    data['categories'] = {}
-    data['categories']['month'] = [months[i + 1] for i in range(12)]
-    data['categories']['year'] = [i + 2000 for i in range(20)]
+    data['categories'] = {'month': [months[i + 1] for i in range(12)], 'year': [i + 2000 for i in range(20)]}
 
     if data['time'] == 'alltimes':
         for i in range(1, 13):

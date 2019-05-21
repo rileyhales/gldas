@@ -99,9 +99,6 @@ def wms_colors():
         ('ALG', 'alg'),
         ('ALG 2', 'alg2'),
         ('Ferret', 'ferret'),
-        # ('Probability', 'prob'),
-        # ('White-Blue', whiteblue'),
-        # ('Grace', 'grace'),
         ]
 
 

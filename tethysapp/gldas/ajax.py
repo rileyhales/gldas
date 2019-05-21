@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 from .options import app_configuration, gldas_variables
-from .tools import nc_to_gtiff, rastermask_average_gdalwarp, pointchart, polychart, makestatplots
+from .tools import shpchart, pointchart, polychart, makestatplots
 
 
 @login_required()
@@ -58,8 +58,7 @@ def get_shapeaverage(request):
         determinestats (tools)
     """
     data = ast.literal_eval(request.body.decode('utf-8'))
-    data['times'], data['units'] = nc_to_gtiff(data)
-    data['values'] = rastermask_average_gdalwarp(data)
+    data = shpchart(data)
     data['type'] = '(Average for ' + data['region'] + ')'
     data = makestatplots(data)
 
