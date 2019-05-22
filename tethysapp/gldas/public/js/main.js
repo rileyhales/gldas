@@ -75,6 +75,9 @@ updateGEOJSON();                        // asynchronously get geoserver wfs/geoj
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
 $("#dates").change(function () {
     clearMap();
+    for (let i = 0; i < geojsons.length; i++) {
+        geojsons[i][0].addTo(mapObj)
+    }
     layerObj = newLayer();
     controlsObj = makeControls();
     getDrawnChart(drawnItems);
@@ -83,6 +86,9 @@ $("#dates").change(function () {
 
 $("#variables").change(function () {
     clearMap();
+    for (let i = 0; i < geojsons.length; i++) {
+        geojsons[i][0].addTo(mapObj)
+    }
     layerObj = newLayer();
     controlsObj = makeControls();
     getDrawnChart(drawnItems);
@@ -95,6 +101,9 @@ $("#opacity_raster").change(function () {
 
 $('#colorscheme').change(function () {
     clearMap();
+    for (let i = 0; i < geojsons.length; i++) {
+        geojsons[i][0].addTo(mapObj)
+    }
     layerObj = newLayer();
     controlsObj = makeControls();
     legend.addTo(mapObj);

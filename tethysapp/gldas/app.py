@@ -22,7 +22,7 @@ class Gldas(TethysAppBase):
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
     githublink = 'https://github.com/rileyhales/gldas'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'Version 2.7.1 - 21 May 2019'
+    version = 'Version 2.7.2 - 22 May 2019'
 
     def url_maps(self):
         """
@@ -40,6 +40,11 @@ class Gldas(TethysAppBase):
 
         # url maps for ajax calls
             UrlMap(
+                name='getCustomSettings',
+                url='gldas/ajax/getCustomSettings',
+                controller='gldas.ajax.get_customsettings'
+            ),
+            UrlMap(
                 name='getPointSeries',
                 url='gldas/ajax/getPointSeries',
                 controller='gldas.ajax.get_pointseries',
@@ -53,11 +58,6 @@ class Gldas(TethysAppBase):
                 name='getShapeAverage',
                 url='gldas/ajax/getShapeAverage',
                 controller='gldas.ajax.get_shapeaverage',
-            ),
-            UrlMap(
-                name='getCustomSettings',
-                url='gldas/ajax/getCustomSettings',
-                controller='gldas.ajax.get_customsettings'
             ),
 
         )
