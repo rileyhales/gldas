@@ -117,10 +117,6 @@ $('#colors_geojson').change(function () {
     styleGeoJSON();
 });
 
-$('#colors_geojson').change(function () {
-    styleGeoJSON();
-});
-
 $('#charttype').change(function () {
     makechart();
 });
