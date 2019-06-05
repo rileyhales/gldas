@@ -61,10 +61,8 @@ def pointchart(data):
         t_value = datetime.datetime.strptime(t_value, "%Y%m%d")
         t_step = calendar.timegm(t_value.utctimetuple()) * 1000
         # slice the array at the area you want
-        for time, var in enumerate(dataset['time'][:]):
-            # slice the array, drop nan values, get the mean, append to list of values
-            val = float(dataset[var][0, adj_lat_ind, adj_lon_ind].data)
-            data['values'].append((t_step, val, t_value.month, t_value.year))
+        val = float(dataset[var][0, adj_lat_ind, adj_lon_ind].data)
+        data['values'].append((t_step, val, t_value.month, t_value.year))
         dataset.close()
 
     return data
@@ -118,13 +116,12 @@ def polychart(data):
         t_value = (dataset['time'].__dict__['begin_date'])
         t_value = datetime.datetime.strptime(t_value, "%Y%m%d")
         t_step = calendar.timegm(t_value.utctimetuple()) * 1000
-        for time, var in enumerate(dataset['time'][:]):
-            # slice the array, drop nan values, get the mean, append to list of values
-            array = dataset[var][0, minlat:maxlat, minlon:maxlon].data
-            array[array < -9000] = numpy.nan  # If you have fill values, change the comparator to git rid of it
-            array = array.flatten()
-            array = array[~numpy.isnan(array)]
-            data['values'].append((t_step, float(array.mean()), t_value.month, t_value.year))
+        # slice the array, drop nan values, get the mean, append to list of values
+        array = dataset[var][0, minlat:maxlat, minlon:maxlon].data
+        array[array < -9000] = numpy.nan  # If you have fill values, change the comparator to git rid of it
+        array = array.flatten()
+        array = array[~numpy.isnan(array)]
+        data['values'].append((t_step, float(array.mean()), t_value.month, t_value.year))
         dataset.close()
 
     return data
@@ -184,7 +181,7 @@ def shpchart(data):
         # create the timesteps for the highcharts plot
         t_value = (nc_obj['time'].__dict__['begin_date'])
         t_step = datetime.datetime.strptime(t_value, "%Y%m%d")
-        time = calendar.timegm(t_step.utctimetuple()) * 1000, t_step.month, t_step.year
+        time = calendar.timegm(t_step.utctimetuple()) * 1000
 
         # file paths and settings
         shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
