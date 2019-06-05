@@ -1,7 +1,7 @@
 # GLDAS Data Visualizer Documentation
 This is a Tethys 2/3 compatible app that visualizes data from the NASA GES Disc website. It was developed to show ¼ degree resolution netcdf4 (.nc4) datasets with monthly averages. Datasets of other resolutions and for other time-periods may also work.
 
-© Riley Hales, 2018. Developed at the BYU Hydroinformatics Lab.
+© Riley Hales, 2019. Developed at the BYU Hydroinformatics Lab.
 
 ## App Features
 1. View time-animated maps of all GLDAS variables. Customize color scheme, opacity, animation/playback speed, time period.

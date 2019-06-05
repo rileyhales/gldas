@@ -110,9 +110,12 @@
   <li class="title" role="button" id="displaytoggle">Display Options</li>
   <div id="displaycontrols">
     {% gizmo select_input colorscheme %}
-    {% gizmo range_slider opacity_raster %}
-    {% gizmo select_input colors_geojson %}
-    {% gizmo range_slider opacity_geojson %}
+    {% gizmo range_slider opacity %}
+    {% gizmo select_input gjColor %}
+    {% gizmo range_slider gjOpacity %}
+    {% gizmo range_slider gjWeight %}
+    {% gizmo select_input gjFillColor %}
+    {% gizmo range_slider gjFillOpacity %}
     {% gizmo select_input charttype %}
   </div>
 {% endblock %}

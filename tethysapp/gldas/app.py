@@ -15,46 +15,46 @@ class Gldas(TethysAppBase):
     color = '#002366'
     description = 'Visualizes NASA GLDAS monthly data with time animated maps.\n' \
                   'Generates timeseries charts and datasets at points or averaged over polygons.\n' \
-                  'Perform simple statistical analysis on historical data.'
+                  'Perform simple statistical analysis on historical data by month and year.'
     tags = 'NASA, GLDAS, Timeseries'
     enable_feedback = False
     feedback_emails = []
     youtubelink = 'https://youtu.be/GJCu70jQfwU'
     githublink = 'https://github.com/rileyhales/gldas'
     gldaslink = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'Version 2.7.2 - 22 May 2019'
+    version = 'Version 2.7.3 - 5 June 2019'
 
     def url_maps(self):
         """
         Add controllers
         """
-        UrlMap = url_map_maker(self.root_url)
+        urlmap = url_map_maker(self.root_url)
 
-        # url maps to navigable pages
         url_maps = (
-            UrlMap(
+            # url maps to navigable pages
+            urlmap(
                 name='home',
                 url='gldas',
                 controller='gldas.controllers.home'
             ),
 
-        # url maps for ajax calls
-            UrlMap(
+            # url maps for ajax calls
+            urlmap(
                 name='getCustomSettings',
                 url='gldas/ajax/getCustomSettings',
                 controller='gldas.ajax.get_customsettings'
             ),
-            UrlMap(
+            urlmap(
                 name='getPointSeries',
                 url='gldas/ajax/getPointSeries',
                 controller='gldas.ajax.get_pointseries',
             ),
-            UrlMap(
+            urlmap(
                 name='getPolygonAverage',
                 url='gldas/ajax/getPolygonAverage',
                 controller='gldas.ajax.get_polygonaverage',
             ),
-            UrlMap(
+            urlmap(
                 name='getShapeAverage',
                 url='gldas/ajax/getShapeAverage',
                 controller='gldas.ajax.get_shapeaverage',
@@ -64,7 +64,7 @@ class Gldas(TethysAppBase):
         return url_maps
 
     def custom_settings(self):
-        CustomSettings = (
+        custom_settings = (
             CustomSetting(
                 name='Local Thredds Folder Path',
                 type=CustomSetting.TYPE_STRING,
@@ -85,4 +85,4 @@ class Gldas(TethysAppBase):
                 required=True,
             ),
         )
-        return CustomSettings
+        return custom_settings

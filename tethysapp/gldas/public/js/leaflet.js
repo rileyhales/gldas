@@ -51,15 +51,13 @@ function newLayer() {
         colorscalerange: bounds[$("#dates").val()][$("#variables").val()],
     });
 
-    let timedLayer = L.timeDimension.layer.wms(wmsLayer, {
+    return L.timeDimension.layer.wms(wmsLayer, {
         name: 'time',
         requestTimefromCapabilities: true,
         updateTimeDimension: true,
         updateTimeDimensionMode: 'replace',
         cache: 20,
     }).addTo(mapObj);
-
-    return timedLayer
 }
 
 ////////////////////////////////////////////////////////////////////////  LEGEND DEFINITIONS
@@ -75,13 +73,13 @@ legend.onAdd = function (mapObj) {
 let currentregion = '';              // tracks which region is on the chart for updates not caused by the user picking a new region
 function layerPopups(feature, layer) {
     let region = feature.properties.name;
-    layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries of averages for ' + region + '</a>');
+    layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries (average) for ' + region + '</a>');
 }
 
 // declare a placeholder layer for all the geojson layers you want to add
 let jsonparams = {
     onEachFeature: layerPopups,
-    style: {color: $("#colors_geojson").val(), opacity: $("#opacity_geojson").val()}
+    style: {color: $("#gjColor").val(), opacity: $("#gjOpacity").val(), weight: $("#gjWeight").val(), fillColor: $("#gjFillColor").val(), fillOpacity: $("#gjFillOpacity").val()}
 };
 let africa = L.geoJSON(false, jsonparams);
 let asia = L.geoJSON(false, jsonparams);
@@ -143,8 +141,11 @@ function updateGEOJSON() {
 function styleGeoJSON() {
     // determine the styling to apply
     let style = {
-        color: $("#colors_geojson").val(),
-        opacity: $("#opacity_geojson").val(),
+        color: $("#gjColor").val(),
+        opacity: $("#gjOpacity").val(),
+        weight: $("#gjWeight").val(),
+        fillColor: $("#gjFillColor").val(),
+        fillOpacity: $("#gjFillOpacity").val(),
     };
     // apply it to all the geojson layers
     for (let i = 0; i < geojsons.length; i++) {

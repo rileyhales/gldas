@@ -43,31 +43,58 @@ def home(request):
         initial='rainbow'
     )
 
-    opacity_raster = RangeSlider(
+    opacity = RangeSlider(
         display_text='Raster Opacity',
-        name='opacity_raster',
+        name='opacity',
         min=.5,
         max=1,
         step=.05,
         initial=1,
     )
 
-    colors_geojson = SelectInput(
-        display_text='Boundary Colors',
-        name='colors_geojson',
+    gj_color = SelectInput(
+        display_text='Boundary - Border Colors',
+        name='gjColor',
         multiple=False,
         original=True,
         options=geojson_colors(),
         initial='#ffffff'
     )
 
-    opacity_geojson = RangeSlider(
-        display_text='Boundary Opacity',
-        name='opacity_geojson',
-        min=.0,
+    gj_opacity = RangeSlider(
+        display_text='Boundary - Border Opacity',
+        name='gjOpacity',
+        min=0,
         max=1,
         step=.1,
-        initial=.2,
+        initial=1,
+    )
+
+    gj_weight = RangeSlider(
+        display_text='Boundary - Border Thickness',
+        name='gjWeight',
+        min=1,
+        max=5,
+        step=1,
+        initial=2,
+    )
+
+    gj_fillcolor = SelectInput(
+        display_text='Boundary - Fill Colors',
+        name='gjFillColor',
+        multiple=False,
+        original=True,
+        options=geojson_colors(),
+        initial='rgb(0,0,0,0)'
+    )
+
+    gj_fillopacity = RangeSlider(
+        display_text='Boundary - Fill Opacity',
+        name='gjFillOpacity',
+        min=0,
+        max=1,
+        step=.1,
+        initial=.5,
     )
 
     charttype = SelectInput(
@@ -79,13 +106,19 @@ def home(request):
     )
 
     context = {
+        # data options
         'variables': variables,
         'dates': dates,
+        # display options
         'colorscheme': colorscheme,
-        'opacity_raster': opacity_raster,
-        'colors_geojson': colors_geojson,
-        'opacity_geojson': opacity_geojson,
+        'opacity': opacity,
+        'gjColor': gj_color,
+        'gjOpacity': gj_opacity,
+        'gjWeight': gj_weight,
+        'gjFillColor': gj_fillcolor,
+        'gjFillOpacity': gj_fillopacity,
         'charttype': charttype,
+        # metadata
         'youtubelink': App.youtubelink,
         'githublink': App.githublink,
         'gldaslink': App.gldaslink,

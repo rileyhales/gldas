@@ -71,6 +71,7 @@ let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 legend.addTo(mapObj);                   // add the legend graphic to the map
 updateGEOJSON();                        // asynchronously get geoserver wfs/geojson data for the regions
+styleGeoJSON();
 
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
 $("#dates").change(function () {
@@ -95,9 +96,6 @@ $("#variables").change(function () {
     legend.addTo(mapObj);
 });
 
-$("#opacity_raster").change(function () {
-    layerObj.setOpacity($('#opacity_raster').val());
-});
 
 $('#colorscheme').change(function () {
     clearMap();
@@ -109,22 +107,35 @@ $('#colorscheme').change(function () {
     legend.addTo(mapObj);
 });
 
-$("#opacity_geojson").change(function () {
+$("#opacity").change(function () {
+    layerObj.setOpacity($('#opacity_raster').val());
+});
+
+
+$('#gjColor').change(function () {
+    styleGeoJSON();
+});
+$("#gjOpacity").change(function () {
+    styleGeoJSON();
+});
+$("#gjWeight").change(function () {
+    styleGeoJSON();
+});
+$('#gjFillColor').change(function () {
     styleGeoJSON();
 });
 
-$('#colors_geojson').change(function () {
+$("#gjFillOpacity").change(function () {
     styleGeoJSON();
 });
+
 
 $('#charttype').change(function () {
     makechart();
 });
-
 $("#datatoggle").click(function() {
     $("#datacontrols").toggle();
 });
-
 $("#displaytoggle").click(function() {
     $("#displaycontrols").toggle();
 });

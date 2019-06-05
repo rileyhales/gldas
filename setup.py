@@ -13,7 +13,7 @@ dependencies = ['netCDF4', 'numpy', 'pandas', 'rasterstats', 'rasterio', 'osr']
 
 setup(
     name=release_package,
-    version='2.7.2',
+    version='2.7.3',
     tags='NASA, GLDAS, LDAS, charts, maps, timeseries',
     description='Visualizes GLDAS data through maps and charts',
     long_description='Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution, '

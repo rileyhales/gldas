@@ -105,6 +105,7 @@ def wms_colors():
 def geojson_colors():
     return [
         ('White', '#ffffff'),
+        ('Transparent', 'rgb(0,0,0,0)'),
         ('Red', '#ff0000'),
         ('Green', '#00ff00'),
         ('Blue', '#0000ff'),
