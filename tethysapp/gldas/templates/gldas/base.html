@@ -6,125 +6,38 @@
 
 {% block title %}{{ tethys_app.name }}{% endblock %}
 {% block app_icon %}<img src="{% static tethys_app.icon %}">{% endblock %}
-{% block app_title %}{{ tethys_app.name }}{% endblock %}
-{% block app_content %}{% endblock %}
+{% block app_title %}{{ tethys_app.name }} ({{ version }}){% endblock %}
 
-
-{% block header_buttons %}
-  <div style="text-align: center; color: white; padding: 8px"><strong>{{ version }}</strong></div>
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="How To Use This Page">
-    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
-  </div>
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Download GLDAS Data">
-    <a href="{{ gldaslink }}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span></a>
-  </div>
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"
-       title="View Tutorial on YouTube">
-    <a href="{{ youtubelink }}" target="_blank"><span class="glyphicon glyphicon-play-circle"></span></a>
-  </div>
-  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"
-       title="View Source Code and Documentation">
-    <a href="{{ githublink }}" target="_blank"><span class="glyphicon glyphicon-hdd"></span></a>
-  </div>
-{% endblock %}
-
-{% block after_app_content %}
-  <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                  aria-hidden="true">&times;</span></button>
-          <h5 class="modal-title" id="help-modal-label">How To Use This Page</h5>
-        </div>
-        <div class="modal-body">
-          <p>
-            This app contains 5 primary areas.
-          <ol>
-            <li>GLDAS Data Controls- Options for switching the variable and time interval shown on the map</li>
-            <li>Display Options- Color and opacity options for the GLDAS data and world region boundaries, and chart type options</li>
-            <li>Leaflet Map- A map that shows the data chosen in the data controls with the styling chosen in the display options. Displays an animation of the spatial data vs time. Has controls for drawing points and boxes. Allows toggling of layers.</li>
-            <li>Highchart- A chart that can show 5 different plots of timeseries information over either the point, box, or region chosen in the map.</li>
-            <li>Help and Resources- Buttons to find tutorials and video demonstrations as well as links to data and source code.</li>
-          </ol>
-          <div id="imgwrapper" style="text-align: center;"><img src="{% static 'gldas/images/helpdiagram.png' %}" style="width: 100%"></div>
-          </p
-          <p>
-            To use this app you should:
-          <ol>
-            <li>Use the "GLDAS Data Controls" to pick the variable and time interval you're interested in. <b>(1)</b></li>
-            <li>Use the "Display Options" to change the color and opacity of the GLDAS data and the world region boundaries. <b>(2)</b></li>
-            <li>Use the controls on the bottom left of the map to animate the data vs time. <b>(2)</b></li>
-            <li>Select a region of the map by either placing a point, drawing a box, or clicking on a region.<b>(3)</b></li>
-            <li>Look at the timeseries generated in the chart region. <b>(3)</b></li>
-            <li>Use the chart display choices to switch between the 5 chart types <b>(2)</b></li>
-            <li>Use the menu on the top right of the highchart section to download the chart data as a graphic, csv, or excel sheet. <b>(3)</b></li>
-            <li>Use the help links to view tutorials and demonstrations and find access to data and source code. <b>(4)</b></li>
-          </ol>
-          </p>
-          <p>By default, the data shown is for all available timesteps (January 1 2000 through the present). Data may
-            also be shown in 1-year intervals. Performance and loading times will vary based on the time and variable
-            combination you choose. Charts will take longer to load if you choose All Available Times as a your time
-            interval.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="data-modal" tabindex="-1" role="dialog" aria-labelledby="data-modal-label">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                  aria-hidden="true">&times;</span></button>
-          <h5 class="modal-title" id="data-modal-label">GLDAS Data</h5>
-        </div>
-        <div class="modal-body">
-          <p>The data shown in this app are Global datasets from the Land Data Assimilation System, or GLDAS data. The
-            data shown here are 1/4 degree resolution, monthly averages. You can download this data for yourself from <a
-                    href="{{ gldaslink }}" target="_blank">NASA GES Disc</a>. Refer to the documentation for downloads
-            to find batch download instructions and forms to sign up for credentials to GES Disc.</p>
-          <p>The data are in netCDF format and shown on the map through OGC WMS using the Thredds Data Server and netCDF
-            Markup Language (ncml).</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endblock %}
 
 {% block app_navigation_items %}
-  <li class="title" role="button" id="datatoggle">GLDAS Data Controls</li>
-  <div id="datacontrols">
+  <li class="title">Data Controls</li>
     {% gizmo select_input variables %}
     {% gizmo select_input dates %}
-    <div id="mouse-position" class="well well-sm" style="text-align: center"></div>
-  </div>
+    {% gizmo select_input charttype %}
 
-  <li class="title" role="button" id="displaytoggle">Display Options</li>
-  <div id="displaycontrols">
+  <button class="btn btn-default btn-block" role="button" id="customShpChart">Timeseries for my own Shapefile</button>
+  <br>
+
+  <div style="text-align: center; padding-bottom: 12px">
+    <button class="btn btn-default" role="button" id="display">View Map Styling Controls</button>
+  </div>
+  <div id="displayopts" style="display: none;">
+    <div id="color-scales-gizmo" style="padding-bottom: 12px">
+      <div style="padding-bottom: 4px"><strong>Custom Color Scale Min/Max</strong></div>
+      <div>
+        Min: <input id="cs_min" type="number" style="width: 20%;" value="0">
+        Max: <input id="cs_max" type="number" style="width: 20%;" value="100">
+        Use? <input id="use_csrange" type="checkbox">
+      </div>
+    </div>
     {% gizmo select_input colorscheme %}
     {% gizmo range_slider opacity %}
-    {% gizmo select_input gjColor %}
-    {% gizmo range_slider gjOpacity %}
-    {% gizmo range_slider gjWeight %}
-    {% gizmo select_input gjFillColor %}
-    {% gizmo range_slider gjFillOpacity %}
-    {% gizmo select_input charttype %}
+    {% gizmo select_input gjClr %}
+    {% gizmo range_slider gjOp %}
+    {% gizmo range_slider gjWt %}
+    {% gizmo select_input gjFlClr %}
+    {% gizmo range_slider gjFlOp %}
   </div>
-{% endblock %}
-
-{% block app_actions %}
-  <strong style="color: white; font-size: large">Help and Resources</strong>
-  <a class="btn btn-default" role="button" data-toggle="modal" data-target="#help-modal">How To Use This App</a>
-  <a class="btn btn-default" role="button" href="{{ youtubelink }}" target="_blank">Watch A Demo (YouTube)</a>
-  <a class="btn btn-default" role="button" data-toggle="modal" data-target="#data-modal">About GLDAS data</a>
-  <a class="btn btn-default" role="button" href="{{ githublink }}" target="_blank">View Source Code (GitHub)</a>
 {% endblock %}
 
 {% block content_dependent_styles %}
@@ -143,6 +56,10 @@
 
 {% block scripts %}
   {{ block.super }}
+  <script>
+      let threddsbase = "{{ settings.threddsurl }}";
+      let model = "{{ model }}";
+  </script>
   <!-- Allows csrf verification with AJAX -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
@@ -182,11 +99,12 @@
   </script>
 
   <!-- scripts I wrote for the app, main should go last -->
-  <script src="{% static 'gldas/js/geojsons1.js' %}" type="text/javascript"></script>
-  <script src="{% static 'gldas/js/geojsons2.js' %}" type="text/javascript"></script>
-  <script src="{% static 'gldas/js/geojsons3.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/gjson1.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/gjson2.js' %}" type="text/javascript"></script>
+  <script src="{% static 'gldas/js/gjson3.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/bounds.js' %}" type="text/javascript"></script>
 
+  <script src="{% static 'gldas/js/customShp.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/highcharts.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/leaflet.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/main.js' %}" type="text/javascript"></script>

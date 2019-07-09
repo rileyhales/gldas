@@ -10,3 +10,129 @@
     <div id="highchart"></div>
 </div>
 {% endblock %}
+
+{% block header_buttons %}
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="How To Use This Page">
+    <a data-toggle="modal" data-target="#help-modal"><span class="glyphicon glyphicon-question-sign"></span></a>
+  </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Upload Shapefile">
+    <a data-toggle="modal" data-target="#shp-modal"><span class="glyphicon glyphicon-export"></span></a>
+  </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom" title="Download the Data">
+    <a href="{{ datawebsite }}" target="_blank"><span class="glyphicon glyphicon-download-alt"></span></a>
+  </div>
+  <div class="header-button glyphicon-button" data-toggle="tooltip" data-placement="bottom"
+       title="View Source Code and Documentation">
+    <a href="{{ githublink }}" target="_blank"><span class="glyphicon glyphicon-hdd"></span></a>
+  </div>
+{% endblock %}
+
+{% block app_actions %}
+  <strong style="color: white; font-size: large">Help and Resources</strong>
+  <a class="btn btn-default" role="button" data-toggle="modal" data-target="#help-modal">How To Use This App</a>
+  <a class="btn btn-default" role="button" data-toggle="modal" data-target="#data-modal">About GLDAS data</a>
+  <a class="btn btn-default" role="button" href="{{ githublink }}" target="_blank">View Source Code (GitHub)</a>
+{% endblock %}
+
+{% block after_app_content %}
+  {# Upload Shapefile Data Modal #}
+  <div class="modal fade" id="shp-modal" tabindex="-1" role="dialog" aria-labelledby="shp-modal-label">
+    <div class="modal-dialog" role="document">
+      <form action="" method="post" enctype="multipart/form-data">.
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">X</span></button>
+            <h2 class="modal-title" id="about-modal-onamet-label">Upload A Shapefile</h2>
+          </div>
+          <div class="modal-body">
+            <div>Guidelines for using a custom shapefile:
+              <ul>
+                <li>Your shapefile must contain only polygon data.</li>
+                <li>You must include the 4 files ending in the extensions "prj" "shp", "shx", and "dbf".</li>
+                <li>Your shapefile must use the WGS1984 Geographic Coordinate System or another GCS.</li>
+                <li>The EO data are 1/4 degree spatial resolution. If your polygons are too small, you will get an
+                  answer of zero.
+                </li>
+                <li>The more polygons in the shapefile, the longer it will take to generate a timeseries.</li>
+                <li>Tethys will automatically delete your shapefile after it has been used.</li>
+              </ul>
+            </div>
+            <br>
+            <div class="form-group">
+              <input type="file" class="local-file-upload" id="shapefile-upload" accept=".shp,.prj,.shx,.dbf" multiple>
+            </div>
+            <div>Once you've selected a shapefile, click submit to upload it.</div>
+            <div id="loading" style="display: none; text-align: center"><img
+                    src="https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" id="uploadshp">Submit</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{# Help Modal #}
+  <div class="modal fade" id="help-modal" tabindex="-1" role="dialog" aria-labelledby="help-modal-label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="help-modal-label">How To Use This Page</h5>
+        </div>
+        <div class="modal-body">
+          <p>A step by step tutorial to this and the GFS app may be found <a target="_blank" href="https://docs.google.com/document/d/1j1f-ed6awEmR89vllAh8kmn4E8ojX3aHyM3S3ACUuR0/edit?usp=sharing">here</a></p>
+          <p>
+            To use this app you should:
+          <ol>
+            <li>Use the "Data Controls" to pick the variable and time interval you're interested in.
+            <li>Use the "Display Options" to change the color and opacity of the GLDAS data and the world region boundaries.
+            <li>Use the controls on the bottom left of the map to animate the data vs time.
+            <li>Select a region of the map by either placing a point, drawing a box, or clicking on a region
+            <li>Look at the timeseries generated in the chart region.
+            <li>Use the chart display choices to switch between the 5 chart types
+            <li>Use the menu on the top right of the highchart section to download the chart data as a graphic, csv, or excel sheet.
+            <li>Use the help links to view tutorials and demonstrations and find access to data and source code.
+          </ol>
+          </p>
+          <p>By default, the data shown is for all available timesteps (January 1 2000 through the present). Data may
+            also be shown in 1-year intervals. Performance and loading times will vary based on the time and variable
+            combination you choose. Charts will take longer to load if you choose All Available Times as a your time
+            interval.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{# About Data Modal #}
+  <div class="modal fade" id="data-modal" tabindex="-1" role="dialog" aria-labelledby="data-modal-label">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
+          <h5 class="modal-title" id="data-modal-label">GLDAS Data</h5>
+        </div>
+        <div class="modal-body">
+          <p>The data shown in this app are Global datasets from the Land Data Assimilation System, or GLDAS data. The
+            data shown here are 1/4 degree resolution, monthly averages. You can download this data for yourself from <a
+                    href="{{ gldaslink }}" target="_blank">NASA GES Disc</a>. Refer to the documentation for downloads
+            to find batch download instructions and forms to sign up for credentials to GES Disc.</p>
+          <p>The data are in netCDF format and shown on the map through OGC WMS using the Thredds Data Server and netCDF
+            Markup Language (ncml).</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -43,7 +43,7 @@ function newHighchart(data) {
     chart = Highcharts.chart('highchart', {
         title: {
             align: "center",
-            text: data['name'] + ' v Time ' + data['type'],
+            text: data['name'] + ' v Time ' + '(' + data['type'] + ')',
         },
         xAxis: {
             type: 'datetime',
@@ -83,7 +83,7 @@ function newMultilineChart(data) {
     chart = Highcharts.chart('highchart', {
         title: {
             align: "center",
-            text: data['name'] + ' v Time ' + data['type'],
+            text: data['name'] + ' v Time ' + '(' + data['type'] + ')',
         },
         xAxis: {
             title: {text: "Time"},
@@ -176,25 +176,19 @@ function getDrawnChart(drawnItems) {
             }
         }
 
-        // setup a parameters json to generate the right timeseries
+        // setup a parameters json to generate the right timeserie
         let data = {
             coords: coords,
-            geojson: geojson[0],
-            variable: $('#variables').val(),
+            model: model,
+            variable: $("#variables").val(),
+            level: $("#levels").val(),
             time: $("#dates").val(),
+            loc_type: geojson[0]['geometry']['type']
         };
 
         // decide which ajax url you need based on drawing type
-        let url;
-        let drawtype = geojson[0]['geometry']['type'];
-        if (drawtype === 'Point') {
-            url = '/apps/gldas/ajax/getPointSeries/';
-        } else {
-            url = '/apps/gldas/ajax/getPolygonAverage/';
-        }
-
         $.ajax({
-            url: url,
+            url: '/apps/' + model + '/ajax/getChart/',
             data: JSON.stringify(data),
             dataType: 'json',
             contentType: "application/json",
@@ -222,21 +216,29 @@ function getShapeChart(selectedregion) {
     chart.hideNoData();
     chart.showLoading();
 
+    // setup a parameters json to generate the right timeseries
     let data = {
-        variable: $('#variables').val(),
+        model: model,
+        variable: $("#variables").val(),
+        level: $("#levels").val(),
         time: $("#dates").val(),
-        region: selectedregion,
+        loc_type: 'Shapefile'
     };
+
     if (selectedregion === 'lastregion') {
         // if we want to update, change the region to the last completed region
         data['region'] = currentregion;
+    } else if (selectedregion === 'customshape') {
+        data['region'] = selectedregion;
+        currentregion = selectedregion;
     } else {
         // otherwise, the new selection is the current region on the chart
+        data['region'] = selectedregion;
         currentregion = selectedregion;
     }
 
     $.ajax({
-        url: '/apps/gldas/ajax/getShapeAverage/',
+        url: '/apps/' + model + '/ajax/getChart/',
         data: JSON.stringify(data),
         dataType: 'json',
         contentType: "application/json",

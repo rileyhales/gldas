@@ -1,8 +1,8 @@
 # This file may be committed to your app code.
-version: 1.0
+version: 3
 # This should match the app - package name in your setup.py
 name: gldas
-setup_path: setup-auto.py
+setup_path: setup.py
 
 conda:
   channels:

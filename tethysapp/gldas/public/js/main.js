@@ -14,27 +14,8 @@ $.ajaxSetup({
     }
 });
 
-
-////////////////////////////////////////////////////////////////////////  AJAX FUNCTIONS
-function getThreddswms() {
-    $.ajax({
-        url: '/apps/gldas/ajax/getCustomSettings/',
-        async: false,
-        data: '',
-        dataType: 'json',
-        contentType: "application/json",
-        method: 'POST',
-        success: function (result) {
-            threddsbase = result['threddsurl'];
-            geoserverbase = result['geoserverurl']
-        },
-    });
-}
-
 ////////////////////////////////////////////////////////////////////////  LOAD THE MAP
-let threddsbase;
-let geoserverbase;
-getThreddswms();                        // sets the value of threddsbase and geoserverbase
+// threddsbase and geoserverbase and model are defined in the base.html scripts sections
 const mapObj = map();                   // used by legend and draw controls
 const basemapObj = basemaps();          // used in the make controls function
 
@@ -70,72 +51,31 @@ mapObj.on("mousemove", function (event) {
 let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 legend.addTo(mapObj);                   // add the legend graphic to the map
-updateGEOJSON();                        // asynchronously get geoserver wfs/geojson data for the regions
-styleGeoJSON();
+latlon.addTo(mapObj);                   // add the box showing lat and lon to the map
+addGEOJSON();                           // add the geojson world boundary regions
 
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
-$("#dates").change(function () {
-    clearMap();
-    for (let i = 0; i < geojsons.length; i++) {
-        geojsons[i][0].addTo(mapObj)
-    }
-    layerObj = newLayer();
-    controlsObj = makeControls();
-    getDrawnChart(drawnItems);
-    legend.addTo(mapObj);
-});
-
-$("#variables").change(function () {
-    clearMap();
-    for (let i = 0; i < geojsons.length; i++) {
-        geojsons[i][0].addTo(mapObj)
-    }
-    layerObj = newLayer();
-    controlsObj = makeControls();
-    getDrawnChart(drawnItems);
-    legend.addTo(mapObj);
-});
-
-
-$('#colorscheme').change(function () {
-    clearMap();
-    for (let i = 0; i < geojsons.length; i++) {
-        geojsons[i][0].addTo(mapObj)
+function update() {
+    for (let i in geojsons) {
+        geojsons[i].addTo(mapObj)
     }
     layerObj = newLayer();
     controlsObj = makeControls();
     legend.addTo(mapObj);
-});
-
-$("#opacity").change(function () {
-    layerObj.setOpacity($('#opacity_raster').val());
-});
-
-
-$('#gjColor').change(function () {
-    styleGeoJSON();
-});
-$("#gjOpacity").change(function () {
-    styleGeoJSON();
-});
-$("#gjWeight").change(function () {
-    styleGeoJSON();
-});
-$('#gjFillColor').change(function () {
-    styleGeoJSON();
-});
-
-$("#gjFillOpacity").change(function () {
-    styleGeoJSON();
-});
-
-
-$('#charttype').change(function () {
-    makechart();
-});
-$("#datatoggle").click(function() {
-    $("#datacontrols").toggle();
-});
-$("#displaytoggle").click(function() {
-    $("#displaycontrols").toggle();
-});
+}
+// data controls
+$("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
+$("#dates").change(function () {clearMap();update();getDrawnChart(drawnItems);});
+$("#use_dates").change(function () {customdates()});
+$('#charttype').change(function () {makechart();});
+$("#levels").change(function () {clearMap();update();});
+// display controls
+$("#display").click(function() {$("#displayopts").toggle();});
+$("#use_csrange").change(function () {clearMap();update()});
+$('#colorscheme').change(function () {clearMap();update();});
+$("#opacity").change(function () {layerObj.setOpacity($(this).val())});
+$('#gjClr').change(function () {styleGeoJSON();});
+$("#gjOp").change(function () {styleGeoJSON();});
+$("#gjWt").change(function () {styleGeoJSON();});
+$('#gjFlClr').change(function () {styleGeoJSON();});
+$("#gjFlOp").change(function () {styleGeoJSON();});

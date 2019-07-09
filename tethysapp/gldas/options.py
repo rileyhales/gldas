@@ -2,7 +2,7 @@ from .app import Gldas as App
 import os
 
 
-def app_configuration():
+def app_settings():
     """
     Gets the settings for the app for use in other functions and ajax for leaflet
     Dependencies: os, App (app)
@@ -11,7 +11,6 @@ def app_configuration():
         'app_wksp_path': os.path.join(App.get_app_workspace().path, ''),
         'threddsdatadir': App.get_custom_setting("Local Thredds Folder Path"),
         'threddsurl': App.get_custom_setting("Thredds WMS URL"),
-        'geoserverurl': App.get_custom_setting("Geoserver Workspace URL"),
     }
 
 
@@ -19,40 +18,35 @@ def gldas_variables():
     """
     List of the plottable variables from the GLDAS 2.1 datasets used
     """
-    return {
-        'Air Temperature': 'Tair_f_inst',
-        'Surface Albedo': 'Albedo_inst',
-        'Surface Temperature': 'AvgSurfT_inst',
-        'Canopy Water Amount': 'CanopInt_inst',
-        'Evaporation Flux From Canopy': 'ECanop_tavg',
-        'Evaporation Flux From Soil': 'ESoil_tavg',
-        'Water Evaporation Flux': 'Evap_tavg',
-        'Surface Downwelling Longwave Flux In Air': 'LWdown_f_tavg',
-        'Surface Net Downward Longwave Flux': 'Lwnet_tavg',
-        'Potential Evaporation Flux': 'PotEvap_tavg',
-        'Surface Air Pressure': 'Psurf_f_inst',
-        'Specific Humidity': 'Qair_f_inst',
-        'Downward Heat Flux In Soil': 'Qg_tavg',
-        'Surface Upward Sensible Heat Flux': 'Qh_tavg',
-        'Surface Upward Latent Heat Flux': 'Qle_tavg',
-        'Surface Runoff Amount': 'Qs_acc',
-        'Subsurface Runoff Amount': 'Qsb_acc',
-        'Surface Snow Melt Amount': 'Qsm_acc',
-        'Precipitation Flux': 'Rainf_f_tavg',
-        'Rainfall Flux': 'Rainf_tavg',
-        'Root Zone Soil Moisture': 'RootMoist_inst',
-        'Surface Snow Amount': 'SWE_inst',
-        'Soil Temperature': 'SoilTMP0_10cm_inst',
-        'Surface Downwelling Shortwave Flux In Air': 'SWdown_f_tavg',
-        'Surface Snow Thickness': 'SnowDepth_inst',
-        'Snowfall Flux': 'Snowf_tavg',
-        'Surface Net Downward Shortwave Flux': 'Swnet_tavg',
-        'Transpiration Flux From Veg': 'Tveg_tavg',
-        'Wind Speed': 'Wind_f_inst',
-        # 'Latitude': 'lat',
-        # 'Longitude': 'lon',
-        # 'Time': 'time',
-        }
+    return [('Air Temperature', 'Tair_f_inst'),
+            ('Canopy Water Amount', 'CanopInt_inst'),
+            ('Downward Heat Flux In Soil', 'Qg_tavg'),
+            ('Evaporation Flux From Canopy', 'ECanop_tavg'),
+            ('Evaporation Flux From Soil', 'ESoil_tavg'),
+            ('Potential Evaporation Flux', 'PotEvap_tavg'),
+            ('Precipitation Flux', 'Rainf_f_tavg'),
+            ('Rainfall Flux', 'Rainf_tavg'),
+            ('Root Zone Soil Moisture', 'RootMoist_inst'),
+            ('Snowfall Flux', 'Snowf_tavg'),
+            ('Soil Temperature', 'SoilTMP0_10cm_inst'),
+            ('Specific Humidity', 'Qair_f_inst'),
+            ('Subsurface Runoff Amount', 'Qsb_acc'),
+            ('Surface Air Pressure', 'Psurf_f_inst'),
+            ('Surface Albedo', 'Albedo_inst'),
+            ('Surface Downwelling Longwave Flux In Air', 'LWdown_f_tavg'),
+            ('Surface Downwelling Shortwave Flux In Air', 'SWdown_f_tavg'),
+            ('Surface Net Downward Longwave Flux', 'Lwnet_tavg'),
+            ('Surface Net Downward Shortwave Flux', 'Swnet_tavg'),
+            ('Surface Runoff Amount', 'Qs_acc'),
+            ('Surface Snow Amount', 'SWE_inst'),
+            ('Surface Snow Melt Amount', 'Qsm_acc'),
+            ('Surface Snow Thickness', 'SnowDepth_inst'),
+            ('Surface Temperature', 'AvgSurfT_inst'),
+            ('Surface Upward Latent Heat Flux', 'Qle_tavg'),
+            ('Surface Upward Sensible Heat Flux', 'Qh_tavg'),
+            ('Transpiration Flux From Veg', 'Tveg_tavg'),
+            ('Water Evaporation Flux', 'Evap_tavg'),
+            ('Wind Speed', 'Wind_f_inst')]
 
 
 def timecoverage():

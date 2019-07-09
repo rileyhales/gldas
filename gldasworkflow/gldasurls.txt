@@ -231,3 +231,4 @@ https://hydro1.gesdisc.eosdis.nasa.gov/data/GLDAS/GLDAS_NOAH025_M.2.1/2019/GLDAS
 https://hydro1.gesdisc.eosdis.nasa.gov/data/GLDAS/GLDAS_NOAH025_M.2.1/2019/GLDAS_NOAH025_M.A201903.021.nc4
 https://hydro1.gesdisc.eosdis.nasa.gov/data/GLDAS/GLDAS_NOAH025_M.2.1/2019/GLDAS_NOAH025_M.A201904.021.nc4
 https://hydro1.gesdisc.eosdis.nasa.gov/data/GLDAS/GLDAS_NOAH025_M.2.1/2019/GLDAS_NOAH025_M.A201905.021.nc4
+https://hydro1.gesdisc.eosdis.nasa.gov/data/GLDAS/GLDAS_NOAH025_M.2.1/2019/GLDAS_NOAH025_M.A201906.021.nc4
