@@ -38,10 +38,9 @@ def newchart(data):
     files.sort()
 
     variables = gldas_variables()
-    for key in variables:
-        if variables[key] == data['variable']:
-            name = key
-            name = name
+    for item in variables:
+        if item[1] == data['variable']:
+            name = item[0]
             break
 
     if loc_type == 'Point':
