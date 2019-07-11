@@ -63,15 +63,28 @@ function update() {
     controlsObj = makeControls();
     legend.addTo(mapObj);
 }
+function changeInputs() {
+    let charts = $("#charttype");
+    charts.empty();
+    charts.append('<option value="timeseries">Full Timeseries (Single-Line Plot)</option>');
+    if ($("#dates").val() === 'alltimes') {
+        charts.append('<option value="monthbox">Monthly Analysis (Box Plot)</option>' +
+            '<option value="monthmulti">Monthly Analysis (Multi-Line Plot)</option>' +
+            '<option value="yearbox">Yearly Analysis (Box Plot)</option>' +
+            '<option value="yearmulti">Yearly Analysis (Multi-Line Plot)</option>');
+    }
+    charts.val('timeseries');
+}
+
 // data controls
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
-$("#dates").change(function () {clearMap();update();getDrawnChart(drawnItems);});
-$("#use_dates").change(function () {customdates()});
+$("#dates").change(function () {changeInputs();clearMap();update();getDrawnChart(drawnItems);});
 $('#charttype').change(function () {makechart();});
 $("#levels").change(function () {clearMap();update();});
 // display controls
 $("#display").click(function() {$("#displayopts").toggle();});
 $("#use_csrange").change(function () {clearMap();update()});
+// $("#use_dates").change(function () {customdates()});
 $('#colorscheme').change(function () {clearMap();update();});
 $("#opacity").change(function () {layerObj.setOpacity($(this).val())});
 $('#gjClr').change(function () {styleGeoJSON();});

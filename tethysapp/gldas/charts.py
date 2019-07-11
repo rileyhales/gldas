@@ -24,41 +24,39 @@ def newchart(data):
     var = str(data['variable'])
     loc_type = data['loc_type']
 
-    # environment settings
-    configs = app_settings()
-    path = configs['threddsdatadir']
-
     # list the netcdfs to be processed
+    path = app_settings()['threddsdatadir']
     path = os.path.join(path, 'raw')
     allfiles = os.listdir(path)
     files = [nc for nc in allfiles if nc.endswith('.nc4')]
-
     if data['time'] != 'alltimes':
         files = [i for i in files if data['time'] in i]
     files.sort()
 
-    variables = gldas_variables()
-    for item in variables:
+    # some metadata
+    for item in gldas_variables():
         if item[1] == data['variable']:
             name = item[0]
             break
 
+    # get the timeseries, units, and message based on location type
     if loc_type == 'Point':
         values, units = pointchart(var, data['coords'], path, files)
-        type = 'Values at a Point'
+        type_message = 'Values at a Point'
     elif loc_type == 'Polygon':
         values, units = polychart(var, data['coords'], path, files)
-        type = 'Averaged over a Polygon'
+        type_message = 'Averaged over a Polygon'
     elif loc_type == 'Shapefile':
         values, units = shpchart(var, path, files, data['region'], data['user'])
         if data['region'] == 'customshape':
-            type = 'Average for user\'s shapefile'
+            type_message = 'Average for user\'s shapefile'
         else:
-            type = 'Average for ' + data['region']
-
+            type_message = 'Average for ' + data['region']
     values.sort(key=lambda tup: tup[0])
-    resp = {'values': values, 'units': units, 'variable': var, 'type': type, 'name': name}
-    resp['multiline'], resp['boxplot'], resp['categories'] = makestatplots(values, data['time'])
+
+    resp = {'values': values, 'units': units, 'variable': var, 'type': type_message, 'name': name}
+    if data['time'] == 'alltimes':
+        resp['multiline'], resp['boxplot'], resp['categories'] = makestatplots(values)
 
     return resp
 
@@ -87,13 +85,12 @@ def pointchart(var, coords, path, files):
     # extract values at each timestep
     for nc in files:
         # get the time value for each file
-        nc_obj = netCDF4.Dataset(path + '/' + nc, 'r')
-        t_val = nc_obj['time'].__dict__['begin_date']
-        t_val = datetime.datetime.strptime(t_val, "%Y%m%d")
-        time = calendar.timegm(t_val.utctimetuple()) * 1000
+        nc_obj = netCDF4.Dataset(os.path.join(path, nc), 'r')
+        time = nc_obj['time'].__dict__['begin_date']
+        time = datetime.datetime.strptime(time, "%Y%m%d")
         # slice the array at the area you want
         val = float(nc_obj[var][0, lat_indx, lon_indx].data)
-        values.append((time, val))
+        values.append((calendar.timegm(time.utctimetuple()) * 1000, val, time.month, time.year))
         nc_obj.close()
 
     return values, units
@@ -125,16 +122,16 @@ def polychart(var, coords, path, files):
     # extract values at each timestep
     for nc in files:
         # set the time value for each file
-        nc_obj = netCDF4.Dataset(path + '/' + nc, 'r')
-        t_val = nc_obj['time'].__dict__['begin_date']
-        t_val = datetime.datetime.strptime(t_val, "%Y%m%d")
-        time = calendar.timegm(t_val.utctimetuple()) * 1000
+        nc_obj = netCDF4.Dataset(os.path.join(path, nc), 'r')
+        time = nc_obj['time'].__dict__['begin_date']
+        time = datetime.datetime.strptime(time, "%Y%m%d")
         # slice the array, drop nan values, get the mean, append to list of values
         array = nc_obj[var][0, minlat:maxlat, minlon:maxlon].data
         array[array < -5000] = numpy.nan  # If you have fill values, change the comparator to git rid of it
         array = array.flatten()
         array = array[~numpy.isnan(array)]
-        values.append((time, float(array.mean())))
+        values.append((calendar.timegm(time.utctimetuple()) * 1000, float(array.mean()), time.month, time.year))
+
         nc_obj.close()
 
     return values, units
@@ -168,18 +165,16 @@ def shpchart(var, path, files, region, user):
     nc_obj.close()
 
     # read netcdf, create geotiff, zonal statistics, format outputs for highcharts plotting
-    for file in files:
+    for nc in files:
         # open the netcdf and get the data array
-        nc_obj = netCDF4.Dataset(os.path.join(path, file), 'r')
+        nc_obj = netCDF4.Dataset(os.path.join(path, nc), 'r')
+        time = nc_obj['time'].__dict__['begin_date']
+        time = datetime.datetime.strptime(time, "%Y%m%d")
+
         var_data = nc_obj.variables[var][:]  # this is the array of values for the nc_obj
         array = numpy.asarray(var_data)[0, :, :]  # converting the data type
         array[array < -9000] = numpy.nan  # use the comparator to drop nodata fills
         array = array[::-1]  # vertically flip array so tiff orientation is right (you just have to, try it)
-
-        # create the timesteps for the highcharts plot
-        t_val = nc_obj['time'].__dict__['begin_date']
-        t_val = datetime.datetime.strptime(t_val, "%Y%m%d")
-        time = calendar.timegm(t_val.utctimetuple()) * 1000
 
         # file paths and settings
         if region == 'customshape':
@@ -195,7 +190,7 @@ def shpchart(var, path, files, region, user):
             newtiff.write(array, 1)  # data, band number
 
         stats = rasterstats.zonal_stats(shppath, gtiffpath, stats="mean")
-        values.append((time, stats[0]['mean']))
+        values.append((calendar.timegm(time.utctimetuple()) * 1000, stats[0]['mean'], time.month, time.year))
 
     if os.path.isdir(geotiffdir):
         shutil.rmtree(geotiffdir)
@@ -203,12 +198,12 @@ def shpchart(var, path, files, region, user):
     return values, units
 
 
-def makestatplots(values, time):
+def makestatplots(values):
     """
     Calculates statistics for the array of timeseries values and returns arrays for a highcharts boxplot
     Dependencies: statistics, pandas, datetime, calendar
     """
-    df = pandas.DataFrame(values, columns=['dates', 'values'])
+    df = pandas.DataFrame(values, columns=['timestamp', 'values', 'month', 'year'])
     multiline = {'yearmulti': {'min': [], 'max': [], 'mean': []},
                  'monthmulti': {'min': [], 'max': [], 'mean': []}}
     boxplot = {'yearbox': [], 'monthbox': []}
@@ -217,26 +212,27 @@ def makestatplots(values, time):
     numyears = int(datetime.datetime.now().strftime("%Y")) - 1999  # not 2000 because we include that year
     categories = {'month': [months[i + 1] for i in range(12)], 'year': [i + 2000 for i in range(numyears)]}
 
-    if time == 'alltimes':
-        for i in range(1, 13):  # static 13 to go to years
-            tmp = df[int(df['dates'][-2]) == i]['values']
-            std = statistics.stdev(tmp)
-            ymin = min(tmp)
-            ymax = max(tmp)
-            mean = sum(tmp) / len(tmp)
-            boxplot['monthbox'].append([months[i], ymin, mean - std, mean, mean + std, ymax])
-            multiline['monthmulti']['min'].append((months[i], ymin))
-            multiline['monthmulti']['mean'].append((months[i], mean))
-            multiline['monthmulti']['max'].append((months[i], ymax))
-        for i in range(numyears):
-            tmp = df[int(df['dates'][0:3]) == i + 2000]['values']
-            std = statistics.stdev(tmp)
-            ymin = min(tmp)
-            ymax = max(tmp)
-            mean = sum(tmp) / len(tmp)
-            boxplot['yearbox'].append([i, ymin, mean - std, mean, mean + std, ymax])
-            multiline['yearmulti']['min'].append((i + 2000, ymin))
-            multiline['yearmulti']['mean'].append((i + 2000, mean))
-            multiline['yearmulti']['max'].append((i + 2000, ymax))
+    for i in range(1, 13):  # static 13 to go over months
+        tmp = df[df['month'] == i]['values']
+        std = statistics.stdev(tmp)
+        median = statistics.median(tmp)
+        ymin = min(tmp)
+        ymax = max(tmp)
+        mean = sum(tmp) / len(tmp)
+        boxplot['monthbox'].append([months[i], ymin, mean - std, median, mean + std, ymax])
+        multiline['monthmulti']['min'].append((months[i], ymin))
+        multiline['monthmulti']['mean'].append((months[i], mean))
+        multiline['monthmulti']['max'].append((months[i], ymax))
+    for i in range(numyears):
+        tmp = df[df['year'] == i + 2000]['values']
+        std = statistics.stdev(tmp)
+        median = statistics.median(tmp)
+        ymin = min(tmp)
+        ymax = max(tmp)
+        mean = sum(tmp) / len(tmp)
+        boxplot['yearbox'].append([i, ymin, mean - std, median, mean + std, ymax])
+        multiline['yearmulti']['min'].append((i + 2000, ymin))
+        multiline['yearmulti']['mean'].append((i + 2000, mean))
+        multiline['yearmulti']['max'].append((i + 2000, ymax))
 
     return multiline, boxplot, categories

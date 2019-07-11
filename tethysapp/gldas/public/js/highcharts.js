@@ -253,6 +253,7 @@ function getShapeChart(selectedregion) {
 function makechart() {
     if (chartdata !== null) {
         let type = $("#charttype").val();
+        console.log(type);
         if (type === 'timeseries') {
             newHighchart(chartdata);
         } else if (type === 'yearmulti' || type === 'monthmulti') {

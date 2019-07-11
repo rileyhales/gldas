@@ -9,7 +9,6 @@ conda:
     - conda-forge
   dependencies:
     - netcdf4
-    - gdal
     - numpy
     - pandas
     - rasterstats

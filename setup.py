@@ -9,7 +9,7 @@ app_class = 'gldas.app:Gldas'
 app_package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tethysapp', app_package)
 
 # -- Python Dependencies -- #
-dependencies = ['netCDF4', 'numpy', 'pandas', 'rasterstats', 'rasterio', 'osr']
+dependencies = ['netCDF4', 'numpy', 'pandas', 'rasterstats', 'rasterio']
 
 setup(
     name=release_package,
