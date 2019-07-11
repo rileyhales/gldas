@@ -25,11 +25,19 @@
     <div id="color-scales-gizmo" style="padding-bottom: 12px">
       <div style="padding-bottom: 4px"><strong>Custom Color Scale Min/Max</strong></div>
       <div>
-        Min: <input id="cs_min" type="number" style="width: 20%;" value="0">
-        Max: <input id="cs_max" type="number" style="width: 20%;" value="100">
-        Use? <input id="use_csrange" type="checkbox">
+        Min: <input class="customs" id="cs_min" type="number" style="width: 20%;" value="0">
+        Max: <input class="customs" id="cs_max" type="number" style="width: 20%;" value="100">
+        Use? <input class="customs" id="use_csrange" type="checkbox">
       </div>
     </div>
+{#    <div id="time-range-gizmo" style="padding-bottom: 12px">#}
+{#      <div style="padding-bottom: 4px"><strong>Limit by Date Range</strong></div>#}
+{#      <div>#}
+{#        Start: <input class="customs" id="time_min" type="number" style="width: 20%;" value="YYYY" maxlength="4">#}
+{#        End: <input class="customs" id="time_max" type="number" style="width: 20%;" value="YYYY" maxlength="4">#}
+{#        Use? <input class="customs" id="use_times" type="checkbox">#}
+{#      </div>#}
+{#    </div>#}
     {% gizmo select_input colorscheme %}
     {% gizmo range_slider opacity %}
     {% gizmo select_input gjClr %}

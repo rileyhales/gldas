@@ -75,16 +75,18 @@ function changeInputs() {
     }
     charts.val('timeseries');
 }
+$(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')});
 
 // data controls
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $("#dates").change(function () {changeInputs();clearMap();update();getDrawnChart(drawnItems);});
 $('#charttype').change(function () {makechart();});
 $("#levels").change(function () {clearMap();update();});
+
 // display controls
 $("#display").click(function() {$("#displayopts").toggle();});
 $("#use_csrange").change(function () {clearMap();update()});
-// $("#use_dates").change(function () {customdates()});
+// $("#use_times").change(function () {customdates()});
 $('#colorscheme').change(function () {clearMap();update();});
 $("#opacity").change(function () {layerObj.setOpacity($(this).val())});
 $('#gjClr').change(function () {styleGeoJSON();});
