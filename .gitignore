@@ -12,3 +12,7 @@
 __pycache__
 __pycache__/*
 *.tif
+*.dbf
+*.shp
+*.shx
+*.prj
