@@ -123,9 +123,6 @@ function getWFSData(gsworksp, shpname, gsurl) {
         srsName: 'EPSG:4326',
         crossOrigin: 'anonymous'
     });
-    let url = gsurl + L.Util.getParamString(parameters);
-    console.log(url);
-
     $.ajax({
         async: true,
         jsonp: false,
