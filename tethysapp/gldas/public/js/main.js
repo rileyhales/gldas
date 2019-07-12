@@ -44,9 +44,7 @@ mapObj.on(L.Draw.Event.CREATED, function (event) {
     getDrawnChart(drawnItems);
 });
 
-mapObj.on("mousemove", function (event) {
-    $("#mouse-position").html('Lat: ' + event.latlng.lat.toFixed(5) + ', Lon: ' + event.latlng.lng.toFixed(5));
-});
+mapObj.on("mousemove", function (event) {$("#mouse-position").html('Lat: ' + event.latlng.lat.toFixed(5) + ', Lon: ' + event.latlng.lng.toFixed(5));});
 
 let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
@@ -59,6 +57,7 @@ function update() {
     for (let i in geojsons) {
         geojsons[i].addTo(mapObj)
     }
+    usershape.addTo(mapObj);
     layerObj = newLayer();
     controlsObj = makeControls();
     legend.addTo(mapObj);
@@ -85,6 +84,8 @@ $("#levels").change(function () {clearMap();update();});
 
 // display controls
 $("#display").click(function() {$("#displayopts").toggle();});
+$("#cs_min").change(function () {if ($("#use_csrange").is(":checked")) {clearMap();update()}});
+$("#cs_max").change(function () {if ($("#use_csrange").is(":checked")) {clearMap();update()}});
 $("#use_csrange").change(function () {clearMap();update()});
 // $("#use_times").change(function () {customdates()});
 $('#colorscheme').change(function () {clearMap();update();});
