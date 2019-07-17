@@ -1,9 +1,6 @@
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from tethys_sdk.gizmos import SelectInput, RangeSlider
-import subprocess
 
 from .app import Gldas as App
 from .options import gldas_variables, wms_colors, geojson_colors, timecoverage, get_charttypes, app_settings
@@ -117,6 +114,7 @@ def home(request):
         'gjFlOp': gj_fillopacity,
 
         # metadata
+        'app': App.package,
         'githublink': App.githublink,
         'datawebsite': App.datawebsite,
         'version': App.version,

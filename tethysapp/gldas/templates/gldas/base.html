@@ -51,7 +51,7 @@
 {% block content_dependent_styles %}
   {{ block.super }}
   <!-- styling for leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
   <!-- styling for timeseries controls -->
   <link rel="stylesheet"
         href="https://cdn.rawgit.com/socib/Leaflet.TimeDimension/master/dist/leaflet.timedimension.control.min.css"/>
@@ -67,12 +67,13 @@
   <script>
       let threddsbase = "{{ settings.threddsurl }}";
       let model = "{{ model }}";
+      let app = "{{ app }}"
   </script>
   <!-- Allows csrf verification with AJAX -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
   <!-- script for leaflet -->
-  <script type="text/javascript" src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
   <!-- Leadlet with Esri -->
 
   <script src="https://unpkg.com/esri-leaflet@2.2.3/dist/esri-leaflet.js"

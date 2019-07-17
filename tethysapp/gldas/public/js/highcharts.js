@@ -188,7 +188,7 @@ function getDrawnChart(drawnItems) {
 
         // decide which ajax url you need based on drawing type
         $.ajax({
-            url: '/apps/' + model + '/ajax/getChart/',
+            url: '/apps/' + app + '/ajax/getChart/',
             data: JSON.stringify(data),
             dataType: 'json',
             contentType: "application/json",
@@ -238,7 +238,7 @@ function getShapeChart(selectedregion) {
     }
 
     $.ajax({
-        url: '/apps/' + model + '/ajax/getChart/',
+        url: '/apps/' + app + '/ajax/getChart/',
         data: JSON.stringify(data),
         dataType: 'json',
         contentType: "application/json",
@@ -253,7 +253,6 @@ function getShapeChart(selectedregion) {
 function makechart() {
     if (chartdata !== null) {
         let type = $("#charttype").val();
-        console.log(type);
         if (type === 'timeseries') {
             newHighchart(chartdata);
         } else if (type === 'yearmulti' || type === 'monthmulti') {
