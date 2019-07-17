@@ -7,7 +7,7 @@ class Gldas(TethysAppBase):
     Tethys app class for GLDAS Data Visualizer.
     """
 
-    name = 'GLDAS Data Visualizer'
+    name = 'GLDAS Data Tool'
     index = 'gldas:home'
     icon = 'gldas/images/globe.png'
     package = 'gldas'
