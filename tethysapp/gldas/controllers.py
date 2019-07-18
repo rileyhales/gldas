@@ -1,4 +1,6 @@
-from django.contrib.auth.decorators import login_required
+import random
+import string
+
 from django.shortcuts import render
 from tethys_sdk.gizmos import SelectInput, RangeSlider
 
@@ -6,7 +8,6 @@ from .app import Gldas as App
 from .options import gldas_variables, wms_colors, geojson_colors, timecoverage, get_charttypes, app_settings
 
 
-@login_required()
 def home(request):
     """
     Controller for the app home page.
@@ -119,6 +120,7 @@ def home(request):
         'datawebsite': App.datawebsite,
         'version': App.version,
         'settings': app_settings(),
+        'instance_id': ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for i in range(10))
     }
 
     return render(request, 'gldas/home.html', context)

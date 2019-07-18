@@ -1,5 +1,6 @@
-// Getting the csrf token
+// see base.html scripts for thredds, geoserver, app, model, instance_id
 let csrftoken = Cookies.get('csrftoken');
+Cookies.set('instance_id', instance_id);
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
@@ -15,7 +16,6 @@ $.ajaxSetup({
 });
 
 ////////////////////////////////////////////////////////////////////////  LOAD THE MAP
-// threddsbase and geoserverbase and model are defined in the base.html scripts sections
 const mapObj = map();                   // used by legend and draw controls
 const basemapObj = basemaps();          // used in the make controls function
 
