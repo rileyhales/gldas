@@ -21,7 +21,7 @@ class Gldas(TethysAppBase):
     feedback_emails = []
     githublink = 'https://github.com/rileyhales/gldas'
     datawebsite = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'v3 7/2019'
+    version = 'v2.8 7/2019'
 
     def url_maps(self):
         """
