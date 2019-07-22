@@ -1,18 +1,15 @@
 import ast
 import os
-import sys
 import zipfile
 import subprocess
 import shutil
 
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
 from .charts import newchart
 from .app import Gldas as App
 
 
-@login_required()
 def getchart(request):
     """
     Used to make a timeseries of a variable at a user drawn point
@@ -23,7 +20,6 @@ def getchart(request):
     return JsonResponse(newchart(data))
 
 
-@login_required()
 def uploadshapefile(request):
     files = request.FILES.getlist('files')
     instance_id = request.META['HTTP_COOKIE'].split('instance_id=')[1][0:9]

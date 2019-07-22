@@ -91,13 +91,13 @@ class Gldas(TethysAppBase):
             CustomSetting(
                 name='GeoserverURL',
                 type=CustomSetting.TYPE_STRING,
-                description="Include http or https but no '/' after /geoserver, ex: https://tethys.byu.edu/geoserver",
+                description="Include http/https but no '/' after /geoserver, ex: https://tethys.byu.edu/geoserver",
                 required=False,
             ),
             CustomSetting(
                 name='Geoserver user/pass',
                 type=CustomSetting.TYPE_STRING,
-                description="Admin credentials for uploading shapefiles to geoserver in the format username/password",
+                description="Admin credentials in the format username/password to upload shapefiles to geoserver",
                 required=False,
             ),
         )

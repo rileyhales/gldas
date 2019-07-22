@@ -2,15 +2,13 @@ import datetime
 import os
 
 from django.http import JsonResponse
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.decorators import api_view
 
 from .options import app_settings, gldas_variables
 from .charts import newchart
 
 
 @api_view(['GET'])
-@authentication_classes((TokenAuthentication,))
 def getcapabilities(request):
     return JsonResponse({
         'api_calls': ['getcapabilities', 'eodatamodels', 'gldasvariables', 'gldasdates', 'timeseries']
@@ -18,7 +16,6 @@ def getcapabilities(request):
 
 
 @api_view(['GET'])
-@authentication_classes((TokenAuthentication,))
 def gldasdates(request):
     path = app_settings()['threddsdatadir']
     path = os.path.join(path, 'raw')
@@ -35,13 +32,11 @@ def gldasdates(request):
 
 
 @api_view(['GET'])
-@authentication_classes((TokenAuthentication,))
 def gldasvariables(request):
     return JsonResponse(gldas_variables())
 
 
 @api_view(['GET'])
-@authentication_classes((TokenAuthentication,))
 def timeseries(request):
     parameters = request.GET
     data = {}
