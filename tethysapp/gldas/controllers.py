@@ -36,7 +36,7 @@ def home(request):
     )
 
     colorscheme = SelectInput(
-        display_text='EO Data Color Scheme',
+        display_text='GLDAS Color Scheme',
         name='colorscheme',
         multiple=False,
         original=True,
@@ -45,7 +45,7 @@ def home(request):
     )
 
     opacity = RangeSlider(
-        display_text='EO Data Layer Opacity',
+        display_text='GLDAS Layer Opacity',
         name='opacity',
         min=.5,
         max=1,

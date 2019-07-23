@@ -156,7 +156,7 @@ function newBoxPlot(data) {
 function getDrawnChart(drawnItems) {
     // if there's nothing to get charts for then quit
     let geojson = drawnItems.toGeoJSON()['features'];
-    if (geojson.length === 0 && currentregion === '') {
+    if (geojson.length === 0 && chartregion === '') {
         return
     }
 
@@ -227,14 +227,14 @@ function getShapeChart(selectedregion) {
 
     if (selectedregion === 'lastregion') {
         // if we want to update, change the region to the last completed region
-        data['region'] = currentregion;
+        data['region'] = chartregion;
     } else if (selectedregion === 'customshape') {
         data['region'] = selectedregion;
-        currentregion = selectedregion;
+        chartregion = selectedregion;
     } else {
         // otherwise, the new selection is the current region on the chart
         data['region'] = selectedregion;
-        currentregion = selectedregion;
+        chartregion = selectedregion;
     }
 
     $.ajax({

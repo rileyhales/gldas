@@ -67,7 +67,7 @@ function newLayer() {
 }
 
 ////////////////////////////////////////////////////////////////////////  GEOJSON LAYERS
-let currentregion = '';              // tracks which region is on the chart for updates not caused by the user picking a new region
+let chartregion = '';              // tracks which region is on the chart for updates not caused by the user picking a new region
 function layerPopups(feature, layer) {
     let region = feature.properties.name;
     layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries (average) for ' + region + '</a>');
@@ -85,11 +85,11 @@ let europe = L.geoJSON(europe_json, jsonparams);
 let middleeast = L.geoJSON(middleeast_json, jsonparams);
 let northamerica = L.geoJSON(northamerica_json, jsonparams);
 let southamerica = L.geoJSON(southamerica_json, jsonparams);
-const geojsons = [africa, asia, australia, centralamerica, europe, middleeast, northamerica, southamerica];
+const regions = [africa, asia, australia, centralamerica, europe, middleeast, northamerica, southamerica];
 
 function addGEOJSON() {
-    for (let i in geojsons) {
-        geojsons[i].addTo(mapObj)
+    for (let i in regions) {
+        regions[i].addTo(mapObj)
     }
 }
 
@@ -103,8 +103,8 @@ function styleGeoJSON() {
         fillOpacity: $("#gjFlOp").val(),
     };
     // apply it to all the geojson layers
-    for (let i in geojsons) {
-        geojsons[i].setStyle(style);
+    for (let i in regions) {
+        regions[i].setStyle(style);
     }
     usershape.setStyle(style);
 }
@@ -166,14 +166,7 @@ function makeControls() {
         'Earth Observation': layerObj,
         'Drawing': drawnItems,
         'Uploaded Shapefile': usershape,
-        'Europe': europe,
-        'Asia': asia,
-        'Middle East': middleeast,
-        'North America': northamerica,
-        'Central America': centralamerica,
-        'South America': southamerica,
-        'Africa': africa,
-        'Australia': australia,
+        'Region Boundaries': regions,
     }).addTo(mapObj);
 }
 
@@ -185,10 +178,7 @@ function clearMap() {
     controlsObj.removeLayer(usershape);
     mapObj.removeLayer(usershape);
     // now do it for all the geojson layers
-    for (let i in geojsons) {
-        controlsObj.removeLayer(geojsons[i]);
-        mapObj.removeLayer(geojsons[i]);
-    }
+    for (let i in regions) {controlsObj.removeLayer(regions[i]);mapObj.removeLayer(regions[i]);}
     // now delete the controls object
     mapObj.removeControl(controlsObj);
 }
