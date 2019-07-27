@@ -3,7 +3,8 @@ function map() {
     // create the map
     return L.map('map', {
         zoom: 2,
-        minZoom: 1.25,
+        minZoom: 1.5,
+        zoomSnap: .5,
         boxZoom: true,
         maxBounds: L.latLngBounds(L.latLng(-100.0, -270.0), L.latLng(100.0, 270.0)),
         center: [20, 0],
@@ -74,22 +75,38 @@ function layerPopups(feature, layer) {
 }
 
 // create all the geojson layers for world regions
-const initstyle = {color: $("#gjClr").val(), opacity: $("#gjOp").val(), weight: $("#gjWt").val(), fillColor: $("#gjFlClr").val(), fillOpacity: $("#gjFlOp").val()};
+let initstyle = {color: $("#gjClr").val(), opacity: $("#gjOp").val(), weight: $("#gjWt").val(), fillColor: $("#gjFlClr").val(), fillOpacity: $("#gjFlOp").val()};
 let jsonparams = {onEachFeature: layerPopups, style: initstyle};
+let regions = [];
+let regionsGroup = L.featureGroup();
 
-let africa = L.geoJSON(africa_json, jsonparams);
-let asia = L.geoJSON(asia_json, jsonparams);
-let australia = L.geoJSON(australia_json, jsonparams);
-let centralamerica = L.geoJSON(centralamerica_json, jsonparams);
-let europe = L.geoJSON(europe_json, jsonparams);
-let middleeast = L.geoJSON(middleeast_json, jsonparams);
-let northamerica = L.geoJSON(northamerica_json, jsonparams);
-let southamerica = L.geoJSON(southamerica_json, jsonparams);
-const regions = [africa, asia, australia, centralamerica, europe, middleeast, northamerica, southamerica];
-
-function addGEOJSON() {
+function getRegionGeoJsons() {
+    // get rid of any layers you already have
+    regionsGroup.clearLayers();
     for (let i in regions) {
-        regions[i].addTo(mapObj)
+        mapObj.removeLayer(regions[i])
+    }
+    let geojsons = region_index[$("#regions").val()]['geojsons'];
+    let waiting = geojsons.length;
+
+    // then get new ones
+    for (let i in geojsons) {
+        $.ajax({
+            async: true,
+            jsonp: false,
+            url: '/static/' + app + '/geojson/' + geojsons[i],
+            contentType: 'application/json',
+            success: function (data) {
+                let tmp = L.geoJSON(JSON.parse(data), jsonparams);
+                tmp.addTo(mapObj);
+                regions.push(tmp);
+                regionsGroup.addLayer(tmp);
+                waiting = waiting - 1;
+                if (waiting === 0) {
+                    mapObj.flyToBounds(regionsGroup.getBounds());
+                }
+            },
+        });
     }
 }
 
@@ -111,7 +128,7 @@ function styleGeoJSON() {
 ////////////////////////////////////////////////////////////////////////  USERS CUSTOM UPLOADED SHAPEFILE
 // gets the geojson layers from geoserver wfs and updates the layer
 let usershape = L.geoJSON(false);
-function getWFSData(gsworksp, shpname, gsurl) {
+function getGeoServerGJ(gsworksp, shpname, gsurl) {
     let parameters = L.Util.extend({
         service: 'WFS',
         version: '1.0.0',
@@ -166,7 +183,7 @@ function makeControls() {
         'Earth Observation': layerObj,
         'Drawing': drawnItems,
         'Uploaded Shapefile': usershape,
-        'Region Boundaries': regions,
+        'Region Boundaries': regionsGroup,
     }).addTo(mapObj);
 }
 
@@ -176,9 +193,10 @@ function clearMap() {
     controlsObj.removeLayer(layerObj);
     mapObj.removeLayer(layerObj);
     controlsObj.removeLayer(usershape);
-    mapObj.removeLayer(usershape);
+    // mapObj.removeLayer(usershape);
     // now do it for all the geojson layers
-    for (let i in regions) {controlsObj.removeLayer(regions[i]);mapObj.removeLayer(regions[i]);}
+    controlsObj.removeLayer(regionsGroup);
+    // mapObj.removeLayer(regionsGroup);
     // now delete the controls object
     mapObj.removeControl(controlsObj);
 }

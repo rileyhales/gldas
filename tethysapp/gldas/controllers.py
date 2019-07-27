@@ -7,6 +7,9 @@ from tethys_sdk.gizmos import SelectInput, RangeSlider
 from .app import Gldas as App
 from .options import gldas_variables, wms_colors, geojson_colors, timecoverage, get_charttypes, app_settings
 
+import json
+import os
+
 
 def home(request):
     """
@@ -33,6 +36,15 @@ def home(request):
         multiple=False,
         original=True,
         options=get_charttypes(),
+    )
+
+    region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
+    regions = SelectInput(
+        display_text='Pick World Region Boundaries',
+        name='regions',
+        multiple=False,
+        original=True,
+        options=[(region_index[opt]['name'], opt) for opt in region_index]
     )
 
     colorscheme = SelectInput(
@@ -104,6 +116,7 @@ def home(request):
         'variables': variables,
         'dates': dates,
         'charttype': charttype,
+        'regions': regions,
 
         # display options
         'colorscheme': colorscheme,

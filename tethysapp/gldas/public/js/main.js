@@ -50,14 +50,10 @@ let layerObj = newLayer();              // adds the wms raster layer
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 legend.addTo(mapObj);                   // add the legend graphic to the map
 latlon.addTo(mapObj);                   // add the box showing lat and lon to the map
-addGEOJSON();                           // add the geojson world boundary regions
+getRegionGeoJsons();                    // get the regions geojson and add them to the map
 
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
 function update() {
-    for (let i in geojsons) {
-        geojsons[i].addTo(mapObj)
-    }
-    usershape.addTo(mapObj);
     layerObj = newLayer();
     controlsObj = makeControls();
     legend.addTo(mapObj);
@@ -80,7 +76,7 @@ $(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')})
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $("#dates").change(function () {changeInputs();clearMap();update();getDrawnChart(drawnItems);});
 $('#charttype').change(function () {makechart();});
-$("#levels").change(function () {clearMap();update();});
+$("#regions").change(function () {getRegionGeoJsons();makechart()});
 
 // display controls
 $("#display").click(function() {$("#displayopts").toggle();});
