@@ -55,12 +55,12 @@ def newchart(data):
             type_message = 'Average for ' + data['region']
     values.sort(key=lambda tup: tup[0])
 
-    # multiline, boxplot, categories = makestatplots(values)
+    multiline, boxplot, categories = makestatplots(values, data['time'])
     return {
         'values': values,
-        # 'multiline': multiline,
-        # 'boxplot': boxplot,
-        # 'categories': categories,
+        'multiline': multiline,
+        'boxplot': boxplot,
+        'categories': categories,
         'units': units,
         'variable': var,
         'type': type_message,
@@ -205,19 +205,25 @@ def shpchart(var, path, files, region, instance_id):
     return values, units
 
 
-def makestatplots(values):
+def makestatplots(values, time):
     """
     Calculates statistics for the array of timeseries values and returns arrays for a highcharts boxplot
     Dependencies: statistics, pandas, datetime, calendar
     """
     df = pandas.DataFrame(values, columns=['timestamp', 'values', 'month', 'year'])
+    print(df)
     multiline = {'yearmulti': {'min': [], 'max': [], 'mean': []},
                  'monthmulti': {'min': [], 'max': [], 'mean': []}}
     boxplot = {'yearbox': [], 'monthbox': []}
-
     months = dict((n, m) for n, m in enumerate(calendar.month_name))
-    numyears = int(datetime.datetime.now().strftime("%Y")) - 1999  # not 2000 because we include that year
-    categories = {'month': [months[i + 1] for i in range(12)], 'year': [i + 2000 for i in range(numyears)]}
+
+    if time == 'alltimes':
+        ref_yr = 1948
+        numyears = int(datetime.datetime.now().strftime("%Y")) - ref_yr + 1  # +1 because we want the first year also
+    else:
+        ref_yr = int(time.replace('s', ''))
+        numyears = 10
+    categories = {'month': [months[i + 1] for i in range(12)], 'year': [i + ref_yr for i in range(numyears)]}
 
     for i in range(1, 13):  # static 13 to go over months
         tmp = df[df['month'] == i]['values']
@@ -230,16 +236,16 @@ def makestatplots(values):
         multiline['monthmulti']['min'].append((months[i], ymin))
         multiline['monthmulti']['mean'].append((months[i], mean))
         multiline['monthmulti']['max'].append((months[i], ymax))
-    for i in range(numyears):
-        tmp = df[df['year'] == i + 2000]['values']
+    for i, year in enumerate(categories['year']):
+        tmp = df[df['year'] == year]['values']
         std = statistics.stdev(tmp)
         median = statistics.median(tmp)
         ymin = min(tmp)
         ymax = max(tmp)
         mean = sum(tmp) / len(tmp)
         boxplot['yearbox'].append([i, ymin, mean - std, median, mean + std, ymax])
-        multiline['yearmulti']['min'].append((i + 2000, ymin))
-        multiline['yearmulti']['mean'].append((i + 2000, mean))
-        multiline['yearmulti']['max'].append((i + 2000, ymax))
+        multiline['yearmulti']['min'].append((year, ymin))
+        multiline['yearmulti']['mean'].append((year, mean))
+        multiline['yearmulti']['max'].append((year, ymax))
 
     return multiline, boxplot, categories
