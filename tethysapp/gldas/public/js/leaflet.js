@@ -26,12 +26,13 @@ function map() {
 
 function basemaps() {
     // create the basemap layers
-    let Esri_WorldImagery = L.esri.basemapLayer('Imagery');
-    let Esri_WorldTerrain = L.esri.basemapLayer('Terrain');
-    let Esri_Imagery_Labels = L.esri.basemapLayer('ImageryLabels');
+    let esri_imagery = L.esri.basemapLayer('Imagery');
+    let esri_terrain = L.esri.basemapLayer('Terrain');
+    let esri_labels = L.esri.basemapLayer('ImageryLabels');
     return {
-        "ESRI Imagery": L.layerGroup([Esri_WorldImagery, Esri_Imagery_Labels]).addTo(mapObj),
-        "ESRI Terrain": L.layerGroup([Esri_WorldTerrain, Esri_Imagery_Labels])
+        "ESRI Imagery (Labeled)": L.layerGroup([esri_imagery, esri_labels]).addTo(mapObj),
+        "ESRI Imagery (No Label)": L.layerGroup([esri_imagery]),
+        "ESRI Terrain": L.layerGroup([esri_terrain, esri_labels])
     }
 }
 
