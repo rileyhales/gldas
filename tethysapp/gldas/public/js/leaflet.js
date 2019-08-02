@@ -103,6 +103,7 @@ function getRegionGeoJsons() {
                 regionsGroup.addLayer(tmp);
                 waiting = waiting - 1;
                 if (waiting === 0) {
+                    regionsGroup.addTo(mapObj);
                     mapObj.flyToBounds(regionsGroup.getBounds());
                 }
             },
@@ -147,7 +148,10 @@ function getGeoServerGJ(gsworksp, shpname, gsurl) {
         contentType: 'application/json',
         success: function (data) {
             usershape.clearLayers();
+            mapObj.removeLayer(regionsGroup);
+            mapObj.removeLayer(drawnItems);
             usershape.addData(data).addTo(mapObj);
+            mapObj.flyToBounds(usershape.getBounds());
             styleGeoJSON();
         },
     });

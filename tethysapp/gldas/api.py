@@ -4,8 +4,9 @@ import os
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 
-from .options import app_settings, gldas_variables
+from .options import gldas_variables
 from .charts import newchart
+from .app import Gldas as App
 
 
 @api_view(['GET'])
@@ -17,7 +18,7 @@ def getcapabilities(request):
 
 @api_view(['GET'])
 def gldasdates(request):
-    path = app_settings()['threddsdatadir']
+    path = App.get_custom_setting('thredds_path')
     path = os.path.join(path, 'raw')
     files = os.listdir(path)
     files.sort()

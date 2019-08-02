@@ -2,18 +2,6 @@ from .app import Gldas as App
 import os
 
 
-def app_settings():
-    """
-    Gets the settings for the app for use in other functions and ajax for leaflet
-    Dependencies: os, App (app)
-    """
-    return {
-        'app_wksp_path': os.path.join(App.get_app_workspace().path, ''),
-        'threddsdatadir': App.get_custom_setting("Local Thredds Folder Path"),
-        'threddsurl': App.get_custom_setting("Thredds WMS URL"),
-    }
-
-
 def gldas_variables():
     """
     List of the plottable variables from the GLDAS 2.1 datasets used

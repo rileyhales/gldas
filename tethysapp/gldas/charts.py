@@ -10,7 +10,7 @@ import numpy
 import pandas
 import statistics
 
-from .options import app_settings, gldas_variables
+from .options import gldas_variables
 from .app import Gldas as App
 
 
@@ -25,7 +25,7 @@ def newchart(data):
     loc_type = data['loc_type']
 
     # list the netcdfs to be processed
-    path = app_settings()['threddsdatadir']
+    path = App.get_custom_setting('thredds_path')
     path = os.path.join(path, 'raw')
     allfiles = os.listdir(path)
     files = [nc for nc in allfiles if nc.endswith('.nc4')]
@@ -66,7 +66,7 @@ def pointchart(var, coords, path, files):
     Description: generates a timeseries for a given point and given variable defined by the user.
     Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
     Author: Riley Hales
-    Dependencies: netcdf4, numpy, datetime, os, calendar, app_settings (options)
+    Dependencies: netcdf4, numpy, datetime, os, calendar
     Last Updated: Oct 11 2018
     """
     # return items
@@ -101,7 +101,7 @@ def polychart(var, coords, path, files):
     Description: generates a timeseries for a given point and given variable defined by the user.
     Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
     Author: Riley Hales
-    Dependencies: netcdf4, numpy, datetime, os, calendar, app_settings (options)
+    Dependencies: netcdf4, numpy, datetime, os, calendar
     Last Updated: May 14 2019
     """
     # return items
@@ -141,7 +141,7 @@ def shpchart(var, path, files, region, instance_id):
     """
     Description: This script accepts a netcdf file in a geographic coordinate system, specifically the NASA GLDAS
         netcdfs, and extracts the data from one variable and the lat/lon steps to create a geotiff of that information.
-    Dependencies: netCDF4, numpy, rasterio, rasterstats, os, shutil, calendar, datetime, app_settings (options)
+    Dependencies: netCDF4, numpy, rasterio, rasterstats, os, shutil, calendar, datetime
     Params: View README.md
     Returns: Creates a geotiff named 'geotiff.tif' in the directory specified
     Author: Riley Hales, RCH Engineering, March 2019

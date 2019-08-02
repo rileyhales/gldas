@@ -1,5 +1,6 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
 from tethys_sdk.app_settings import CustomSetting
+from tethys_sdk.app_settings import SpatialDatasetServiceSetting
 
 
 class Gldas(TethysAppBase):
@@ -29,7 +30,7 @@ class Gldas(TethysAppBase):
         """
         urlmap = url_map_maker(self.root_url)
 
-        url_maps = (
+        return (
             # url maps to navigable pages
             urlmap(
                 name='home',
@@ -72,33 +73,32 @@ class Gldas(TethysAppBase):
             ),
 
         )
-        return url_maps
 
     def custom_settings(self):
-        custom_settings = (
+        return (
             CustomSetting(
-                name='Local Thredds Folder Path',
+                name='thredds_path',
                 type=CustomSetting.TYPE_STRING,
                 description="Local file path to datasets (same as used by Thredds) (e.g. /home/thredds/myDataFolder/)",
                 required=True,
             ),
             CustomSetting(
-                name='Thredds WMS URL',
+                name='thredds_url',
                 type=CustomSetting.TYPE_STRING,
                 description="URL to the GLDAS folder on the thredds server (e.g. http://[host]/thredds/gldas/)",
                 required=True,
-            ),
-            CustomSetting(
-                name='GeoserverURL',
-                type=CustomSetting.TYPE_STRING,
-                description="Include http/https but no '/' after /geoserver, ex: https://tethys.byu.edu/geoserver",
-                required=False,
-            ),
-            CustomSetting(
-                name='Geoserver user/pass',
-                type=CustomSetting.TYPE_STRING,
-                description="Admin credentials in the format username/password to upload shapefiles to geoserver",
-                required=False,
+            )
+        )
+
+    def spatial_dataset_service_settings(self):
+        """
+        Example spatial_dataset_service_settings method.
+        """
+        return (
+            SpatialDatasetServiceSetting(
+                name='portal_geoserver',
+                description='Geoserver for serving user uploaded shapefiles',
+                engine=SpatialDatasetServiceSetting.GEOSERVER,
+                required=True,
             ),
         )
-        return custom_settings

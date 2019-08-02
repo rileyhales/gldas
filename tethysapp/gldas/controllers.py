@@ -5,7 +5,7 @@ from django.shortcuts import render
 from tethys_sdk.gizmos import SelectInput, RangeSlider
 
 from .app import Gldas as App
-from .options import gldas_variables, wms_colors, geojson_colors, timecoverage, get_charttypes, app_settings
+from .options import gldas_variables, wms_colors, geojson_colors, timecoverage, get_charttypes
 
 import json
 import os
@@ -132,7 +132,7 @@ def home(request):
         'githublink': App.githublink,
         'datawebsite': App.datawebsite,
         'version': App.version,
-        'settings': app_settings(),
+        'thredds_url': App.get_custom_setting('thredds_url'),
         'instance_id': ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for i in range(10))
     }
 
