@@ -211,7 +211,6 @@ def makestatplots(values, time):
     Dependencies: statistics, pandas, datetime, calendar
     """
     df = pandas.DataFrame(values, columns=['timestamp', 'values', 'month', 'year'])
-    print(df)
     multiline = {'yearmulti': {'min': [], 'max': [], 'mean': []},
                  'monthmulti': {'min': [], 'max': [], 'mean': []}}
     boxplot = {'yearbox': [], 'monthbox': []}
