@@ -1,14 +1,13 @@
 import random
 import string
+import json
+import os
 
 from django.shortcuts import render
 from tethys_sdk.gizmos import SelectInput, RangeSlider
 
 from .app import Gldas as App
 from .options import gldas_variables, wms_colors, geojson_colors, timecoverage, get_charttypes
-
-import json
-import os
 
 
 def home(request):
@@ -28,7 +27,7 @@ def home(request):
         multiple=False,
         original=True,
         options=timecoverage(),
-        initial='alltimes'
+        initial='2010s'
     )
     charttype = SelectInput(
         display_text='Choose a Plot Type',

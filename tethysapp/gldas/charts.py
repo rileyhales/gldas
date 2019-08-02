@@ -30,7 +30,8 @@ def newchart(data):
     allfiles = os.listdir(path)
     files = [nc for nc in allfiles if nc.endswith('.nc4')]
     if data['time'] != 'alltimes':
-        files = [i for i in files if data['time'] in i]
+        yearfilter = 'A' + data['time'][0:3]
+        files = [i for i in files if yearfilter in i]
     files.sort()
 
     # some metadata
@@ -54,11 +55,17 @@ def newchart(data):
             type_message = 'Average for ' + data['region']
     values.sort(key=lambda tup: tup[0])
 
-    resp = {'values': values, 'units': units, 'variable': var, 'type': type_message, 'name': name}
-    if data['time'] == 'alltimes':
-        resp['multiline'], resp['boxplot'], resp['categories'] = makestatplots(values)
-
-    return resp
+    # multiline, boxplot, categories = makestatplots(values)
+    return {
+        'values': values,
+        # 'multiline': multiline,
+        # 'boxplot': boxplot,
+        # 'categories': categories,
+        'units': units,
+        'variable': var,
+        'type': type_message,
+        'name': name
+    }
 
 
 def pointchart(var, coords, path, files):

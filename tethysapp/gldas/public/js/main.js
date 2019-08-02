@@ -58,23 +58,12 @@ function update() {
     controlsObj = makeControls();
     legend.addTo(mapObj);
 }
-function changeInputs() {
-    let charts = $("#charttype");
-    charts.empty();
-    charts.append('<option value="timeseries">Full Timeseries (Single-Line Plot)</option>');
-    if ($("#dates").val() === 'alltimes') {
-        charts.append('<option value="monthbox">Monthly Analysis (Box Plot)</option>' +
-            '<option value="monthmulti">Monthly Analysis (Multi-Line Plot)</option>' +
-            '<option value="yearbox">Yearly Analysis (Box Plot)</option>' +
-            '<option value="yearmulti">Yearly Analysis (Multi-Line Plot)</option>');
-    }
-    charts.val('timeseries');
-}
+// input validation
 $(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')});
 
 // data controls
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
-$("#dates").change(function () {changeInputs();clearMap();update();getDrawnChart(drawnItems);});
+$("#dates").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $('#charttype').change(function () {makechart();});
 $("#regions").change(function () {getRegionGeoJsons();makechart()});
 
@@ -83,7 +72,6 @@ $("#display").click(function() {$("#displayopts").toggle();});
 $("#cs_min").change(function () {if ($("#use_csrange").is(":checked")) {clearMap();update()}});
 $("#cs_max").change(function () {if ($("#use_csrange").is(":checked")) {clearMap();update()}});
 $("#use_csrange").change(function () {clearMap();update()});
-// $("#use_times").change(function () {customdates()});
 $('#colorscheme').change(function () {clearMap();update();});
 $("#opacity").change(function () {layerObj.setOpacity($(this).val())});
 $('#gjClr').change(function () {styleGeoJSON();});

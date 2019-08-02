@@ -79,7 +79,7 @@ let region_index = {
     },
     "nicaragua": {
         "name": "Nicaragua (Country)",
-        "geojsons": ["elsalvador.geojson"]
+        "geojsons": ["nicaragua.geojson"]
     },
     "panama": {
         "name": "Panama (Country)",
