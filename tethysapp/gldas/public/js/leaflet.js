@@ -30,8 +30,8 @@ function basemaps() {
     let esri_terrain = L.esri.basemapLayer('Terrain');
     let esri_labels = L.esri.basemapLayer('ImageryLabels');
     return {
-        "ESRI Imagery (Labeled)": L.layerGroup([esri_imagery, esri_labels]).addTo(mapObj),
-        "ESRI Imagery (No Label)": L.layerGroup([esri_imagery]),
+        "ESRI Imagery (No Label)": L.layerGroup([esri_imagery]).addTo(mapObj),
+        "ESRI Imagery (Labeled)": L.layerGroup([esri_imagery, esri_labels]),
         "ESRI Terrain": L.layerGroup([esri_terrain, esri_labels])
     }
 }
@@ -72,7 +72,7 @@ function newLayer() {
 let chartregion = '';              // tracks which region is on the chart for updates not caused by the user picking a new region
 function layerPopups(feature, layer) {
     let region = feature.properties.name;
-    layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries (average) for ' + region + '</a>');
+    layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + region + "'" + ')">Get timeseries for ' + region + '</a>');
 }
 
 // create all the geojson layers for world regions
@@ -81,8 +81,7 @@ let jsonparams = {onEachFeature: layerPopups, style: initstyle};
 let regions = [];
 let regionsGroup = L.featureGroup();
 
-function getRegionGeoJsons() {
-    // get rid of any layers you already have
+function getRegionGeoJSONS() {
     regionsGroup.clearLayers();
     for (let i in regions) {
         mapObj.removeLayer(regions[i])
@@ -127,7 +126,7 @@ function styleGeoJSON() {
     }
     usershape.setStyle(style);
 }
-////////////////////////////////////////////////////////////////////////  USERS CUSTOM UPLOADED SHAPEFILE
+////////////////////////////////////////////////////////////////////////  USER'S CUSTOM UPLOADED SHAPEFILE
 // gets the geojson layers from geoserver wfs and updates the layer
 let usershape = L.geoJSON(false);
 function getGeoServerGJ(gsworksp, shpname, gsurl) {
@@ -198,10 +197,6 @@ function clearMap() {
     controlsObj.removeLayer(layerObj);
     mapObj.removeLayer(layerObj);
     controlsObj.removeLayer(usershape);
-    // mapObj.removeLayer(usershape);
-    // now do it for all the geojson layers
     controlsObj.removeLayer(regionsGroup);
-    // mapObj.removeLayer(regionsGroup);
-    // now delete the controls object
     mapObj.removeControl(controlsObj);
 }

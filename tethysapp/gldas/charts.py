@@ -156,20 +156,22 @@ def shpchart(var, path, files, region, instance_id):
     # return items
     values = []
 
-    # Remove old geotiffs before filling it
-    wrkpath = App.get_app_workspace().path
-    geotiffdir = os.path.join(wrkpath, 'geotiffs')
-    if os.path.isdir(geotiffdir):
-        shutil.rmtree(geotiffdir)
-    os.mkdir(geotiffdir)
-
     # open the netcdf and get metadata
     nc_obj = netCDF4.Dataset(os.path.join(path, files[0]), 'r')
     lat = nc_obj.variables['lat'][:]
     lon = nc_obj.variables['lon'][:]
     units = nc_obj[var].__dict__['units']
-    geotransform = rasterio.transform.from_origin(lon.min(), lat.max(), lat[1] - lat[0], lon[1] - lon[0])
+    affine = rasterio.transform.from_origin(lon.min(), lat.max(), lat[1] - lat[0], lon[1] - lon[0])
     nc_obj.close()
+
+    # file paths and settings
+    wrkpath = App.get_app_workspace().path
+    if region == 'customshape':
+        path = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
+        shp = [i for i in os.listdir(path) if i.endswith('.shp')]
+        shppath = os.path.join(path, shp[0])
+    else:
+        shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
 
     # read netcdf, create geotiff, zonal statistics, format outputs for highcharts plotting
     for nc in files:
@@ -183,24 +185,8 @@ def shpchart(var, path, files, region, instance_id):
         array[array < -9000] = numpy.nan  # use the comparator to drop nodata fills
         array = array[::-1]  # vertically flip array so tiff orientation is right (you just have to, try it)
 
-        # file paths and settings
-        if region == 'customshape':
-            shppath = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
-            shp = [i for i in os.listdir(shppath) if i.endswith('.shp')]
-            shppath = os.path.join(shppath, shp[0])
-        else:
-            shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
-        gtiffpath = os.path.join(wrkpath, 'geotiffs', 'geotiff.tif')
-
-        with rasterio.open(gtiffpath, 'w', driver='GTiff', height=len(lat), width=len(lon), count=1, dtype='float32',
-                           nodata=numpy.nan, crs='+proj=latlong', transform=geotransform) as newtiff:
-            newtiff.write(array, 1)  # data, band number
-
-        stats = rasterstats.zonal_stats(shppath, gtiffpath, stats="mean")
+        stats = rasterstats.zonal_stats(shppath, array, affine=affine, nodata=numpy.nan, stats="mean")
         values.append((calendar.timegm(time.utctimetuple()) * 1000, stats[0]['mean'], time.month, time.year))
-
-    if os.path.isdir(geotiffdir):
-        shutil.rmtree(geotiffdir)
 
     return values, units
 
