@@ -70,38 +70,19 @@ function newGLDAS() {
 
 ////////////////////////////////////////////////////////////////////////  GEOJSON STYLING CONTROLS
 let chosenRegion = ''; // tracks which region is on the chart for updates not caused by the user picking a new region
-function layerPopups(feature, layer) {
-    let place = feature.properties.name;
-    layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'" + place + "'" + ')">Get timeseries for ' + place + '</a>');
-}
+getStyle = function() {return {color: $("#gjClr").val(), opacity: $("#gjOp").val(), weight: $("#gjWt").val(), fillColor: $("#gjFlClr").val(), fillOpacity: $("#gjFlOp").val()}};
 function styleGeoJSON() {
-    // determine the styling to apply
-    let style = {
-        color: $("#gjClr").val(),
-        opacity: $("#gjOp").val(),
-        weight: $("#gjWt").val(),
-        fillColor: $("#gjFlClr").val(),
-        fillOpacity: $("#gjFlOp").val(),
-    };
-    // apply it to all the geojson layers
-    for (let i in regions) {
-        regions[i].setStyle(style);
-    }
+    let style = getStyle();
+    layerRegion.setStyle(style);
     usershape.setStyle(style);
 }
-
-// create all the geojson layers for world regions
-let initstyle = {color: $("#gjClr").val(), opacity: $("#gjOp").val(), weight: $("#gjWt").val(), fillColor: $("#gjFlClr").val(), fillOpacity: $("#gjFlOp").val()};
-let jsonparams = {onEachFeature: layerPopups, style: initstyle};
-let regions = [];
-let regionsGroup = L.featureGroup();
 
 ////////////////////////////////////////////////////////////////////////  ESRI LIVING ATLAS LAYERS (FEATURE SERVER)
 function regionsESRI() {
     let region = $("#regions").val();
     let params = {
         url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/World_Regions/FeatureServer/0',
-        style: initstyle,
+        style: getStyle,
         outSR: 4326,
         onEachFeature: function (feature, layer) {
             let place = feature.properties.REGION;
@@ -109,53 +90,20 @@ function regionsESRI() {
         },
     };
     if (region !== '') {params['where'] = "REGION = '" + region + "'"}
-    chosenRegion = region;
     return L.esri.featureLayer(params).addTo(mapObj);
 }
 function countriesESRI() {
     let region = $("#countries").val();
     let params = {
         url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/World__Countries_Generalized_analysis_trim/FeatureServer/0',
-        style: initstyle,
+        style: getStyle,
         outSR: 4326,
         where: "NAME='" + region + "'",
         onEachFeature: function (feature, layer) {
             layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'esri-countries-" + region + "'" + ')">Get timeseries for ' + region + '</a>');
         },
     };
-    chosenRegion = region;
     return L.esri.featureLayer(params).addTo(mapObj);
-}
-
-////////////////////////////////////////////////////////////////////////  CUSTOM GEOJSON LAYERS
-function getRegionGeoJSONS() {
-    regionsGroup.clearLayers();
-    for (let i in regions) {
-        mapObj.removeLayer(regions[i])
-    }
-    let geojsons = region_index[$("#regions").val()]['geojsons'];
-    let waiting = geojsons.length;
-
-    // then get new ones
-    for (let i in geojsons) {
-        $.ajax({
-            async: true,
-            jsonp: false,
-            url: '/static/' + app + '/geojson/' + geojsons[i],
-            contentType: 'application/json',
-            success: function (data) {
-                let tmp = L.geoJSON(JSON.parse(data), jsonparams);
-                tmp.addTo(mapObj);
-                regions.push(tmp);
-                regionsGroup.addLayer(tmp);
-                waiting = waiting - 1;
-                if (waiting === 0) {
-                    regionsGroup.addTo(mapObj);
-                    mapObj.flyToBounds(regionsGroup.getBounds());
-                }
-            },
-        });
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////  USER'S CUSTOM UPLOADED SHAPEFILE

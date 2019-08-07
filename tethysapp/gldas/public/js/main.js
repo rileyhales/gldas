@@ -40,7 +40,6 @@ let layerRegion = regionsESRI();    // adds the world region boundaries from esr
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 legend.addTo(mapObj);                   // add the legend graphic to the map
 latlon.addTo(mapObj);                   // add the box showing lat and lon to the map
-// getRegionGeoJSONS();                    // get the regions geojson and add them to the map
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
 function update() {
     layerGLDAS = newGLDAS();
@@ -49,6 +48,18 @@ function update() {
 }
 function changeregions(firedfrom) {
     // todo move the validation from the leaflet function to right here
+    let countryJQ = $("#countries");
+    let regionjQ = $("#regions");
+    if (firedfrom === 'country') {
+        let country = countryJQ.val();
+        if (countrieslist.indexOf(country)) {
+            alert('The country "' + country + '" was not found in the list of countries available. Please check spelling and capitalization, and use the input suggestions.');
+            return
+        }
+        regionjQ.val('none');
+    } else {
+        countryJQ.val('')
+    }
     // change to none/empty input
     mapObj.removeLayer(layerRegion);
     controlsObj.removeLayer(layerRegion);
@@ -59,6 +70,7 @@ function changeregions(firedfrom) {
         layerRegion = countriesESRI();
         controlsObj.addOverlay(layerRegion, 'Country Boundaries');
     }
+    getDrawnChart(drawnItems)
 }
 
 // input validation
@@ -68,8 +80,8 @@ $(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')})
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $("#dates").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $('#charttype').change(function () {makechart();});
-$("#regions").change(function () {changeregions('region');getDrawnChart(drawnItems)});
-$("#countriesGO").click(function () {changeregions('country');getDrawnChart(drawnItems)});
+$("#regions").change(function () {changeregions('region')});
+$("#countriesGO").click(function () {changeregions('country')});
 
 // display controls
 $("#display").click(function() {$("#displayopts").toggle();});
@@ -78,8 +90,8 @@ $("#cs_max").change(function () {if ($("#use_csrange").is(":checked")) {clearMap
 $("#use_csrange").change(function () {clearMap();update()});
 $('#colorscheme').change(function () {clearMap();update();});
 $("#opacity").change(function () {layerGLDAS.setOpacity($(this).val())});
-$('#gjClr').change(function () {styleGeoJSON();});
-$("#gjOp").change(function () {styleGeoJSON();});
-$("#gjWt").change(function () {styleGeoJSON();});
-$('#gjFlClr').change(function () {styleGeoJSON();});
-$("#gjFlOp").change(function () {styleGeoJSON();});
+$('#gjClr').change(function () {console.log('cjclr');styleGeoJSON()});
+$("#gjOp").change(function () {styleGeoJSON()});
+$("#gjWt").change(function () {styleGeoJSON()});
+$('#gjFlClr').change(function () {styleGeoJSON()});
+$("#gjFlOp").change(function () {styleGeoJSON()});

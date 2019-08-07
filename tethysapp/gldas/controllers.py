@@ -37,9 +37,8 @@ def home(request):
         options=get_charttypes(),
     )
 
-    # region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
     regions = SelectInput(
-        display_text='Pick A World Region',
+        display_text='Pick A World Region (ESRI Living Atlas)',
         name='regions',
         multiple=False,
         original=True,
@@ -118,7 +117,6 @@ def home(request):
 
     context = {
         # data options
-        'model': 'gldas',
         'variables': variables,
         'dates': dates,
         'charttype': charttype,

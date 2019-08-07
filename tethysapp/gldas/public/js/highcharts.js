@@ -202,7 +202,6 @@ function getShapeChart(selectedregion) {
 
     // setup a parameters json to generate the right timeseries
     let data = {
-        model: model,
         variable: $("#variables").val(),
         level: $("#levels").val(),
         time: $("#dates").val(),
