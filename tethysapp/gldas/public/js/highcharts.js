@@ -16,26 +16,10 @@ let chartdata = null;
 
 // Placeholder chart
 let chart = Highcharts.chart('highchart', {
-    title: {
-        align: "center",
-        text: "Timeseries Data Chart Placeholder",
-    },
-    series: [{
-        data: [],
-    }],
-    chart: {
-        animation: true,
-        zoomType: 'x',
-        borderColor: '#000000',
-        borderWidth: 2,
-        type: 'area',
-    },
-    noData: {
-        style: {
-            fontWeight: 'bold',
-            fontSize: '15px',
-            color: '#303030'
-        }
+    title: {align: "center", text: "Timeseries Data Chart Placeholder"},
+    series: [{data: []}],
+    chart: {animation: true, zoomType: 'x', borderColor: '#000000', borderWidth: 2, type: 'area'},
+    noData: {style: {fontWeight: 'bold', fontSize: '15px', color: '#303030'}
     },
 });
 
@@ -156,7 +140,7 @@ function newBoxPlot(data) {
 function getDrawnChart(drawnItems) {
     // if there's nothing to get charts for then quit
     let geojson = drawnItems.toGeoJSON()['features'];
-    if (geojson.length === 0 && chartregion === '') {
+    if (geojson.length === 0 && chosenRegion === '') {
         return
     }
 
@@ -207,7 +191,7 @@ function getDrawnChart(drawnItems) {
 function getShapeChart(selectedregion) {
     // if the time range is all times then confirm before executing the spatial averaging
     if ($("#dates").val() === 'alltimes') {
-        if (!confirm("Computing a timeseries of spatial averages for all available times requires over 200 iterations of file conversions and geoprocessing operations. This may result in a long wait (15+ seconds) or cause errors. Are you sure you want to continue?")) {
+        if (!confirm("Computing a timeseries of spatial averages for all available data requires over 850 GIS operations. This may result in a long wait (20+ seconds) or cause errors. Please confirm you want to proceed.")) {
             return
         }
     }
@@ -227,14 +211,14 @@ function getShapeChart(selectedregion) {
 
     if (selectedregion === 'lastregion') {
         // if we want to update, change the region to the last completed region
-        data['region'] = chartregion;
+        data['vectordata'] = chosenRegion;
     } else if (selectedregion === 'customshape') {
-        data['region'] = selectedregion;
-        chartregion = selectedregion;
+        data['vectordata'] = selectedregion;
+        chosenRegion = selectedregion;
     } else {
         // otherwise, the new selection is the current region on the chart
-        data['region'] = selectedregion;
-        chartregion = selectedregion;
+        data['vectordata'] = selectedregion;
+        chosenRegion = selectedregion;
     }
 
     $.ajax({

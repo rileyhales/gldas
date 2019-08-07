@@ -13,3 +13,6 @@ conda:
     - pandas
     - rasterstats
     - rasterio
+    - requests
+    - pyshp
+    - json

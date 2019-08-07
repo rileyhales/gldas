@@ -15,6 +15,14 @@
     {% gizmo select_input dates %}
     {% gizmo select_input charttype %}
     {% gizmo select_input regions %}
+{#    {% gizmo select_input countries %}#}
+
+  <div id="country-name-gizmo">
+    <label for="countries">Enter A Country Name</label>
+    <input id="countries" list="countrieslist" class="form-control" style="width: 70%">
+    <button class="btn btn-success" role="button" id="countriesGO">Go</button>
+    <br>
+  </div>
 
   <button class="btn btn-default btn-block" role="button" id="customShpChart">Timeseries for my own Shapefile</button>
   <br>
@@ -23,14 +31,16 @@
     <button class="btn btn-default" role="button" id="display">View Map Styling Controls</button>
   </div>
   <div id="displayopts" style="display: none;">
+
     <div id="color-scales-gizmo" style="padding-bottom: 12px">
-      <div style="padding-bottom: 4px"><strong>Custom Color Scale Min/Max</strong></div>
+      <label>Custom Color Scale Min/Max</label>
       <div>
         Min: <input class="customs" id="cs_min" type="number" style="width: 20%;" value="0">
         Max: <input class="customs" id="cs_max" type="number" style="width: 20%;" value="100">
         Use? <input class="customs" id="use_csrange" type="checkbox">
       </div>
     </div>
+
 {#    <div id="time-range-gizmo" style="padding-bottom: 12px">#}
 {#      <div style="padding-bottom: 4px"><strong>Limit by Date Range</strong></div>#}
 {#      <div>#}
@@ -39,6 +49,7 @@
 {#        Use? <input class="customs" id="use_times" type="checkbox">#}
 {#      </div>#}
 {#    </div>#}
+
     {% gizmo select_input colorscheme %}
     {% gizmo range_slider opacity %}
     {% gizmo select_input gjClr %}
@@ -59,6 +70,9 @@
   <!-- styling for the leaflet draw plugin -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw-src.css"/>
 
+  <!-- styling for JQUERY UI -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css"/>
+
   <!-- styling generated for the app -->
   <link href="{% static 'gldas/css/main.css' %}" rel="stylesheet"/>
 {% endblock %}
@@ -74,6 +88,7 @@
 
   <!-- Allows csrf verification with AJAX -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 
   <!-- script for leaflet -->
   <script type="text/javascript" src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
@@ -108,11 +123,15 @@
       gtag('config', 'UA-128273217-2');
   </script>
 
-  <!-- scripts I wrote for the app, main should go last -->
+  <!-- data assistance reference JSON -->
   <script src="{% static 'gldas/js/bounds.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/regionsIndex.js' %}" type="text/javascript"></script>
+  <!-- HTML assistance modules -->
+  <script src="{% static 'gldas/js/countries.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/customShp.js' %}" type="text/javascript"></script>
+  <!-- chart and map management scripts -->
   <script src="{% static 'gldas/js/highcharts.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/leaflet.js' %}" type="text/javascript"></script>
   <script src="{% static 'gldas/js/main.js' %}" type="text/javascript"></script>
+
 {% endblock %}

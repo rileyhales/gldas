@@ -1,7 +1,3 @@
-from .app import Gldas as App
-import os
-
-
 def gldas_variables():
     """
     List of the plottable variables from the GLDAS 2.1 datasets used
@@ -37,7 +33,7 @@ def gldas_variables():
             ('Wind Speed', 'Wind_f_inst')]
 
 
-def timecoverage():
+def timeintervals():
     """
     Time intervals of GLDAS data
     """
@@ -101,7 +97,32 @@ def worldregions():
     Populates the drop down menu with the list of available shapefiles to use for averaging
     Dependencies: os, App (app)
     """
-    folders = os.listdir(os.path.join(App.get_app_workspace().path, 'shapefiles'))
-    options = [(folder, folder) for folder in folders if not folder.startswith('.')]
-    options.sort()
-    return options
+    return (
+        ('All World Regions (ESRI Living Atlas)', ''),
+        ('Antarctica (ESRI Living Atlas)', 'Antarctica'),
+        ('Asiatic Russia (ESRI Living Atlas)', 'Asiatic Russia'),
+        ('Australia/New Zealand (ESRI Living Atlas)', 'Australia/New Zealand'),
+        ('Caribbean (ESRI Living Atlas)', 'Caribbean'),
+        ('Central America (ESRI Living Atlas)', 'Central America'),
+        ('Central Asia (ESRI Living Atlas)', 'Central Asia'),
+        ('Eastern Africa (ESRI Living Atlas)', 'Eastern Africa'),
+        ('Eastern Asia (ESRI Living Atlas)', 'Eastern Asia'),
+        ('Eastern Europe (ESRI Living Atlas)', 'Eastern Europe'),
+        ('European Russia (ESRI Living Atlas)', 'European Russia'),
+        ('Melanesia (ESRI Living Atlas)', 'Melanesia'),
+        ('Micronesia (ESRI Living Atlas)', 'Micronesia'),
+        ('Middle Africa (ESRI Living Atlas)', 'Middle Africa'),
+        ('Northern Africa (ESRI Living Atlas)', 'Northern Africa'),
+        ('Northern America (ESRI Living Atlas)', 'Northern America'),
+        ('Northern Europe (ESRI Living Atlas)', 'Northern Europe'),
+        ('Polynesia (ESRI Living Atlas)', 'Polynesia'),
+        ('South America (ESRI Living Atlas)', 'South America'),
+        ('Southeastern Asia (ESRI Living Atlas)', 'Southeastern Asia'),
+        ('Southern Africa (ESRI Living Atlas)', 'Southern Africa'),
+        ('Southern Asia (ESRI Living Atlas)', 'Southern Asia'),
+        ('Southern Europe (ESRI Living Atlas)', 'Southern Europe'),
+        ('Western Africa (ESRI Living Atlas)', 'Western Africa'),
+        ('Western Asia (ESRI Living Atlas)', 'Western Asia'),
+        ('Western Europe (ESRI Living Atlas)', 'Western Europe'),
+        ('None', 'none')
+    )

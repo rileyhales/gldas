@@ -4,10 +4,10 @@ import json
 import os
 
 from django.shortcuts import render
-from tethys_sdk.gizmos import SelectInput, RangeSlider
+from tethys_sdk.gizmos import SelectInput, RangeSlider, TextInput
 
 from .app import Gldas as App
-from .options import gldas_variables, wms_colors, geojson_colors, timecoverage, get_charttypes
+from .options import gldas_variables, wms_colors, geojson_colors, timeintervals, get_charttypes, worldregions
 
 
 def home(request):
@@ -26,7 +26,7 @@ def home(request):
         name='dates',
         multiple=False,
         original=True,
-        options=timecoverage(),
+        options=timeintervals(),
         initial='2010s'
     )
     charttype = SelectInput(
@@ -37,13 +37,20 @@ def home(request):
         options=get_charttypes(),
     )
 
-    region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
+    # region_index = json.load(open(os.path.join(os.path.dirname(__file__), 'public', 'geojson', 'index.json')))
     regions = SelectInput(
-        display_text='Pick World Region Boundaries',
+        display_text='Pick A World Region',
         name='regions',
         multiple=False,
         original=True,
-        options=[(region_index[opt]['name'], opt) for opt in region_index]
+        options=list(worldregions())
+    )
+
+    countries = TextInput(
+        display_text='Enter A Country Name',
+        name='countries',
+        placeholder='type a country name...',
+        attributes={'list': 'countrieslist'}
     )
 
     colorscheme = SelectInput(
@@ -116,6 +123,7 @@ def home(request):
         'dates': dates,
         'charttype': charttype,
         'regions': regions,
+        'countries': countries,
 
         # display options
         'colorscheme': colorscheme,

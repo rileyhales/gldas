@@ -35,17 +35,32 @@ mapObj.on(L.Draw.Event.CREATED, function (event) {
 
 mapObj.on("mousemove", function (event) {$("#mouse-position").html('Lat: ' + event.latlng.lat.toFixed(5) + ', Lon: ' + event.latlng.lng.toFixed(5));});
 
-let layerObj = newLayer();              // adds the wms raster layer
+let layerGLDAS = newGLDAS();            // adds the wms raster layer
+let layerRegion = regionsESRI();    // adds the world region boundaries from esri living atlas
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 legend.addTo(mapObj);                   // add the legend graphic to the map
 latlon.addTo(mapObj);                   // add the box showing lat and lon to the map
-getRegionGeoJSONS();                    // get the regions geojson and add them to the map
+// getRegionGeoJSONS();                    // get the regions geojson and add them to the map
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
 function update() {
-    layerObj = newLayer();
+    layerGLDAS = newGLDAS();
     controlsObj = makeControls();
     legend.addTo(mapObj);
 }
+function changeregions(firedfrom) {
+    // todo move the validation from the leaflet function to right here
+    // change to none/empty input
+    mapObj.removeLayer(layerRegion);
+    controlsObj.removeLayer(layerRegion);
+    if (firedfrom === 'region') {
+        layerRegion = regionsESRI();
+        controlsObj.addOverlay(layerRegion, 'Region Boundaries');
+    } else {
+        layerRegion = countriesESRI();
+        controlsObj.addOverlay(layerRegion, 'Country Boundaries');
+    }
+}
+
 // input validation
 $(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')});
 
@@ -53,7 +68,8 @@ $(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')})
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $("#dates").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $('#charttype').change(function () {makechart();});
-$("#regions").change(function () {getRegionGeoJSONS();makechart()});
+$("#regions").change(function () {changeregions('region');getDrawnChart(drawnItems)});
+$("#countriesGO").click(function () {changeregions('country');getDrawnChart(drawnItems)});
 
 // display controls
 $("#display").click(function() {$("#displayopts").toggle();});
@@ -61,7 +77,7 @@ $("#cs_min").change(function () {if ($("#use_csrange").is(":checked")) {clearMap
 $("#cs_max").change(function () {if ($("#use_csrange").is(":checked")) {clearMap();update()}});
 $("#use_csrange").change(function () {clearMap();update()});
 $('#colorscheme').change(function () {clearMap();update();});
-$("#opacity").change(function () {layerObj.setOpacity($(this).val())});
+$("#opacity").change(function () {layerGLDAS.setOpacity($(this).val())});
 $('#gjClr').change(function () {styleGeoJSON();});
 $("#gjOp").change(function () {styleGeoJSON();});
 $("#gjWt").change(function () {styleGeoJSON();});

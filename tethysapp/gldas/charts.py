@@ -1,10 +1,20 @@
+"""
+Author: Riley Hales, 2018
+Copyright: Riley Hales, RCH Engineering, 2019
+Description: Functions for generating timeseries and simple statistical
+    charts for netCDF data for point, bounding box, or shapefile geometries
+"""
+
 import calendar
 import datetime
 import os
 import shutil
+import requests
+import json
 
 import rasterio
 import rasterstats
+import shapefile
 import netCDF4
 import numpy
 import pandas
@@ -16,9 +26,7 @@ from .app import Gldas as App
 
 def newchart(data):
     """
-    Determines the environment for generating a timeseries chart
-    :param data: a JSON object with params from the UI/API call
-    :return:
+    Determines the environment for generating a timeseries chart. Call this function
     """
     # input parameters
     var = str(data['variable'])
@@ -46,13 +54,16 @@ def newchart(data):
         type_message = 'Values at a Point'
     elif loc_type == 'Polygon':
         values, units = polychart(var, data['coords'], path, files)
-        type_message = 'Averaged over a Polygon'
+        type_message = 'In a Bounding Box'
     elif loc_type == 'Shapefile':
-        values, units = shpchart(var, path, files, data['region'], data['instance_id'])
-        if data['region'] == 'customshape':
-            type_message = 'Average for user\'s shapefile'
+        vectordata = data['vectordata']
+        values, units = vectorchart(var, path, files, vectordata, data['instance_id'])
+        if vectordata == 'customshape':
+            type_message = 'Average in user\'s shapefile'
         else:
-            type_message = 'Average for ' + data['region']
+            if vectordata.startswith('esri-'):
+                vectordata = vectordata.split('-')[-1]
+            type_message = 'Average for ' + vectordata
     values.sort(key=lambda tup: tup[0])
 
     multiline, boxplot, categories = makestatplots(values, data['time'])
@@ -68,14 +79,54 @@ def newchart(data):
     }
 
 
+def geojson_to_shape(vectordata, savepath):
+    # get the geojson data from esri
+    base = 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/'
+    if vectordata.startswith('regions-'):
+        vectordata = vectordata.replace('regions-', '')
+        url = base + 'World_Regions/FeatureServer/0/query?f=pgeojson&outSR=4326&where=REGION+%3D+%27' + \
+            vectordata + '%27'
+    else:  # vectordata.startswith('countries-'):
+        vectordata = vectordata.replace('countries-', '')
+        url = base + 'World__Countries_Generalized_analysis_trim/FeatureServer/0/query?f=pgeojson&outSR=4326&' \
+                     'where=NAME+%3D+%27' + vectordata + '%27'
+
+    req = requests.get(url=url)
+    geojson = json.loads(req.text)
+
+    # create the shapefile
+    fileobject = shapefile.Writer(target=savepath, shpType=shapefile.POLYGON, autoBalance=True)
+
+    # label all the columns in the .dbf
+    geomtype = geojson['features'][0]['geometry']['type']
+    if geojson['features'][0]['properties']:
+        for attribute in geojson['features'][0]['properties']:
+            fileobject.field(str(attribute), 'C', '30')
+    else:
+        fileobject.field('Name', 'C', '50')
+
+    # add the geometry and attribute data
+    for feature in geojson['features']:
+        if geomtype == 'Polygon':
+            fileobject.poly(polys=feature['geometry']['coordinates'])
+        elif geomtype == 'MultiPolygon':
+            for i in feature['geometry']['coordinates']:
+                fileobject.poly(polys=i)
+        if feature['properties']:
+            fileobject.record(**feature['properties'])
+        else:
+            fileobject.record(vectordata)
+
+    # create a prj file
+    with open(savepath + '.prj', 'w') as prj:
+        prj.write('GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563]],'
+                  'PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]')
+
+    fileobject.close()
+    return
+
+
 def pointchart(var, coords, path, files):
-    """
-    Description: generates a timeseries for a given point and given variable defined by the user.
-    Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
-    Author: Riley Hales
-    Dependencies: netcdf4, numpy, datetime, os, calendar
-    Last Updated: Oct 11 2018
-    """
     # return items
     values = []
 
@@ -104,13 +155,6 @@ def pointchart(var, coords, path, files):
 
 
 def polychart(var, coords, path, files):
-    """
-    Description: generates a timeseries for a given point and given variable defined by the user.
-    Arguments: A dictionary object from the AJAX-ed JSON object that contains coordinates and the variable name.
-    Author: Riley Hales
-    Dependencies: netcdf4, numpy, datetime, os, calendar
-    Last Updated: May 14 2019
-    """
     # return items
     values = []
 
@@ -144,7 +188,7 @@ def polychart(var, coords, path, files):
     return values, units
 
 
-def shpchart(var, path, files, region, instance_id):
+def vectorchart(var, path, files, vectordata, instance_id=None):
     """
     Description: This script accepts a netcdf file in a geographic coordinate system, specifically the NASA GLDAS
         netcdfs, and extracts the data from one variable and the lat/lon steps to create a geotiff of that information.
@@ -165,15 +209,21 @@ def shpchart(var, path, files, region, instance_id):
     nc_obj.close()
 
     # file paths and settings
-    wrkpath = App.get_app_workspace().path
-    if region == 'customshape':
-        path = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
-        shp = [i for i in os.listdir(path) if i.endswith('.shp')]
-        shppath = os.path.join(path, shp[0])
-    else:
-        shppath = os.path.join(wrkpath, 'shapefiles', region, region.replace(' ', '') + '.shp')
+    if vectordata == 'customshape':
+        dirpath = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
+        shp = [i for i in os.listdir(dirpath) if i.endswith('.shp')]
+        vectorpath = os.path.join(dirpath, shp[0])
+    else:  # vectordata.startswith('esri-'):
+        vectordata = vectordata.replace('esri-', '')
+        dirpath = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
+        if os.path.exists(dirpath):
+            shutil.rmtree(dirpath)
+        os.mkdir(dirpath)
+        vectorpath = os.path.join(dirpath, instance_id)
+        geojson_to_shape(vectordata, vectorpath)
+        vectorpath += '.shp'
 
-    # read netcdf, create geotiff, zonal statistics, format outputs for highcharts plotting
+    # extract the timeseries by iterating over each netcdf
     for nc in files:
         # open the netcdf and get the data array
         nc_obj = netCDF4.Dataset(os.path.join(path, nc), 'r')
@@ -185,16 +235,15 @@ def shpchart(var, path, files, region, instance_id):
         array[array < -9000] = numpy.nan  # use the comparator to drop nodata fills
         array = array[::-1]  # vertically flip array so tiff orientation is right (you just have to, try it)
 
-        stats = rasterstats.zonal_stats(shppath, array, affine=affine, nodata=numpy.nan, stats="mean")
-        values.append((calendar.timegm(time.utctimetuple()) * 1000, stats[0]['mean'], time.month, time.year))
-
+        stats = rasterstats.zonal_stats(vectorpath, array, affine=affine, nodata=numpy.nan, stats="mean")
+        tmp = [i['mean'] for i in stats if i['mean'] is not None]
+        values.append((calendar.timegm(time.utctimetuple()) * 1000, sum(tmp) / len(tmp), time.month, time.year))
     return values, units
 
 
 def makestatplots(values, time):
     """
     Calculates statistics for the array of timeseries values and returns arrays for a highcharts boxplot
-    Dependencies: statistics, pandas, datetime, calendar
     """
     df = pandas.DataFrame(values, columns=['timestamp', 'values', 'month', 'year'])
     multiline = {'yearmulti': {'min': [], 'max': [], 'mean': []},
