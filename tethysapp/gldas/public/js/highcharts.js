@@ -163,7 +163,6 @@ function getDrawnChart(drawnItems) {
         // setup a parameters json to generate the right timeserie
         let data = {
             coords: coords,
-            model: model,
             variable: $("#variables").val(),
             level: $("#levels").val(),
             time: $("#dates").val(),

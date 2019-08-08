@@ -135,8 +135,8 @@ def pointchart(var, coords, path, files):
     nc_lats = nc_obj['lat'][:]
     units = nc_obj[var].__dict__['units']
     # get the index number of the lat/lon for the point
-    lon_indx = (numpy.abs(nc_lons - int(coords[0]))).argmin()
-    lat_indx = (numpy.abs(nc_lats - int(coords[1]))).argmin()
+    lon_indx = (numpy.abs(nc_lons - round(float(coords[0]), 2))).argmin()
+    lat_indx = (numpy.abs(nc_lats - round(float(coords[1]), 2))).argmin()
     nc_obj.close()
 
     # extract values at each timestep
@@ -163,10 +163,10 @@ def polychart(var, coords, path, files):
     nc_lats = nc_obj['lat'][:]
     units = nc_obj[var].__dict__['units']
     # get a bounding box of the rectangle in terms of the index number of their lat/lons
-    minlon = (numpy.abs(nc_lons - int(coords[0][1][0]))).argmin()
-    maxlon = (numpy.abs(nc_lons - int(coords[0][3][0]))).argmin()
-    maxlat = (numpy.abs(nc_lats - int(coords[0][1][1]))).argmin()
-    minlat = (numpy.abs(nc_lats - int(coords[0][3][1]))).argmin()
+    minlon = (numpy.abs(nc_lons - round(float(coords[0][1][0]), 2))).argmin()
+    maxlon = (numpy.abs(nc_lons - round(float(coords[0][3][0]), 2))).argmin()
+    maxlat = (numpy.abs(nc_lats - round(float(coords[0][1][1]), 2))).argmin()
+    minlat = (numpy.abs(nc_lats - round(float(coords[0][3][1]), 2))).argmin()
     nc_obj.close()
 
     # extract values at each timestep
