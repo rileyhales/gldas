@@ -1,0 +1,158 @@
+************************
+GLDAS DATA TOOL REST API
+************************
+
+A REST API is a web service or a set of methods that can be used to produce or access data without a web interface.
+REST APIs use the http protocol to request data.
+
+help
+====
+
++----------------+----------------------------------------------------------+---------------+
+| Parameter      | Description                                              | Example       |
++================+==========================================================+===============+
+|  None          |                                                          |               |
++----------------+----------------------------------------------------------+---------------+
+
+.. [*] forecast_folder=most_recent will retrieve the most recent date available.
+
+Example
+-------
+
+>>> import requests
+>>> request_params = dict(watershed_name='Nepal', subbasin_name='Central', reach_id=5, forecast_folder='most_recent', stat_type='mean')
+>>> request_headers = dict(Authorization='Token asdfqwer1234')
+>>> res = requests.get('[HOST Portal]/apps/streamflow-prediction-tool/api/GetForecast/', params=request_params, headers=request_headers)
+
+GetEnsemble (1 - 52)
+====================
+
++----------------+----------------------------------------------------------+---------------+
+| Parameter      | Description                                              | Example       |
++================+==========================================================+===============+
+| watershed_name | The name of watershed or main area of interest.          | Nepal         |
++----------------+----------------------------------------------------------+---------------+
+| subbasin_name  | The name of the sub basin or sub area.                   | Central       |
++----------------+----------------------------------------------------------+---------------+
+| reach_id       | The identifier for the stream reach.                     | 5             |
++----------------+----------------------------------------------------------+---------------+
+| forecast_folder| The date of the forecast (YYYYMMDD.HHHH) [*]_. (Optional)| 20170110.1200 |
+|                |                          (YYYMMDD.H)                     | 20170110.0    |
++----------------+----------------------------------------------------------+---------------+
+|                | The selected forecast ensemble(s). The value can be a    | Number: 52    |
+|                |                                                          |               |
+| ensemble       | number, a list, or a range. Accepted values go from 1 to | List: 1,3,6,9 |
+|                |                                                          |               |
+|                | 52. Leave empty or ensemble=all for retrieving all.      | Range: 1-15   |
++----------------+----------------------------------------------------------+---------------+
+| units          | Set to 'english' to get ft3/s. (Optional)                | english       |
++----------------+----------------------------------------------------------+---------------+
+.. [*] forecast_folder=most_recent will retrieve the most recent date available.
+
+Example
+-------
+
+>>> import requests
+>>> request_params = dict(watershed_name='Nepal', subbasin_name='Central', reach_id=5, forecast_folder='most_recent', ensemble='52')
+>>> request_headers = dict(Authorization='Token asdfqwer1234')
+>>> res = requests.get('[HOST Portal]/apps/streamflow-prediction-tool/api/GetEnsemble/', params=request_params, headers=request_headers)
+
+GetHistoricData (1980 - Present)
+================================
+
++----------------+--------------------------------------------------+---------------+
+| Parameter      | Description                                      | Example       |
++================+==================================================+===============+
+| watershed_name | The name of watershed or main area of interest.  | Nepal         |
++----------------+--------------------------------------------------+---------------+
+| subbasin_name  | The name of the sub basin or sub area.           | Central       |
++----------------+--------------------------------------------------+---------------+
+| reach_id       | The identifier for the stream reach.             | 5             |
++----------------+--------------------------------------------------+---------------+
+| units          | Set to 'english' to get ft3/s. (Optional)        | english       |
++----------------+--------------------------------------------------+---------------+
+| return_format  | Set to 'csv' to get csv file.  (Optional)        | csv           |
++----------------+--------------------------------------------------+---------------+
+
+Example
+-------
+>>> import requests
+>>> request_params = dict(watershed_name='Nepal', subbasin_name='Central', reach_id=5)
+>>> request_headers = dict(Authorization='Token asdfqwer1234')
+>>> res = requests.get('[HOST Portal]/apps/streamflow-prediction-tool/api/GetHistoricData/', params=request_params, headers=request_headers)
+
+GetReturnPeriods (2, 10, and 20 year return with historical max)
+================================================================
+
++----------------+--------------------------------------------------+---------------+
+| Parameter      | Description                                      | Example       |
++================+==================================================+===============+
+| watershed_name | The name of watershed or main area of interest.  | Nepal         |
++----------------+--------------------------------------------------+---------------+
+| subbasin_name  | The name of the sub basin or sub area.           | Central       |
++----------------+--------------------------------------------------+---------------+
+| reach_id       | The identifier for the stream reach.             | 5             |
++----------------+--------------------------------------------------+---------------+
+| units          | Set to 'english' to get ft3/s. (Optional)        | english       |
++----------------+--------------------------------------------------+---------------+
+
+Example
+-------
+>>> import requests
+>>> request_params = dict(watershed_name='Nepal', subbasin_name='Central', return_period=2)
+>>> request_headers = dict(Authorization='Token asdfqwer1234')
+>>> res = requests.get('[HOST Portal]/apps/streamflow-prediction-tool/api/GetReturnPeriods/', params=request_params, headers=request_headers)
+
+GetAvailableDates
+=================
+
++----------------+--------------------------------------------------+---------------+
+| Parameter      | Description                                      | Example       |
++================+==================================================+===============+
+| watershed_name | The name of watershed or main area of interest.  | Nepal         |
++----------------+--------------------------------------------------+---------------+
+| subbasin_name  | The name of the sub basin or sub area.           | Central       |
++----------------+--------------------------------------------------+---------------+
+| reach_id       | The identifier for the stream reach.             | 5             |
++----------------+--------------------------------------------------+---------------+
+
+Example
+-------
+>>> import requests
+>>> request_params = dict(watershed_name='Nepal', subbasin_name='Central', reach_id=5)
+>>> request_headers = dict(Authorization='Token asdfqwer1234')
+>>> res = requests.get('[HOST Portal]/apps/streamflow-prediction-tool/api/GetAvailableDates/', params=request_params, headers=request_headers)
+
+GetWatersheds
+=============
+
+This method takes no parameters and returns a list of the available watersheds.
+
+Example
+-------
+>>> import requests
+>>> request_headers = dict(Authorization='Token asdfqwer1234')
+>>> res = requests.get('[HOST Portal]/apps/streamflow-prediction-tool/api/GetWatersheds/', headers=request_headers)
+
+GetWarningPoints
+================
+
++----------------+------------------------------------------------------------+---------------+
+| Parameter      | Description                                                | Example       |
++================+============================================================+===============+
+| watershed_name | The name of watershed or main area of interest.            | Nepal         |
++----------------+------------------------------------------------------------+---------------+
+| subbasin_name  | The name of the sub basin or sub area.                     | Central       |
++----------------+------------------------------------------------------------+---------------+
+| return_period  | The return period that the warning is based on.            | (2,10, or 20) |
++----------------+------------------------------------------------------------+---------------+
+| forecast_folder| The date of the forecast (YYYYMMDD.HHHH). (Optional [*]_)  | 20170110.1200 |
++----------------+------------------------------------------------------------+---------------+
+.. [*] If you don't include forecast_folder, it will retrieve the most recent date available.
+
+Example
+-------
+>>> import requests
+>>> request_params = dict(watershed_name='Nepal', subbasin_name='Central', return_period=20, forecast_folder='20170802.0')
+>>> request_headers = dict(Authorization='Token asdfqwer1234')
+>>> res = requests.get('[HOST Portal]/apps/streamflow-prediction-tool/api/GetWarningPoints/', params=request_params, headers=request_headers)
