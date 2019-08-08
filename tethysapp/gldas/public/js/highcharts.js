@@ -205,7 +205,7 @@ function getShapeChart(selectedregion) {
         variable: $("#variables").val(),
         level: $("#levels").val(),
         time: $("#dates").val(),
-        loc_type: 'Shapefile'
+        loc_type: 'VectorGeometry'
     };
 
     if (selectedregion === 'lastregion') {

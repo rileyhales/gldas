@@ -4,7 +4,6 @@ Copyright: Riley Hales, RCH Engineering, 2019
 Description: Functions for generating timeseries and simple statistical
     charts for netCDF data for point, bounding box, or shapefile geometries
 """
-
 import calendar
 import datetime
 import os
@@ -55,7 +54,7 @@ def newchart(data):
     elif loc_type == 'Polygon':
         values, units = polychart(var, data['coords'], path, files)
         type_message = 'In a Bounding Box'
-    elif loc_type == 'Shapefile':
+    elif loc_type == 'VectorGeometry':
         vectordata = data['vectordata']
         values, units = vectorchart(var, path, files, vectordata, data['instance_id'])
         if vectordata == 'customshape':

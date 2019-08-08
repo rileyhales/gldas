@@ -52,26 +52,30 @@ class Gldas(TethysAppBase):
 
             # url maps for api calls
             urlmap(
-                name='getcapabilities',
-                url='gldas/api/getcapabilities',
-                controller='gldas.api.getcapabilities',
+                name='help',
+                url='gldas/api/help',
+                controller='gldas.api.help',
+            ),
+            urlmap(
+                name='times',
+                url='gldas/api/timeOptions',
+                controller='gldas.api.times',
+            ),
+            urlmap(
+                name='variables',
+                url='gldas/api/variableOptions',
+                controller='gldas.api.variables',
+            ),
+            urlmap(
+                name='geometry',
+                url='gldas/api/geometryOptions',
+                controller='gldas.api.geometry',
             ),
             urlmap(
                 name='timeseries',
                 url='gldas/api/timeseries',
                 controller='gldas.api.timeseries',
             ),
-            urlmap(
-                name='gldasvariables',
-                url='gldas/api/gldasvariables',
-                controller='gldas.api.gldasvariables',
-            ),
-            urlmap(
-                name='gldasdates',
-                url='gldas/api/gldasdates',
-                controller='gldas.api.gldasdates',
-            ),
-
         )
 
     def custom_settings(self):

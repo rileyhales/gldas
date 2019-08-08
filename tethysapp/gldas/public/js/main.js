@@ -47,12 +47,11 @@ function update() {
     legend.addTo(mapObj);
 }
 function changeregions(firedfrom) {
-    // todo move the validation from the leaflet function to right here
     let countryJQ = $("#countries");
     let regionjQ = $("#regions");
     if (firedfrom === 'country') {
         let country = countryJQ.val();
-        if (countrieslist.indexOf(country)) {
+        if (!countrieslist.includes(country)) {
             alert('The country "' + country + '" was not found in the list of countries available. Please check spelling and capitalization, and use the input suggestions.');
             return
         }

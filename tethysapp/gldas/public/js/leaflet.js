@@ -80,30 +80,47 @@ function styleGeoJSON() {
 ////////////////////////////////////////////////////////////////////////  ESRI LIVING ATLAS LAYERS (FEATURE SERVER)
 function regionsESRI() {
     let region = $("#regions").val();
+
+    let where = '1=1';
+    if (region !== '') {
+        where = "REGION = '" + region + "'"
+    }
     let params = {
         url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/World_Regions/FeatureServer/0',
         style: getStyle,
         outSR: 4326,
+        where: where,
         onEachFeature: function (feature, layer) {
             let place = feature.properties.REGION;
             layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'esri-regions-" + place + "'" + ')">Get timeseries for ' + place + '</a>');
         },
     };
     if (region !== '') {params['where'] = "REGION = '" + region + "'"}
-    return L.esri.featureLayer(params).addTo(mapObj);
+    let layer = L.esri.featureLayer(params);
+    layer.addTo(mapObj);
+    layer.query().where(where).bounds(function(error, latLngBounds, response){
+        mapObj.flyToBounds(latLngBounds)
+    });
+    return layer;
 }
 function countriesESRI() {
     let region = $("#countries").val();
+    let where = "NAME='" + region + "'";
     let params = {
         url: 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/World__Countries_Generalized_analysis_trim/FeatureServer/0',
         style: getStyle,
         outSR: 4326,
-        where: "NAME='" + region + "'",
+        where: where,
         onEachFeature: function (feature, layer) {
             layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'esri-countries-" + region + "'" + ')">Get timeseries for ' + region + '</a>');
         },
     };
-    return L.esri.featureLayer(params).addTo(mapObj);
+    let layer = L.esri.featureLayer(params);
+    layer.addTo(mapObj);
+    layer.query().where(where).bounds(function(error, latLngBounds, response){
+        mapObj.flyToBounds(latLngBounds)
+    });
+    return layer;
 }
 
 ////////////////////////////////////////////////////////////////////////  USER'S CUSTOM UPLOADED SHAPEFILE
@@ -173,7 +190,6 @@ function makeControls() {
 
 // you need to remove layers when you make changes so duplicates dont persist and accumulate
 function clearMap() {
-    // remove the controls for the wms layer then remove it from the map
     controlsObj.removeLayer(layerGLDAS);
     mapObj.removeLayer(layerGLDAS);
     controlsObj.removeLayer(usershape);

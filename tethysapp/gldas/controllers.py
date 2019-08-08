@@ -1,13 +1,12 @@
 import random
 import string
-import json
-import os
 
 from django.shortcuts import render
 from tethys_sdk.gizmos import SelectInput, RangeSlider, TextInput
 
 from .app import Gldas as App
 from .options import gldas_variables, wms_colors, geojson_colors, timeintervals, get_charttypes, worldregions
+from .utilities import new_id
 
 
 def home(request):
@@ -138,7 +137,7 @@ def home(request):
         'datawebsite': App.datawebsite,
         'version': App.version,
         'thredds_url': App.get_custom_setting('thredds_url'),
-        'instance_id': ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for i in range(10))
+        'instance_id': new_id(),
     }
 
     return render(request, 'gldas/home.html', context)
