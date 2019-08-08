@@ -44,13 +44,6 @@ def home(request):
         options=list(worldregions())
     )
 
-    countries = TextInput(
-        display_text='Enter A Country Name',
-        name='countries',
-        placeholder='type a country name...',
-        attributes={'list': 'countrieslist'}
-    )
-
     colorscheme = SelectInput(
         display_text='GLDAS Color Scheme',
         name='colorscheme',
@@ -120,7 +113,6 @@ def home(request):
         'dates': dates,
         'charttype': charttype,
         'regions': regions,
-        'countries': countries,
 
         # display options
         'colorscheme': colorscheme,

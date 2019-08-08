@@ -78,7 +78,7 @@ $(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')})
 // data controls
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $("#dates").change(function () {clearMap();update();getDrawnChart(drawnItems);});
-$('#charttype').change(function () {makechart();});
+$('#charttype').change(function () {makechart()});
 $("#regions").change(function () {changeregions('region')});
 $("#countriesGO").click(function () {changeregions('country')});
 
@@ -89,7 +89,7 @@ $("#cs_max").change(function () {if ($("#use_csrange").is(":checked")) {clearMap
 $("#use_csrange").change(function () {clearMap();update()});
 $('#colorscheme').change(function () {clearMap();update();});
 $("#opacity").change(function () {layerGLDAS.setOpacity($(this).val())});
-$('#gjClr').change(function () {console.log('cjclr');styleGeoJSON()});
+$('#gjClr').change(function () {styleGeoJSON()});
 $("#gjOp").change(function () {styleGeoJSON()});
 $("#gjWt").change(function () {styleGeoJSON()});
 $('#gjFlClr').change(function () {styleGeoJSON()});

@@ -4,19 +4,60 @@ This is a Tethys 2/3 compatible app that visualizes data from the NASA GES Disc 
 © Riley Hales, 2019. Developed at the BYU Hydroinformatics Lab.
 
 ## App Features
-1. View time-animated maps of all GLDAS variables. Customize color scheme, opacity, animation/playback speed, time period.
-2. View world region boundaries. Customize color scheme and opacity. Choose to get layers from Geoserver or local GeoJSON
-3. View the Latitude/Longitude Coordinates of anywhere on the planet by hovering your mouse over the map.
-4. Toggle visibility of controls and the controls menu.
-5. Use drawing controls to place a point or draw a rectangle on the globe and generate a chart with timeseries values at that point or of the spatial average within the box.
-6. Click on a landmass and a pop-up bubble gives you the name of the region and the option to generate a timeseries of average values in that region.
-7. Choose between 4 additional chart options using box plots and multi-line plots to view statistical analysis of historical data.
-8. Export timeseries charts as graphics.
-9. Export timeseries data to csv.
-10. Link to demonstration video on YouTube.
-11. In-App tutorial explaining app features.
-12. Links to source code, installation instructions, and GLDAS data downloads.
-13. NCML files scan folders so they dont need to be updated each time data are added.
+1. View time-animated maps of all GLDAS variables.
+2. View world region boundaries and any country boundaries.
+3. Upload a polygon shapefile to view on the map and use it to generate timeseries.
+4. Customize color scheme, opacity, animation/playback speed, toggle on/off, time period, etc of all spatial data.
+5. View the Latitude/Longitude Coordinates of anywhere on the planet by hovering your mouse over the map.
+6. Generate timeseries by drawing Points/Bounding Boxes on the map, uploading a polygon shapefile, or choosing a world region or country boundary.
+7. Plot the timeseries on 5 different charts including timeseries and simple statistical analysis.
+8. Export timeseries data and charts as graphics or csv.
+9. Access app features by API with documentation and sample Jupyter Notebook.
+10. Links to source code, installation instructions, GLDAS data downloads, documentation.
+
+## API Documentation
+This app provides a REST API to get timeseries data programmatically. You can query the API at the url ```[tethys_port_host]/apps/gldas/api/apiFunctionName```
+
+**PLEASE REFER TO api-demo.ipynb IN THE APP DIRECTORY FOR A TUTORIAL** 
+
+There are 5 API methods, 4 offer help/explanation and 1 for requesting data:
+* ```help```
+* ```timeOptions```
+* ```variableOptions```
+* ```geometryOptions```
+* ```timeseries```
+
+The API method timeseries requires 4 parameters as explained in the help/option API methods:
+* ```variable```
+* ```time```
+* ```loc_type```
+* ```coords``` or ```region```
+
+
+
+### help (/apps/gldas/api/help)
+* Parameters: none
+* Returns: JSON object: contains explanations of each parameter and links to help
+ 
+### timeOptions (/apps/gldas/api/timeOptions)
+* Parameters: none
+* Returns: JSON object: description of the available data and an explanation of how to format your request
+
+### variableOptions (/apps/gldas/api/variableOptions)
+* Parameters: none
+* Returns: JSON object: contains a list of tuples with the full name of each variable and the shortened name that you need to use in API requests. 
+
+### geometryOptions (/apps/gldas/api/geometryOptions)
+* Parameters: none
+* Returns: JSON object: instructions for formatting a list of coordinates for points/bounding boxes and a list of the available countries and world regions you may pick from.
+  
+### timeseries (/apps/gldas/api/timeseries)
+* Parameters:  
+    ```variable```  
+    ```time```  
+    ```loc_type```  
+    ```coords``` or ```region```
+* Returns: JSON object: contains the information to plot each of the 5 charts available in the app using the highcharts.js software package.
 
 ## Installation Instructions
 ### 1 Install the Tethys App
@@ -34,25 +75,26 @@ tethys manage collectstatic
 ~~~~
 Reset the server, then attempt to log in through the web interface as an administrator. The app should appear in the Apps Library page in grey indicating you need to configure the custom settings.
 
-### 2 Set up a Thredds Server (GLDAS Rasters)
-Refer to the documentation for Thredds to set up an instance of Thredds on your tethys server.
+### 2 Set up THREDDS and download GLDAS data
+Refer to the documentation for Thredds to set up an instance of Thredds on your tethys server. In the thredds public folder, where your datasets are stored, create a new folder called ```gldas```. Get the path to this directory and save it for later. You need to fill this folder with the GLDAS data from NASA and there are 2 ways to do this.
 
-In the public folder where your datasets are stored, create a new folder called ```gldas```. Within that folder, place all the contents of the ncml folder in the app you downloaded in the previous step. Create a new folder called ```raw``` and leave it empty. You will fill it with data in the next step. 
-
-In the app's folder you downloaded from git, copy the contents of the ```ncml``` folder into the ```gldas``` directory you just created in Thredds. These files are a form of xml called NetCDF Markup Language (.ncml). They filter the datasets in the raw folder by year and create an virtual aggregation of their data. You should not need to change these files when you get new datasets each month, but you will need to add a new one each year.
+1. Run the gldasworkflow.sh workflow found in the gldasworkflow folder of the app using the path to the ```gldas``` folder as the argument to the function.
+2. Go to [disc.gsfc.nasa.gov](https://disc.gsfc.nasa.gov/datasets?keywords=gldas) and sign up for an Earth Data account. Download all the GLDAS 2 and 2.1 monthly, 1/4 degree resolution netcdf datasets. Create a directory inside the ```gldas``` folder called ```raw``` and save all the data here. Copy the contents of the ```gldasworkflow/ncml``` directory to the ```gldas``` directory
 
 If you did it correctly, your folder should look like this:
 ~~~~
 gldas
---->2000.ncml
---->2001.ncml
---->2002.ncml
-    ...
---->2019.ncml
+--->1950s.ncml
+--->1960s.ncml
+--->1970s.ncml
+--->1980s.ncml
+--->1990s.ncml
+--->2000s.ncml
+--->2010s.ncml
 --->alltimes.ncml
     
---->raw
-    ---><empty directory>
+--->raw (directory)
+    ---><all the gldas datasets here>
 ~~~~
 You will also need to modify Thredds' settings files to enable WMS services and support for netCDF files on your server. In the folder where you installed Thredds, there should be a file called ```catalog.xml```. 
 ~~~~
@@ -67,7 +109,6 @@ At the top of the document is a list of supported services. Make sure the line f
 Scroll down toward the end of the section that says ```filter```. This is the section that limits which kinds of datasets Thredds will process. We need it to accept .nc, .nc4, and .ncml file types. Make sure your ```filter``` tag includes the following lines.
 ~~~~
 <filter>
-    <include wildcard="*.nc"/>
     <include wildcard="*.nc4"/>
     <include wildcard="*.ncml"/>
 </filter>
@@ -90,59 +131,17 @@ Press ```esc``` then type ```:x!```  and press the ```return``` key to save and 
 
 Reset the Thredds server so the catalog is regenerated with the edits that you've made. The command to reset your server will vary based on your installation method, such as ```docker reset thredds``` or ```sudo systemctl reset tomcat```.
 
-### 3 Get the GLDAS Data from NASA GES Disc
-The datasets shown in this app are available at: https://disc.gsfc.nasa.gov/datasets?keywords=gldas&page=1. Follow the necessary steps on their website to get credentials and use the batch download commands. Do not change the file names.
+### 3 Set up a GeoServer (for user-uploaded shapefiles)
+Refer to the documentation for GeoServer to set up an instance of GeoServer on your tethys server. If you choose not to use geoserver, your users will not be able to view custom shapefiles in the app.
 
-You will save this data to the ```raw``` folder you created in the previous step. Verify that you have 12 netcdf files per year plus any files for the current year. Your thredds folder should now look like this:
-~~~~
-gldas
-    ...
---->alltimes.ncml
-    
---->raw
-    --->GLDAS_NOAH025_M.A200001.021.nc4
-    --->GLDAS_NOAH025_M.A200002.021.nc4
-        ...    
-~~~~
-
-Verify that you have completed steps 2 and 3 correctly by viewing the Thredds catalog through a web browser. The default address will be something like ```yourserver.com/thredds/catalog.html```. Navigate to the ```Test all files...``` folder. Your ```gldas``` folder should be visible. Open it and check that all your ```.ncml``` files are visible and that the ```.nc4``` files are visible in the ```/raw``` directory. If they are not, review steps 2 and 3 and restart your Thredds server.
-
-### 4 Set up a GeoServer (World Region Boundaries) (Optional, Recommended)
-Refer to the documentation for GeoServer to set up an instance of GeoServer on your tethys server. If you choose not to use geoserver, skip this step and follow instructions in step 5 for the custom settings.
-
-This app can display and perform spatial averaging for 8 world regions. The app will perform the raster operations and averaging using shapefiles that cover general regions of the globe in as few points as possible to increase computation speed, reduce file sizes, and prevent computation errors related to large and complex polygon shapefiles. More accurate boundaries for the regions are available for visualization as a Web Feature Service (WFS) through GeoServer or as local geojson files. A copy of the shapefiles you need, in the properly formatted zip archives, is found in the ```workspaces/app_workspace``` directory of the app.   
-
-Use a web browser to log in to your GeoServer. Use the web interface to create a new workspace named ```gldas```. Use the command line to navigate to the directory containing the GeoServerFiles zip archive you got from the app. Extract the contents of that zip archive, but do not unzip the 8 zip archives that it contains. Upload each of those 8 zip archives to the new GeoServer workspace using cURL commands (e.g. run this command 8 times). The general format of the command is:
-~~~~
-curl -v -u [user]:[password] -XPUT -H "Content-type: application/zip" --data-binary @[name_of_zip].zip https://[hostname]/geoserver/rest/workspaces/[workspaceURI]/datastores/[name_of_zip]/file.shp
-~~~~
 This command asks you to specify:
 * Geoserver Username and Password. If you have not changed it, the default is admin and geoserver.
 * Name of the Zip Archive you're uploading. Be sure you spell it correctly and that you put it in each of the 2 places it is asked for.
 * Hostname. The host website, e.g. ```tethys.byu.edu```.
 * The Workspace URI. The URI that you specified when you created the new workspace through the web interface. If you followed these instructions it should be ```gldas```.
 
-### 5 Set The Custom Settings
+### 4 Set The Custom Settings
 Log in to your Tethys portal as an admin. Click on the grey GLDAS box and specify these settings:
-
-**Local File Path:** This is the full path to the directory named gldas that you should have created within the thredds data directory during step 2. You can get this by navigating to that folder in the terminal and then using the ```pwd``` command. (example: ```/tomcat/content/thredds/gldas/```)  
-
-**Thredds Base Address:** This is the base URL to Thredds WMS services that the app uses to build urls for each of the WMS layers generated for the netcdf datasets. If you followed the typical configuration of thredds (these instructions) then your base url will look something like ```yourserver.com/thredds/wms/testAll/gldas/```. You can verify this by opening the thredds catalog in a web browser (typically at ```yourserver.com/thredds/catalog.html```). Navigate to one of the GLDAS netcdf files and click the WMS link. A page showing an xml document should load. Copy the url in the address bar until you get to the ```/gldas/``` folder in that url. Do not include ```/raw/name_of_dataset.nc``` or the request that comes after. (example: ```https://tethys.byu.edu/thredds/wms/testAll/gldas/```)
-
-**Geoserver Workspace Address:** This is the WFS (ows) url to the workspace on geoserver where the shapefiles for the world region boundaries are served. This geoserver workspace needs to have at minimum WFS services enabled. You can find it by using the layer preview interface of GeoServer and choosing GeoJSON as the format. If you chose not to use geoserver, enter ```geojson``` as your url. (example: ```https://tethys.byu.edu/geoserver/gldas/ows```)
-
-## How the app works
-The various functions of the app are split into either python or javascript files named for what they control.
-#### Javascript Files
-* **bounds.js**: Contains a json object that has the minimum/maximum values of each variable arranged by year. These are used to get the color schemes of the map appropriately scaled.
-* **highcharts.js**: Functions for controlling the tables that appear in the app.
-* **leaflet.js**: A collection of functions for interacting with the leaflet javascript mapping api.
-* **main.js**: Calls the mapping functions in exactly the correct order to make the maps and animations work. Also has listeners to change the map when the user changes the controls
-
-#### Python Files
-* **app.py**: Django app declarations, URL maps that connect the user's URL to the correct python function to control that page, Custom setting declarations.
-* **ajax.py**: Contains 1 function for each URL map and ajax call made in javascript - all of the same name.
-* **model.py**: Dictionaries of information that specify the available time periods, color schemes, variables, and so forth.
-* **controllers.py**: The controller for the primary page of the app.
-* **tools.py**: Tools used by the app to process data including making the timeseries of data.
-* **api.py**: Limited functions for accessing data available through the app interface.
+* **thredds_path:** This is the full path to the directory named gldas that you should have created within the thredds data directory during step 2. You can get this by navigating to that folder in the terminal and then using the ```pwd``` command. (example: ```/tomcat/content/thredds/gldas/```)  
+* **thredds_url:** This is the base URL to Thredds WMS services that the app uses to build urls for each of the WMS layers generated for the netcdf datasets. If you followed the typical configuration of thredds (these instructions) then your base url will look something like ```yourserver.com/thredds/wms/testAll/gldas/```. You can verify this by opening the thredds catalog in a web browser (typically at ```yourserver.com/thredds/catalog.html```). Navigate to one of the GLDAS netcdf files and click the WMS link. A page showing an xml document should load. Copy the url in the address bar until you get to the ```/gldas/``` folder in that url. Do not include ```/raw/name_of_dataset.nc``` or the request that comes after. (example: ```https://tethys.byu.edu/thredds/wms/testAll/gldas/```)
+* **Spatial Dataset Services:** Create a Tethys SpatialDatasetService configured with the correct urls and admin username/password for the GeoServer from step 3
