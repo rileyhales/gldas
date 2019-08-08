@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
+
 def gldas_variables():
     """
-    List of the plottable variables from the GLDAS 2.1 datasets used
+    List of the variables from the GLDAS 2.X data
     """
     return [('Air Temperature', 'Tair_f_inst'),
             ('Canopy Water Amount', 'CanopInt_inst'),
