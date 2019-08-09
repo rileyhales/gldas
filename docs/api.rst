@@ -9,7 +9,7 @@ Helper Functions
 ================
 
 There are 4 help functions. Each return JSON objects containing information to assist in building a valid
-timeseries request. The helpers are:
+timeseries request. Each function requires no arguments and or authentication. The helpers are:
 
 #. help
 #. timeOptions
@@ -22,37 +22,42 @@ Example
 .. code-block:: python
 
     import requests
+    import json
+
     helpme = requests.get('[TethysPortalUrl]/apps/gldas/api/help/')
     time_opts = requests.get('[TethysPortalUrl]/apps/gldas/api/timeOptions/')
     var_opts = requests.get('[TethysPortalUrl]/apps/gldas/api/variableOptions/')
     geom_opts = requests.get('[TethysPortalUrl]/apps/gldas/api/geometryOptions/')
 
     print(helpme.text)
+    help_as_dictionary = json.loads(helmp.text)
 
 
 timeseries
 ==========
 
-+--------------+---------------------------------------------------------------+-------------------+
-| Parameter    | Description                                                   | Example           |
-+==============+===============================================================+===================+
-| time         | A 4 digit year, a decade, or 'alltimes'                       | '2019', '2010s'   |
-+--------------+---------------------------------------------------------------+-------------------+
-| variable     | The shortened name of a variable available in the GLDAS       | 'RootMoist_inst'  |
-|              | datasets. (see variableOptions)                               |                   |
-+--------------+---------------------------------------------------------------+-------------------+
-|              | The kind of area for which to get a timeseries. The options   | 'Point',          |
-| loc_type     | are at a point, within a bounding box (polygon), or within a  | 'Polygon',        |
-|              | country/region                                                | 'VectorGeometry'  |
-+--------------+---------------------------------------------------------------+-------------------+
-|              | Required for Point or Polygon loc_type. For Point: a list     |                   |
-| coords       | formatted as [lon, lat]. For Polygon: the list of the extents | [-110, 45]        |
-|              | of the bounding box [minLon, maxLon, minLat, maxLat]          |                   |
-+--------------+---------------------------------------------------------------+-------------------+
-|              | Required for VectorGeometry loc_type. The name of one of the  |                   |
-| region       | 25 UN Country Grouping Regions or the full, capitalized name  | 'Northern Africa' |
-|              | of a country. Use geometryOptions for help.                   |                   |
-+--------------+---------------------------------------------------------------+-------------------+
++------------+-------------------------------------------------------+-------------------+
+| Parameter  | Description                                           | Example           |
++============+=======================================================+===================+
+| time       | A 4 digit year, a decade, or 'alltimes'               | - '2019'          |
+|            |                                                       | - '2010s'         |
++------------+-------------------------------------------------------+-------------------+
+| variable   | The shortened name of a variable available in the     | 'RootMoist_inst'  |
+|            | GLDAS datasets. (see variableOptions)                 |                   |
++------------+-------------------------------------------------------+-------------------+
+|            | The kind of area for which to get a timeseries. The   | - 'Point'         |
+| loc_type   | options are at a point, within a bounding box         | - 'Polygon'       |
+|            | (polygon), or country/region                          | - 'VectorGeometry'|
++------------+-------------------------------------------------------+-------------------+
+|            | Required for Point or Polygon loc_type. For Point: a  |                   |
+| coords     | list formatted as [lon, lat]. For Polygon: the list   | [-110, 45]        |
+|            | of the extents of the bounding box [minLon, maxLon,   |                   |
+|            | minLat, maxLat]                                       |                   |
++------------+-------------------------------------------------------+-------------------+
+|            | Required for VectorGeometry loc_type. The name of one |                   |
+| region     | of the 25 UN Country Grouping Regions or the full,    | 'Northern Africa' |
+|            | capitalized name of a country.                        |                   |
++------------+-------------------------------------------------------+-------------------+
 
 Example
 -------
@@ -60,6 +65,8 @@ Example
 .. code-block:: python
 
     import requests
+    import json
+
     parameters = {
         'time': '1990s',
         'variable': 'Tair_f_inst',
@@ -67,4 +74,5 @@ Example
         'region': 'Italy',
     }
     italy_timeseries = requests.get('[TethysPortalUrl]/apps/gldas/api/timeseries/', params=parameters)
-    print(italy_timeseries.text)
+
+    italy_timeseries_as_dictionary = json.loads(italy_timeseries.text)
