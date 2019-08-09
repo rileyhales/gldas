@@ -5,19 +5,11 @@ REST API Documentation
 A REST API is a web service or a set of methods that can be used to produce or access data without a web interface.
 REST APIs use the http protocol to request data.
 
-Helper Functions
-================
+help
+====
 
-There are 4 help functions. Each return JSON objects containing information to assist in building a valid
-timeseries request. Each function requires no arguments and or authentication. The helpers are:
-
-#. help
-#. timeOptions
-#. variableOptions
-#. geometryOptions
-
-Example
--------
+The help function requires no arguments and returns a JSON object. The response contains information about each of the
+parameters for the timeseries function and links to help websites.
 
 .. code-block:: python
 
@@ -25,13 +17,9 @@ Example
     import json
 
     helpme = requests.get('[TethysPortalUrl]/apps/gldas/api/help/')
-    time_opts = requests.get('[TethysPortalUrl]/apps/gldas/api/timeOptions/')
-    var_opts = requests.get('[TethysPortalUrl]/apps/gldas/api/variableOptions/')
-    geom_opts = requests.get('[TethysPortalUrl]/apps/gldas/api/geometryOptions/')
 
     print(helpme.text)
     help_as_dictionary = json.loads(helmp.text)
-
 
 timeseries
 ==========
@@ -59,8 +47,8 @@ timeseries
 |            | capitalized name of a country.                        |                   |
 +------------+-------------------------------------------------------+-------------------+
 
-Example
--------
+You must always specify the time, variable, loc_type, and either coords or region. You provide coords if you choose a
+loc_type of Point or Polygon (a bounding box); and you specify region if you choose VectorGeometry for loc_type.
 
 .. code-block:: python
 

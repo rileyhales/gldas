@@ -52,24 +52,9 @@ class Gldas(TethysAppBase):
 
             # url maps for api calls
             urlmap(
-                name='help',
+                name='helpme',
                 url='gldas/api/help',
-                controller='gldas.api.help',
-            ),
-            urlmap(
-                name='times',
-                url='gldas/api/timeOptions',
-                controller='gldas.api.times',
-            ),
-            urlmap(
-                name='variables',
-                url='gldas/api/variableOptions',
-                controller='gldas.api.variables',
-            ),
-            urlmap(
-                name='geometry',
-                url='gldas/api/geometryOptions',
-                controller='gldas.api.geometry',
+                controller='gldas.api.helpme',
             ),
             urlmap(
                 name='timeseries',
