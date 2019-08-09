@@ -1,5 +1,5 @@
-Welcome to GLDAS Data Tool's documentation!
-===========================================
+GLDAS Data Tool
+===============
 The GLDAS Data Tool is a tool to facilitate downloading, visualizing, processing, analyzing, and
 sharing GLDAS v2.X data from the NASA. GLDAS, Global Land Data Assimilation System, is a
 historical earth observation dataset based on LIS, the Land Information System land-surface model.
@@ -9,10 +9,11 @@ for data visualization through maps and charts, and a REST API for programmatic 
 
 
 
-Contents
-========
-
 .. toctree::
-   :maxdepth: 2
+    :caption: Table of Contents
+    :name: mastertoc
+    :maxdepth: 1
 
-    api/api.rst
+    workshops
+    api
+    license
