@@ -96,10 +96,6 @@ def get_charttypes():
 
 
 def worldregions():
-    """
-    Populates the drop down menu with the list of available shapefiles to use for averaging
-    Dependencies: os, App (app)
-    """
     return (
         ('All World Regions', ''),
         ('Antarctica', 'Antarctica'),

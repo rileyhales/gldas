@@ -57,8 +57,8 @@ To generate a timeseries you may either:
 
 To save your timeseries, use the hamburger style menu button found on the top-right of the chart.
 
-Example Timeseries by Drawing on Map
-------------------------------------
+Timeseries for Point/Bounding Box
+---------------------------------
 1. To get a timeseries at a point or a polygon, use the drawing tool. Click the point icon then click anywhere over on
    land in the map. Or, click the box icon then click and drag across the map to draw a box.
 
@@ -79,8 +79,8 @@ Example Timeseries by Drawing on Map
 
 .. image:: _static/ex-pt-4.png
 
-Example Timeseries by Uploading a Shapefile
--------------------------------------------
+Timeseries by Uploading a Shapefile
+-----------------------------------
 1. You can use the app's interface to upload a shapefile, view it on the map, and use it to generate timeseries data.
    To upload a shapefile, use the button indicated on the top right. If you press the button to generate a timeseries,
    you will be redirected to the upload page.
@@ -100,8 +100,8 @@ Example Timeseries by Uploading a Shapefile
 
 .. image:: _static/ex-shp-3.png
 
-Example Timeseries with Countries and World Regions
----------------------------------------------------
+Timeseries with Countries and World Regions
+-------------------------------------------
 1. To generate a timeseries for a predefined world region, you can use the World Region and Country Name controls found
    on the left hand side of the app. The list of world regions are the same names and geographic areas as the United
    Nations country groupings. Every country is available but you must type the name of the country rather than search a

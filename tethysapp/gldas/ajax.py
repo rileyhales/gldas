@@ -11,10 +11,6 @@ from .app import Gldas as App
 
 
 def getchart(request):
-    """
-    Used to make a timeseries of a variable at a user drawn point
-    Dependencies: gldas_variables (options), pointchart (tools), ast, makestatplots (tools)
-    """
     data = ast.literal_eval(request.body.decode('utf-8'))
     data['instance_id'] = request.META['HTTP_COOKIE'].split('instance_id=')[1][0:9]
     return JsonResponse(newchart(data))

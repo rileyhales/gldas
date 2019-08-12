@@ -1,3 +1,4 @@
+===============
 GLDAS Data Tool
 ===============
 The GLDAS Data Tool is a tool to facilitate downloading, visualizing, processing, analyzing, and sharing GLDAS v2.X
@@ -11,16 +12,6 @@ develop and deploy web-apps for scientific data, especially geospatial and water
 `Read the Documentation for Tethys <http://docs.tethysplatform.org/en/stable/>`_ and visit the
 `GitHub repository <https://github.com/tethysplatform/tethys>`_.
 
-Improvements Over GIOVANNI
---------------------------
-* Access app functions through a REST API
-* Built entirely on OGC web services
-* Extendable framework for other netCDF Earth Observation data and applications
-* Faster and more interactive animated maps
-* Better timeseries generating capabilities
-* More options for regions to get timeseries including user-submitted shapefiles
-* Functions can be run as python scripts outside of Tethys
-
 References
 ----------
 Some references for GLDAS and related NASA projects:
@@ -33,9 +24,11 @@ Some references for GLDAS and related NASA projects:
 * NEO (NASA Earth Observations): `<https://neo.sci.gsfc.nasa.gov/>`_
 
 .. toctree::
-    :caption: Table of Contents
-    :name: mastertoc
+	:caption: Table of Contents
+	:name: mastertoc
 
-    workshop
-    api
-    license
+	features
+	workshop
+	api
+	appinstall
+	license
