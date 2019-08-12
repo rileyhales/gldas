@@ -24,28 +24,19 @@ parameters for the timeseries function and links to help websites.
 timeseries
 ==========
 
-+------------+-------------------------------------------------------+-------------------+
-| Parameter  | Description                                           | Example           |
-+============+=======================================================+===================+
-| time       | A 4 digit year, a decade, or 'alltimes'               | - '2019'          |
-|            |                                                       | - '2010s'         |
-+------------+-------------------------------------------------------+-------------------+
-| variable   | The shortened name of a variable available in the     | 'RootMoist_inst'  |
-|            | GLDAS datasets. (see variableOptions)                 |                   |
-+------------+-------------------------------------------------------+-------------------+
-|            | The kind of area for which to get a timeseries. The   | - 'Point'         |
-| loc_type   | options are at a point, within a bounding box         | - 'Polygon'       |
-|            | (polygon), or country/region                          | - 'VectorGeometry'|
-+------------+-------------------------------------------------------+-------------------+
-|            | Required for Point or Polygon loc_type. For Point: a  |                   |
-| coords     | list formatted as [lon, lat]. For Polygon: the list   | [-110, 45]        |
-|            | of the extents of the bounding box [minLon, maxLon,   |                   |
-|            | minLat, maxLat]                                       |                   |
-+------------+-------------------------------------------------------+-------------------+
-|            | Required for VectorGeometry loc_type. The name of one |                   |
-| region     | of the 25 UN Country Grouping Regions or the full,    | 'Northern Africa' |
-|            | capitalized name of a country.                        |                   |
-+------------+-------------------------------------------------------+-------------------+
++------------+--------------------------------------------------+--------------------------+
+| Parameter  | Description                                      | Examples                 |
++============+==================================================+==========================+
+| time       | A 4 digit year, a decade, or 'alltimes'          | - '2019'                 |
+|            |                                                  | - '2010s'                |
+|            |                                                  | - 'alltimes'             |
++------------+--------------------------------------------------+--------------------------+
+| variable   | The shortened name of a GLDAS variable           | 'RootMoist_inst'         |
++------------+--------------------------------------------------+--------------------------+
+|            | - Coordinates or the name of a country or region | - 'Northern Africa'      |
+| location   | - (Point) [longitude, latitude]                  | - [-110, 45]             |
+|            | - (Bound Box) [minLon, maxLon, minLat, maxLat]   | - [-115, -105, 40, 50]   |
++------------+--------------------------------------------------+--------------------------+
 
 You must always specify the time, variable, loc_type, and either coords or region. You provide coords if you choose a
 loc_type of Point or Polygon (a bounding box); and you specify region if you choose VectorGeometry for loc_type.
@@ -58,8 +49,7 @@ loc_type of Point or Polygon (a bounding box); and you specify region if you cho
     parameters = {
         'time': '1990s',
         'variable': 'Tair_f_inst',
-        'loc_type': 'VectorGeometry',
-        'region': 'Italy',
+        'location': 'Italy',
     }
     italy_timeseries = requests.get('[TethysPortalUrl]/apps/gldas/api/timeseries/', params=parameters)
 

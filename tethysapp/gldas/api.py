@@ -11,124 +11,109 @@ class TimeSeries:
     data = {}
     isValid = False
     error = None
-    instance_id = new_id()
 
     def __init__(self, parameters):
         try:
             self.data['time'] = parameters['time']
             self.data['variable'] = parameters['variable']
-            self.data['loc_type'] = parameters['loc_type']
-            if self.data['loc_type'] == 'VectorGeometry':
-                self.data['vectordata'] = parameters['vectordata']
-            else:
-                self.data['coords'] = parameters.getlist('coords')
+            self.data['location'] = parameters.getlist('location')
+            self.validate()
         except KeyError as e:
             self.error = 'Missing parameter: ' + str(e).replace('"', '').replace("'", '')
-        except Exception as e:
-            return
-        self.validate()
 
     # are the point coordinates valid
     def validate_points(self):
-        test = self.data['coords']
-        if type(test) is list and len(test) == 2:
-            for i in test:
-                try:
-                    float(i)
-                except Exception:
-                    return False
-            if not 180 > float(test[0]) > -180 and 90 > float(test[1]) > -90:
+        tmp = self.data['location']
+        for i in tmp:
+            try:
+                float(i)
+            except ValueError:
                 return False
-        else:
+        if not 180 > float(tmp[0]) > -180 and 90 > float(tmp[1]) > -90:
             return False
+        self.data['coords'] = self.data['location']
         return True
 
     # are the bounding box coordinates valid
     def validate_polygon(self):
-        test = self.data['coords']
-        if type(test) is list and len(test) == 4:
-            for i in test:
-                try:
-                    float(i)
-                except Exception:
-                    return False
-            if not float(test[1]) > float(test[0]) and float(test[3]) > float(test[2]):
+        tmp = self.data['location']
+        for i in tmp:
+            try:
+                float(i)
+            except ValueError:
                 return False
-            if not 180 > float(test[0]) > -180 and 180 > float(test[1]) > -180:
-                return False
-            if not 90 > float(test[2]) > -90 and 90 > float(test[3]) > -90:
-                return False
-        else:
+        if not float(tmp[1]) > float(tmp[0]) and float(tmp[3]) > float(tmp[2]):
             return False
+        if not 180 > float(tmp[0]) > -180 and 180 > float(tmp[1]) > -180:
+            return False
+        if not 90 > float(tmp[2]) > -90 and 90 > float(tmp[3]) > -90:
+            return False
+        self.data['coords'] = [[[tmp[0], tmp[2]], [tmp[0], tmp[3]], [tmp[1], tmp[3]], [tmp[1], tmp[2]]]]
         return True
 
     def validate(self):
-        # check the 3 arguments are valid choices
+        # validate time argument
         if not self.data['time'] in [i[1] for i in timeintervals()]:
             if not len(self.data['time']) == 4 and int(self.data['time']):
                 self.error = 'Invalid time argument. Pick a year, decade, or "alltimes".'
+
+        # validate variable argument
         if not self.data['variable'] in [i[1] for i in gldas_variables()]:
             self.error = 'Invalid variable name. Use one of the shortened variables names given in variableOptions'
             return
-        if not self.data['loc_type'] in ['Point', 'Polygon', 'VectorGeometry']:
-            self.error = 'Invalid location type. Use only Point, Polygon, or VectorGeometry'
+
+        # validate location argument
+        if len(self.data['location']) == 1:
+            self.data['loc_type'] = 'VectorGeometry'
+            self.data['location'] = self.data['location'][0]
+            if self.data['location'] in worldregions():
+                self.data['vectordata'] = 'esri-regions-' + self.data['location']
+            elif self.data['location'] in countries():
+                self.data['vectordata'] = 'esri-countries-' + self.data['location']
+            else:
+                self.error = 'Country/Region name not recognized. Check your spelling/capitalization'
+                return
+        elif len(self.data['location']) == 2:
+            self.data['loc_type'] = 'Point'
+            if not self.validate_points():
+                self.error = 'Invalid list of coordinates for a Point location.'
+                return
+        elif len(self.data['location']) == 4:
+            self.data['loc_type'] = 'Polygon'
+            if not self.validate_polygon():
+                self.error = 'Invalid list of coordinates for a Bounding Box location.'
+                return
+        else:
+            self.error = 'Invalid location. Enter a list of valid coordinates or a country/region name'
             return
 
-        # perform validation for point
-        if self.data['loc_type'] == 'Point':
-            if not self.validate_points():
-                self.error = 'Invalid coords argument, ask geometryOptions for more help'
-                return
-
-        # perform validation for polygon
-        elif self.data['loc_type'] == 'Polygon':
-            if self.validate_polygon():
-                tmp = self.data['coords']
-                self.data['coords'] = [[[tmp[0], tmp[2]], [tmp[0], tmp[3]], [tmp[1], tmp[3]], [tmp[1], tmp[2]]]]
-            else:
-                self.error = 'Invalid coords argument, ask geometryOptions for more help'
-                return
-
-        # perform validation for vectorgeometry
-        elif self.data['loc_type'] == 'VectorGeometry':
-            if self.data['vectordata'] in worldregions():
-                self.data['vectordata'] = 'esri-regions-' + self.data['vectordata']
-            elif self.data['vectordata'] in countries():
-                self.data['vectordata'] = 'esri-countries-' + self.data['vectordata']
-            else:
-                self.error = 'Invalid vectordata, ' + self.data['vectordata'] + ' is not a valid region/country'
-                return
+        # all arguments pass the tests
         self.isValid = True
+        self.data['instance_id'] = new_id()
         return
 
 
 # @api_view(['GET'])
 def helpme(request):
     return JsonResponse({
-        'api_methods': ['help', 'timeseries'],
-        'help_url': App.githublink,
-        'required_arguments': ['time', 'variable', 'loc_type', 'coords or vectordata'],
+        'documentation_website': App.docslink,
+        'required_arguments': ['time', 'variable', 'location'],
         'time': {
             'Description': 'A 4 digit year "YYYY", a decade "YYYYs", or "alltimes"',
             'Options': get_times(),
         },
-        'variables': {
+        'variable': {
             'Description': 'The abbreviated name of a variable used by NASA in the GLDAS data files,',
             'Options': gldas_variables(),
         },
-        'loc_type': 'The kind of area you want a timeseries for. Choose Point, Polygon (a Bounding Box), or '
-                    'VectorGeometry (for countries/regions)',
-        'vectordata': {
-            'Description': 'Required if loc_type is VectorGeometry. Specify a region or country exactly as shown',
+        'location': {
+            'Description': 'Available locations are points, bounding boxes, countries, or world regions',
+            'Point': 'To get values at a point, provide a list in the form: [longitude, latitude]',
+            'Bounding Box': 'To get values in a bounding box, provide a list in the form: '
+                            '[min_longitude, max_longitude, min_latitude, max_latitude]',
             'Regions': [i[0] for i in worldregions() if i[1] != '' and i[1] != 'none'],
             'Countries': countries(),
         },
-        'coords': {
-            'Description': 'Required if loc_type is Point or Polygon. A list of lat/long values.',
-            'Point': 'A list: [longitude, latitude]',
-            'Polygon': 'A list: [min_longitude, max_longitude, min_latitude, max_latitude]',
-        }
-
     })
 
 
