@@ -1,5 +1,6 @@
 from django.http import JsonResponse
-# from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 
 from .options import gldas_variables, timeintervals, worldregions, countries
 from .utilities import new_id, get_times
@@ -93,7 +94,8 @@ class TimeSeries:
         return
 
 
-# @api_view(['GET'])
+@api_view(['GET'])
+@authentication_classes((TokenAuthentication, SessionAuthentication,))
 def helpme(request):
     return JsonResponse({
         'documentation_website': App.docslink,
@@ -103,7 +105,7 @@ def helpme(request):
             'Options': get_times(),
         },
         'variable': {
-            'Description': 'The abbreviated name of a variable used by NASA in the GLDAS data files,',
+            'Description': 'The abbreviated name of a variable used by NASA in the GLDAS data files',
             'Options': gldas_variables(),
         },
         'location': {
@@ -117,7 +119,8 @@ def helpme(request):
     })
 
 
-# @api_view(['GET'])
+@api_view(['GET'])
+@authentication_classes((TokenAuthentication, SessionAuthentication,))
 def timeseries(request):
     ts = TimeSeries(request.GET)
     if ts.isValid:

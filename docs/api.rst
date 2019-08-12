@@ -38,9 +38,6 @@ timeseries
 |            | - (Bound Box) [minLon, maxLon, minLat, maxLat]   | - [-115, -105, 40, 50]   |
 +------------+--------------------------------------------------+--------------------------+
 
-You must always specify the time, variable, loc_type, and either coords or region. You provide coords if you choose a
-loc_type of Point or Polygon (a bounding box); and you specify region if you choose VectorGeometry for loc_type.
-
 .. code-block:: python
 
     import requests
