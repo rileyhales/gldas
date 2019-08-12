@@ -145,11 +145,10 @@ function getGeoServerGJ(gsworksp, shpname, gsurl) {
         contentType: 'application/json',
         success: function (data) {
             usershape.clearLayers();
-            mapObj.removeLayer(regionsGroup);
             mapObj.removeLayer(drawnItems);
             usershape.addData(data).addTo(mapObj);
-            mapObj.flyToBounds(usershape.getBounds());
             styleGeoJSON();
+            mapObj.flyToBounds(usershape.getBounds());
         },
     });
 }

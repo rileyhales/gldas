@@ -62,25 +62,59 @@ Example Timeseries by Drawing on Map
 1. To get a timeseries at a point or a polygon, use the drawing tool. Click the point icon then click anywhere over on
    land in the map. Or, click the box icon then click and drag across the map to draw a box.
 
-.. image:: _static/example1.png
+.. image:: _static/ex-pt-1.png
 
 2. Read the results in the chart. Verify it looks as expected.
 
-.. image:: _static/example2.png
+.. image:: _static/ex-pt-2.png
 
 3. If you want, you may choose a different style of chart. In the controls menu on the left there is a control for
    switching how the data are plotted. There are a total of 5 options. 1 shows the unfiltered timeseries data, the
    other 4 show the data as a timeseries aggregated by month or year and as either a column chart or a bar chart.
 
-.. image:: _static/example3.png
+.. image:: _static/ex-pt-3.png
 
 4. After choosing the format of the chart you want, use the controls on the right side of the chart container to save
    either an image of the chart or the raw data as a csv.
 
-.. image:: _static/example4.png
+.. image:: _static/ex-pt-4.png
 
-Example Timeseries with World Regions/Countries
------------------------------------------------
+Example Timeseries by Uploading a Shapefile
+-------------------------------------------
+1. You can use the app's interface to upload a shapefile, view it on the map, and use it to generate timeseries data.
+   To upload a shapefile, use the button indicated on the top right. If you press the button to generate a timeseries,
+   you will be redirected to the upload page.
+
+.. image:: _static/ex-shp-1.png
+
+2. Your shapefile MUST be in the WGS 1984/EPSG 4326 geographic coordinate system and MUST contain at least the shp,
+   shx, prj, dbf components of the shapefile. The shapefile MUST contain only polygon data if you wish to use it to
+   generate timeseries data. The polygons should be larger than the 1/4 degree resolution GLDAS data.
+
+.. image:: _static/ex-shp-2.png
+
+3. After uploading your shapefile, the map will zoom to your shapefile. Use the layer menu on the top right of the map
+   to remove other layers. If the shapefile looks correct, press the "Timeseries for my own Shapefile" button to get a
+   chart for your file. Press "View Map Styling Controls" and use the "Boundary" options to change the styling of your
+   shapefile. If no shapefile or charts appear, something is wrong with the format of your shapefile.
+
+.. image:: _static/ex-shp-3.png
+
+Example Timeseries with Countries and World Regions
+---------------------------------------------------
+1. To generate a timeseries for a predefined world region, you can use the World Region and Country Name controls found
+   on the left hand side of the app. The list of world regions are the same names and geographic areas as the United
+   Nations country groupings. Every country is available but you must type the name of the country rather than search a
+   list of every country.
+
+.. image:: _static/ex-reg-1.png
+
+2. Pick a region or country. If you type a country name, use the prompted spelling and capitalization that appear below
+   the input box. After you click a region or hit 'Go!' next to the country name, the map will zoom to the location you
+   chose. To generate a timeseries for that region, click on the region on the map and then press the button that
+   appears in the pop-up bubble.
+
+.. image:: _static/ex-reg-2.png
 
 Important things to know
 ------------------------
