@@ -37,6 +37,9 @@ timeseries
 | location   | - (Point) [longitude, latitude]                  | - [-110, 45]             |
 |            | - (Bound Box) [minLon, maxLon, minLat, maxLat]   | - [-115, -105, 40, 50]   |
 +------------+--------------------------------------------------+--------------------------+
+| stats      | Generates the statistical summaries              | - True                   |
+| (optional) |                                                  | - False (default)        |
++------------+--------------------------------------------------+--------------------------+
 
 .. code-block:: python
 

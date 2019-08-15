@@ -1,0 +1,225 @@
+let chartdata = null;
+
+function plotlyTimeseries(data) {
+    $("#chart").html('');
+    let x = [];
+    let y = [];
+    let layout = {
+        title: data['meta']['name'] + ' v Time ' + '(' + data['meta']['seriesmsg'] + ')',
+        xaxis: {title: 'Time'},
+        yaxis: {title: 'Units - ' + data['meta']['units']}
+    };
+
+    for (let i = 0; i < data['timeseries'].length; i++) {
+        x.push(data['timeseries'][i][0]);
+        y.push(data['timeseries'][i][1]);
+    }
+
+    let values = {
+        x: x,
+        y: y,
+        title: data['meta']['name'],
+        mode: 'lines+markers',
+        type: 'scatter'
+    };
+    Plotly.newPlot('chart', [values], layout);
+}
+
+function plotlyMultilineSeries(data) {
+    $("#chart").html('');
+    let index;
+    let x = [];
+    let max = [];
+    let mean = [];
+    let min = [];
+
+    if ($("#charttype").val().includes('year')) {
+        index = 0;
+    } else {
+        index = 1;
+    }
+
+    let layout = {
+        title: data['meta']['name'] + ' v Time ' + '(' + data['meta']['seriesmsg'] + ')',
+        xaxis: {title: 'Time'},
+        yaxis: {title: 'Units - ' + data['meta']['units']}
+    };
+
+    for (let i = 0; i < data['stats'][index].length; i++) {
+        x.push(data['stats'][index][i][0]);
+        min.push(data['stats'][index][i][1]);
+        mean.push(data['stats'][index][i][2]);
+        max.push(data['stats'][index][i][3]);
+    }
+
+    let values = [
+        {x: x, y: min, name: 'Minimum', mode: 'lines+markers', type: 'scatter'},
+        {x: x, y: mean, name: 'Average', mode: 'lines+markers', type: 'scatter'},
+        {x: x, y: max, name: 'Maximum', mode: 'lines+markers', type: 'scatter'},
+    ];
+    Plotly.newPlot('chart', values, layout);
+}
+
+function plotlyBoxplotSeries(data) {
+    $("#chart").html('');
+    let index;
+    let values = [];
+
+    if ($("#charttype").val().includes('year')) {
+        index = 2;
+    } else {
+        index = 3;
+    }
+
+    let layout = {
+        title: data['meta']['name'] + ' v Time ' + '(' + data['meta']['seriesmsg'] + ')',
+        xaxis: {title: 'Time'},
+        yaxis: {title: 'Units - ' + data['meta']['units']}
+    };
+
+    for (let i = 0; i < data['stats'][index].length; i++) {
+        values.push({
+            x: data['stats'][index][i][0],
+            y: data['stats'][index][i][1],
+            name: data['stats'][index][i][0],
+            type: 'box'
+        })
+    }
+    Plotly.newPlot('chart', values, layout);
+}
+
+function getDrawnChart(drawnItems) {
+    // if there's nothing to get charts for then quit
+    let geojson = drawnItems.toGeoJSON()['features'];
+    if (geojson.length === 0 && chosenRegion === '') {
+        return
+    }
+
+    // if there's geojson data, update that chart
+    if (geojson.length > 0) {
+
+        //  Compatibility if user picks something out of normal bounds
+        let coords = geojson[0]['geometry']['coordinates'];
+        for (let i in coords.length) {
+            if (coords[i] < -180) {
+                coords[i] += 360;
+            }
+            if (coords[i] > 180) {
+                coords[i] -= 360;
+            }
+        }
+
+        // setup a parameters json to generate the right timeserie
+        let data = {
+            coords: coords,
+            variable: $("#variables").val(),
+            time: $("#dates").val(),
+            loc_type: geojson[0]['geometry']['type']
+        };
+
+        // decide which ajax url you need based on drawing type
+        $.ajax({
+            url: '/apps/' + app + '/ajax/getChart/',
+            data: JSON.stringify(data),
+            dataType: 'json',
+            contentType: "application/json",
+            method: 'POST',
+            success: function (result) {
+                chartdata = result;
+                makechart();
+            }
+        })
+        // If there isn't any geojson, then you actually should refresh the shapefile chart (ie the data is the lastregion)
+    } else {
+        getShapeChart('lastregion');
+    }
+}
+
+function getShapeChart(selectedregion) {
+    // if the time range is all times then confirm before executing the spatial averaging
+    if ($("#dates").val() === 'alltimes') {
+        if (!confirm("Computing a timeseries of spatial averages for all available data requires over 850 GIS operations. This may result in a long wait (20+ seconds) or cause errors. Please confirm you want to proceed.")) {
+            return
+        }
+    }
+
+    drawnItems.clearLayers();
+
+    // setup a parameters json to generate the right timeseries
+    let data = {
+        variable: $("#variables").val(),
+        time: $("#dates").val(),
+        loc_type: 'VectorGeometry'
+    };
+
+    if (selectedregion === 'lastregion') {
+        // if we want to update, change the region to the last completed region
+        data['vectordata'] = chosenRegion;
+    } else if (selectedregion === 'customshape') {
+        data['vectordata'] = selectedregion;
+        chosenRegion = selectedregion;
+    } else {
+        // otherwise, the new selection is the current region on the chart
+        data['vectordata'] = selectedregion;
+        chosenRegion = selectedregion;
+    }
+
+    $.ajax({
+        url: '/apps/' + app + '/ajax/getChart/',
+        data: JSON.stringify(data),
+        dataType: 'json',
+        contentType: "application/json",
+        method: 'POST',
+        success: function (result) {
+            chartdata = result;
+            makechart();
+        }
+    })
+}
+
+function makechart() {
+    if (chartdata !== null) {
+        let type = $("#charttype").val();
+        if (type === 'timeseries') {
+            plotlyTimeseries(chartdata);
+        } else if (type === 'yearmulti' || type === 'monthmulti') {
+            plotlyMultilineSeries(chartdata);
+        } else if (type === 'yearbox' || type === 'monthbox') {
+            plotlyBoxplotSeries(chartdata);
+        }
+    }
+}
+
+function chartToCSV() {
+    if (chartdata === null) {
+        alert('There is no data in the chart. Please plot some data first.');
+        return
+    }
+    let data = [];
+    let charttype = $("#charttype").val();
+    if (charttype === 'timeseries') {
+        data = chartdata['timeseries']
+    } else {
+        let tmp;
+        if (charttype === 'yearmulti') {
+            tmp = chartdata['stats'][0];
+        } else if (charttype === 'monthmulti') {
+            tmp = chartdata['stats'][1];
+        } else if (charttype === 'yearbox') {
+            tmp = chartdata['stats'][2];
+        } else if (charttype === 'monthbox') {
+            tmp = chartdata['stats'][3];
+        }
+        for (let i = 0; i < tmp.length; i++) {
+            data.push(tmp[i]);
+        }
+    }
+    let csv = "data:text/csv;charset=utf-8," + data.map(e => e.join(",")).join("\n");
+    let link = document.createElement('a');
+    link.setAttribute('href', encodeURI(csv));
+    link.setAttribute('target', '_blank');
+    link.setAttribute('download', 'gldastimeseries.csv');
+    document.body.appendChild(link);
+    link.click();
+    $("#a").remove()
+}

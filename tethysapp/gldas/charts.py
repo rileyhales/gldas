@@ -5,7 +5,7 @@ Description: Functions for generating timeseries and simple statistical
     charts for netCDF data for point, bounding box, or shapefile geometries
 """
 import calendar
-import datetime
+import datetime as dt
 import os
 import shutil
 import requests
@@ -16,8 +16,7 @@ import rasterstats
 import shapefile
 import netCDF4
 import numpy
-import pandas
-import statistics
+import pandas as pd
 
 from .options import gldas_variables
 from .app import Gldas as App
@@ -27,55 +26,49 @@ def newchart(data):
     """
     Determines the environment for generating a timeseries chart. Call this function
     """
-    # input parameters
-    var = str(data['variable'])
-    loc_type = data['loc_type']
-
-    # list the netcdfs to be processed
-    path = App.get_custom_setting('thredds_path')
-    path = os.path.join(path, 'raw')
-    allfiles = os.listdir(path)
-    files = [nc for nc in allfiles if nc.endswith('.nc4')]
-    if data['time'] != 'alltimes':
-        yearfilter = 'A' + data['time'][0:3]
-        files = [i for i in files if yearfilter in i]
-    files.sort()
-
-    # some metadata
+    # response metadata items
+    meta = {
+        'variable': data['variable'],
+        'loc_type': data['loc_type']
+    }
     for item in gldas_variables():
         if item[1] == data['variable']:
-            name = item[0]
+            meta['name'] = item[0]
             break
 
-    # get the timeseries, units, and message based on location type
-    if loc_type == 'Point':
-        values, units = pointchart(var, data['coords'], path, files)
-        type_message = 'Values at a Point'
-    elif loc_type == 'Polygon':
-        values, units = polychart(var, data['coords'], path, files)
-        type_message = 'In a Bounding Box'
-    elif loc_type == 'VectorGeometry':
-        vectordata = data['vectordata']
-        values, units = vectorchart(var, path, files, vectordata, data['instance_id'])
-        if vectordata == 'customshape':
-            type_message = 'Average in user\'s shapefile'
-        else:
-            if vectordata.startswith('esri-'):
-                vectordata = vectordata.split('-')[-1]
-            type_message = 'Average for ' + vectordata
-    values.sort(key=lambda tup: tup[0])
+    # list then filter the available netcdfs
+    path = os.path.join(App.get_custom_setting('thredds_path'), 'raw')
+    allfiles = os.listdir(path)
+    if len(data['time']) == 5:  # a decade choice
+        filefilter = 'A' + data['time'][0:3]
+        files = [i for i in allfiles if filefilter in i and i.endswith('.nc4')]
+    elif len(data['time']) == 4:  # a year
+        filefilter = 'A' + data['time'][0:4]
+        files = [i for i in allfiles if filefilter in i and i.endswith('.nc4')]
+    else:
+        files = [i for i in allfiles if i.endswith('.nc4')]
+    files.sort()
 
-    multiline, boxplot, categories = makestatplots(values, data['time'])
-    return {
-        'values': values,
-        'multiline': multiline,
-        'boxplot': boxplot,
-        'categories': categories,
-        'units': units,
-        'variable': var,
-        'type': type_message,
-        'name': name
-    }
+    # get the timeseries, units, and message based on location type
+    if data['loc_type'] == 'Point':
+        values, meta['units'], meta['seriesmsg'] = pointchart(data['variable'], data['coords'], path, files)
+    elif data['loc_type'] == 'Polygon':
+        values, meta['units'], meta['seriesmsg'] = polychart(data['variable'], data['coords'], path, files)
+    else:  # loc_type == 'VectorGeometry':
+        values, meta['units'], meta['seriesmsg'] = vectorchart(data['variable'], data['vectordata'], path,
+                                                               files, data['instance_id'])
+
+    if data['stats']:
+        return {
+            'meta': meta,
+            'timeseries': values,
+            'stats': makestatplots(values, data['time']),
+        }
+    else:
+        return {
+            'metadata': meta,
+            'timeseries': values,
+        }
 
 
 def geojson_to_shape(vectordata, savepath):
@@ -127,7 +120,7 @@ def geojson_to_shape(vectordata, savepath):
 
 def pointchart(var, coords, path, files):
     # return items
-    values = []
+    timeseries = []
 
     # get a list of the lat/lon and units using a reference file
     nc_obj = netCDF4.Dataset(os.path.join(path, files[0]), 'r')
@@ -143,14 +136,13 @@ def pointchart(var, coords, path, files):
     for nc in files:
         # get the time value for each file
         nc_obj = netCDF4.Dataset(os.path.join(path, nc), 'r')
-        time = nc_obj['time'].__dict__['begin_date']
-        time = datetime.datetime.strptime(time, "%Y%m%d")
+        time = dt.datetime.strptime(nc_obj['time'].__dict__['begin_date'], "%Y%m%d")
         # slice the array at the area you want
         val = float(nc_obj[var][0, lat_indx, lon_indx].data)
-        values.append((calendar.timegm(time.utctimetuple()) * 1000, val, time.month, time.year))
+        timeseries.append((time, val))
         nc_obj.close()
 
-    return values, units
+    return timeseries, units, 'Values at a Point'
 
 
 def polychart(var, coords, path, files):
@@ -173,29 +165,20 @@ def polychart(var, coords, path, files):
     for nc in files:
         # set the time value for each file
         nc_obj = netCDF4.Dataset(os.path.join(path, nc), 'r')
-        time = nc_obj['time'].__dict__['begin_date']
-        time = datetime.datetime.strptime(time, "%Y%m%d")
+        time = dt.datetime.strptime(nc_obj['time'].__dict__['begin_date'], "%Y%m%d")
         # slice the array, drop nan values, get the mean, append to list of values
         array = nc_obj[var][0, minlat:maxlat, minlon:maxlon].data
         array[array < -5000] = numpy.nan  # If you have fill values, change the comparator to git rid of it
         array = array.flatten()
         array = array[~numpy.isnan(array)]
-        values.append((calendar.timegm(time.utctimetuple()) * 1000, float(array.mean()), time.month, time.year))
+        values.append((time, float(array.mean())))
 
         nc_obj.close()
 
-    return values, units
+    return values, units, 'In a Bounding Box'
 
 
-def vectorchart(var, path, files, vectordata, instance_id=None):
-    """
-    Description: This script accepts a netcdf file in a geographic coordinate system, specifically the NASA GLDAS
-        netcdfs, and extracts the data from one variable and the lat/lon steps to create a geotiff of that information.
-    Dependencies: netCDF4, numpy, rasterio, rasterstats, os, shutil, calendar, datetime
-    Params: View README.md
-    Returns: Creates a geotiff named 'geotiff.tif' in the directory specified
-    Author: Riley Hales, RCH Engineering, March 2019
-    """
+def vectorchart(var, vectordata, path, files, instance_id=None):
     # return items
     values = []
 
@@ -209,10 +192,12 @@ def vectorchart(var, path, files, vectordata, instance_id=None):
 
     # file paths and settings
     if vectordata == 'customshape':
+        type_message = 'Average in user\'s shapefile'
         dirpath = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
         shp = [i for i in os.listdir(dirpath) if i.endswith('.shp')]
         vectorpath = os.path.join(dirpath, shp[0])
     else:  # vectordata.startswith('esri-'):
+        type_message = 'Average for ' + vectordata.replace('esri-countries-', '').replace('esri-regions-', '')
         vectordata = vectordata.replace('esri-', '')
         dirpath = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
         if os.path.exists(dirpath):
@@ -226,8 +211,7 @@ def vectorchart(var, path, files, vectordata, instance_id=None):
     for nc in files:
         # open the netcdf and get the data array
         nc_obj = netCDF4.Dataset(os.path.join(path, nc), 'r')
-        time = nc_obj['time'].__dict__['begin_date']
-        time = datetime.datetime.strptime(time, "%Y%m%d")
+        time = dt.datetime.strptime(nc_obj['time'].__dict__['begin_date'], "%Y%m%d")
 
         var_data = nc_obj.variables[var][:]  # this is the array of values for the nc_obj
         array = numpy.asarray(var_data)[0, :, :]  # converting the data type
@@ -236,49 +220,42 @@ def vectorchart(var, path, files, vectordata, instance_id=None):
 
         stats = rasterstats.zonal_stats(vectorpath, array, affine=affine, nodata=numpy.nan, stats="mean")
         tmp = [i['mean'] for i in stats if i['mean'] is not None]
-        values.append((calendar.timegm(time.utctimetuple()) * 1000, sum(tmp) / len(tmp), time.month, time.year))
-    return values, units
+        values.append((time, sum(tmp) / len(tmp)))
+
+        nc_obj.close()
+
+    return values, units, type_message
 
 
 def makestatplots(values, time):
-    """
-    Calculates statistics for the array of timeseries values and returns arrays for a highcharts boxplot
-    """
-    df = pandas.DataFrame(values, columns=['timestamp', 'values', 'month', 'year'])
-    multiline = {'yearmulti': {'min': [], 'max': [], 'mean': []},
-                 'monthmulti': {'min': [], 'max': [], 'mean': []}}
-    boxplot = {'yearbox': [], 'monthbox': []}
+    df = pd.DataFrame(values, columns=['timestamp', 'values']).set_index('timestamp')
     months = dict((n, m) for n, m in enumerate(calendar.month_name))
+    yearmulti = []
+    monthmulti = []
+    yearbox = []
+    monthbox = []
 
     if time == 'alltimes':
         ref_yr = 1948
-        numyears = int(datetime.datetime.now().strftime("%Y")) - ref_yr + 1  # +1 because we want the first year also
+        numyears = int(dt.datetime.now().strftime("%Y")) - ref_yr + 1  # +1 because we want the first year also
     else:
         ref_yr = int(time.replace('s', ''))
         numyears = 10
-    categories = {'month': [months[i + 1] for i in range(12)], 'year': [i + ref_yr for i in range(numyears)]}
+    years = [str(i + ref_yr) for i in range(numyears)]
 
-    for i in range(1, 13):  # static 13 to go over months
-        tmp = df[df['month'] == i]['values']
-        std = statistics.stdev(tmp)
-        median = statistics.median(tmp)
+    for i in range(1, 13):
+        tmp = df[df.index.month == i]['values']
         ymin = min(tmp)
         ymax = max(tmp)
         mean = sum(tmp) / len(tmp)
-        boxplot['monthbox'].append([months[i], ymin, mean - std, median, mean + std, ymax])
-        multiline['monthmulti']['min'].append((months[i], ymin))
-        multiline['monthmulti']['mean'].append((months[i], mean))
-        multiline['monthmulti']['max'].append((months[i], ymax))
-    for i, year in enumerate(categories['year']):
-        tmp = df[df['year'] == year]['values']
-        std = statistics.stdev(tmp)
-        median = statistics.median(tmp)
+        monthbox.append((months[i], tmp.to_list()))
+        monthmulti.append((months[i], ymin, mean, ymax))
+    for year in years:
+        tmp = df[year]['values']
         ymin = min(tmp)
         ymax = max(tmp)
         mean = sum(tmp) / len(tmp)
-        boxplot['yearbox'].append([i, ymin, mean - std, median, mean + std, ymax])
-        multiline['yearmulti']['min'].append((year, ymin))
-        multiline['yearmulti']['mean'].append((year, mean))
-        multiline['yearmulti']['max'].append((year, ymax))
+        yearbox.append((year, tmp.to_list()))
+        yearmulti.append((year, ymin, mean, ymax))
 
-    return multiline, boxplot, categories
+    return yearmulti, monthmulti, yearbox, monthbox

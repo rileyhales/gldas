@@ -18,6 +18,10 @@ class TimeSeries:
             self.data['time'] = parameters['time']
             self.data['variable'] = parameters['variable']
             self.data['location'] = parameters.getlist('location')
+            if hasattr(parameters, 'stats'):
+                self.data['stats'] = parameters['stats']
+            else:
+                self.data['stats'] = False
             self.validate()
         except KeyError as e:
             self.error = 'Missing parameter: ' + str(e).replace('"', '').replace("'", '')
@@ -55,6 +59,7 @@ class TimeSeries:
     def validate(self):
         # validate time argument
         if not self.data['time'] in [i[1] for i in timeintervals()]:
+            self.data['stats'] = False
             if not len(self.data['time']) == 4 and int(self.data['time']):
                 self.error = 'Invalid time argument. Pick a year, decade, or "alltimes".'
 

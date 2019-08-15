@@ -75,6 +75,9 @@ function changeregions(firedfrom) {
 // input validation
 $(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')});
 
+// chart download
+$("#chartCSV").click(function () {chartToCSV()});
+
 // data controls
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});
 $("#dates").change(function () {clearMap();update();getDrawnChart(drawnItems);});
