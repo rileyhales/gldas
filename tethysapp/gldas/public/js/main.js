@@ -36,7 +36,7 @@ mapObj.on(L.Draw.Event.CREATED, function (event) {
 mapObj.on("mousemove", function (event) {$("#mouse-position").html('Lat: ' + event.latlng.lat.toFixed(5) + ', Lon: ' + event.latlng.lng.toFixed(5));});
 
 let layerGLDAS = newGLDAS();            // adds the wms raster layer
-let layerRegion = regionsESRI();    // adds the world region boundaries from esri living atlas
+let layerRegion = regionsESRI();        // adds the world region boundaries from esri living atlas
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 legend.addTo(mapObj);                   // add the legend graphic to the map
 latlon.addTo(mapObj);                   // add the box showing lat and lon to the map

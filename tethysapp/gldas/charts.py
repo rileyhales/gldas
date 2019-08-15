@@ -66,7 +66,7 @@ def newchart(data):
         }
     else:
         return {
-            'metadata': meta,
+            'meta': meta,
             'timeseries': values,
         }
 

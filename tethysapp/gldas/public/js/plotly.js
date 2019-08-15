@@ -142,7 +142,7 @@ function getShapeChart(selectedregion) {
         }
     }
     drawnItems.clearLayers();
-    $("#chart").html('<img class="load" src="https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif">');
+    $("#chart").html('<div class="load"><img src="https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif"></div>');
 
     // setup a parameters json to generate the right timeseries
     let data = {
