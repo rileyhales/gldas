@@ -48,14 +48,14 @@ function update() {
 }
 function changeregions(firedfrom) {
     let countryJQ = $("#countries");
-    let regionjQ = $("#regions");
+    let regionJQ = $("#regions");
     if (firedfrom === 'country') {
         let country = countryJQ.val();
         if (!countrieslist.includes(country)) {
             alert('The country "' + country + '" was not found in the list of countries available. Please check spelling and capitalization, and use the input suggestions.');
             return
         }
-        regionjQ.val('none');
+        regionJQ.val('none');
     } else {
         countryJQ.val('')
     }
@@ -69,7 +69,6 @@ function changeregions(firedfrom) {
         layerRegion = countriesESRI();
         controlsObj.addOverlay(layerRegion, 'Country Boundaries');
     }
-    getDrawnChart(drawnItems)
 }
 
 // input validation
