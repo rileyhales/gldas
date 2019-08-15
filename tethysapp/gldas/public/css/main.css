@@ -16,4 +16,12 @@ html, body, #app-content, #inner-app-content, #outer-container {
 #chart {
     height: 40%;
     padding: 1px;
+    text-align: center;
+    vertical-align: baseline;
+}
+
+.load {
+    height: 100%;
+    text-align: center;
+    vertical-align: baseline;
 }

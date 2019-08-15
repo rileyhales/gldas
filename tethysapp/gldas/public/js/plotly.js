@@ -1,7 +1,7 @@
 let chartdata = null;
+Plotly.newPlot('chart', [], {title: 'No Data Selected', xaxis: {range: [-100, 100]}, yaxis: {range: [-100, 100]}});
 
 function plotlyTimeseries(data) {
-    $("#chart").html('');
     let x = [];
     let y = [];
     let layout = {
@@ -26,7 +26,6 @@ function plotlyTimeseries(data) {
 }
 
 function plotlyMultilineSeries(data) {
-    $("#chart").html('');
     let index;
     let x = [];
     let max = [];
@@ -61,7 +60,6 @@ function plotlyMultilineSeries(data) {
 }
 
 function plotlyBoxplotSeries(data) {
-    $("#chart").html('');
     let index;
     let values = [];
 
@@ -97,6 +95,7 @@ function getDrawnChart(drawnItems) {
 
     // if there's geojson data, update that chart
     if (geojson.length > 0) {
+        $("#chart").html('<div class="load"><img src="https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif"></div>');
 
         //  Compatibility if user picks something out of normal bounds
         let coords = geojson[0]['geometry']['coordinates'];
@@ -142,8 +141,8 @@ function getShapeChart(selectedregion) {
             return
         }
     }
-
     drawnItems.clearLayers();
+    $("#chart").html('<img class="load" src="https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif">');
 
     // setup a parameters json to generate the right timeseries
     let data = {
@@ -180,6 +179,7 @@ function getShapeChart(selectedregion) {
 function makechart() {
     if (chartdata !== null) {
         let type = $("#charttype").val();
+        $("#chart").html('');
         if (type === 'timeseries') {
             plotlyTimeseries(chartdata);
         } else if (type === 'yearmulti' || type === 'monthmulti') {

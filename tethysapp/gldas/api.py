@@ -18,13 +18,16 @@ class TimeSeries:
             self.data['time'] = parameters['time']
             self.data['variable'] = parameters['variable']
             self.data['location'] = parameters.getlist('location')
-            if hasattr(parameters, 'stats'):
+        except KeyError as e:
+            self.error = 'Missing parameter: ' + str(e).replace('"', '').replace("'", '')
+        except Exception as e:
+            self.error = e
+        else:
+            if 'stats' in dict(parameters):
                 self.data['stats'] = parameters['stats']
             else:
                 self.data['stats'] = False
             self.validate()
-        except KeyError as e:
-            self.error = 'Missing parameter: ' + str(e).replace('"', '').replace("'", '')
 
     # are the point coordinates valid
     def validate_points(self):
