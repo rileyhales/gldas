@@ -38,7 +38,7 @@ On the terminal of the server where you're installing the app:
 Reset the server, then attempt to log in through the web interface as an administrator. The app should appear in the
 Apps Library page in grey indicating you need to configure the custom settings.
 
-Set up a THREDDS Data Server
+Create a THREDDS Data Server
 ----------------------------
 Refer to the documentation for THREDDS to set up an instance of on your tethys server (a UNIDATA has containerized
 THREDDS and tethys offers commands to init a container). You will need to modify Thredds' settings files to enable WMS
@@ -58,8 +58,8 @@ Scroll down toward the end of the section that says ``filter``. This is the sect
 .. code-block:: xml
 
     <filter>
-        <include wildcard="``.nc4"/>
-        <include wildcard="``.ncml"/>
+        <include wildcard="*.nc4"/>
+        <include wildcard="*.ncml"/>
     </filter>
 
 .. code-block:: bash
@@ -110,7 +110,7 @@ If you did it correctly, your folder should look like this:
 | --->raw (directory)
 |     ---><all the gldas datasets here>
 
-Set up a GeoServer
+Create a GeoServer
 ------------------
 Refer to the documentation for GeoServer to set up an instance of GeoServer on your tethys server. There is an official
 GeoServer container which you can install using tethys commands. Log in to your tethys portal as an administrator and
@@ -118,7 +118,7 @@ create a Spatial Dataset Service Setting configured to the GeoServer instance yo
 
 If you choose not to use geoserver, your users will not be able to view custom shapefiles in the app.
 
-Set The Custom Settings
+Specify Custom Settings
 -----------------------
 Log in to your Tethys portal as an admin. Click on the grey GLDAS box and specify these settings:
 
