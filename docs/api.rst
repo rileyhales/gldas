@@ -33,7 +33,7 @@ timeseries
 +------------+--------------------------------------------------+--------------------------+
 | variable   | The shortened name of a GLDAS variable           | 'RootMoist_inst'         |
 +------------+--------------------------------------------------+--------------------------+
-|            | - Coordinates or the name of a country or region | - 'Northern Africa'      |
+|            | - The name of a country or UN world region       | - 'Northern Africa'      |
 | location   | - (Point) [longitude, latitude]                  | - [-110, 45]             |
 |            | - (Bound Box) [minLon, maxLon, minLat, maxLat]   | - [-115, -105, 40, 50]   |
 +------------+--------------------------------------------------+--------------------------+

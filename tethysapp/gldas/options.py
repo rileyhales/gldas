@@ -2,9 +2,6 @@
 
 
 def gldas_variables():
-    """
-    List of the variables from the GLDAS 2.X data
-    """
     return [('Air Temperature', 'Tair_f_inst'),
             ('Canopy Water Amount', 'CanopInt_inst'),
             ('Downward Heat Flux In Soil', 'Qg_tavg'),
@@ -37,9 +34,6 @@ def gldas_variables():
 
 
 def timeintervals():
-    """
-    Time intervals of GLDAS data
-    """
     return [
         ('All Available Times', 'alltimes'),
         ('2010s', '2010s'),
@@ -53,9 +47,6 @@ def timeintervals():
 
 
 def wms_colors():
-    """
-    Color options usable by thredds wms
-    """
     return [
         ('SST-36', 'sst_36'),
         ('Greyscale', 'greyscale'),

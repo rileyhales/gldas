@@ -1,8 +1,5 @@
-import random
-import string
-
 from django.shortcuts import render
-from tethys_sdk.gizmos import SelectInput, RangeSlider, TextInput
+from tethys_sdk.gizmos import SelectInput, RangeSlider
 
 from .app import Gldas as App
 from .options import gldas_variables, wms_colors, geojson_colors, timeintervals, get_charttypes, worldregions
@@ -10,9 +7,6 @@ from .utilities import new_id
 
 
 def home(request):
-    """
-    Controller for the app home page.
-    """
     variables = SelectInput(
         display_text='Select GLDAS Variable',
         name='variables',
