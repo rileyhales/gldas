@@ -118,7 +118,6 @@ def home(request):
         'gjFlOp': gj_fillopacity,
 
         # metadata
-        'app': App.package,
         'githublink': App.githublink,
         'datawebsite': App.datawebsite,
         'version': App.version,

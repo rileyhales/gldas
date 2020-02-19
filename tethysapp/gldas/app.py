@@ -1,6 +1,5 @@
 from tethys_sdk.base import TethysAppBase, url_map_maker
-from tethys_sdk.app_settings import CustomSetting
-from tethys_sdk.app_settings import SpatialDatasetServiceSetting
+from tethys_sdk.app_settings import CustomSetting, SpatialDatasetServiceSetting
 
 
 class Gldas(TethysAppBase):
@@ -71,12 +70,14 @@ class Gldas(TethysAppBase):
                 type=CustomSetting.TYPE_STRING,
                 description="Local file path to datasets (same as used by Thredds) (e.g. /home/thredds/myDataFolder/)",
                 required=True,
+                default='/Users/rileyhales/thredds/',
             ),
             CustomSetting(
                 name='thredds_url',
                 type=CustomSetting.TYPE_STRING,
                 description="URL to the GLDAS folder on the thredds server (e.g. http://[host]/thredds/gldas/)",
                 required=True,
+                default='https://127.0.0.1:7000/thredds/wms/gldas/',
             )
         )
 

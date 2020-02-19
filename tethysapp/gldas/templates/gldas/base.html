@@ -76,7 +76,11 @@
   <script>
       let threddsbase = "{{ thredds_url }}";
       let app = "{{ app }}";
-      let instance_id = "{{ instance_id }}"
+      let instance_id = "{{ instance_id }}";
+      // getting the path from root URL to the app (for subhosting compatibility)
+      let BASE_PATH = "{% static 'gldas/index.html' %}";
+      BASE_PATH = BASE_PATH.replace('\/index.html','');
+      BASE_PATH = `${BASE_PATH.replace("/static", "/apps")}`
   </script>
 
   <!-- Allows csrf verification with AJAX -->
