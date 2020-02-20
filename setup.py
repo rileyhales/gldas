@@ -6,7 +6,7 @@ app_package = 'gldas'
 release_package = 'tethysapp-' + app_package
 
 # -- Python Dependencies -- #
-dependencies = ['netCDF4', 'numpy', 'pandas', 'rasterstats', 'rasterio', 'requests']
+dependencies = []
 
 # -- Get Resource File -- #
 resource_files = find_resource_files('tethysapp/' + app_package + '/templates', 'tethysapp/' + app_package)
@@ -16,13 +16,12 @@ setup(
     name=release_package,
     version='4',
     description='Visualizes GLDAS data through maps and charts',
-    long_description='Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution, '
-                     'GLDAS data sets from NASA LDAS and LIS.',
+    long_description='',
     keywords='GLDAS',
     author='Riley Hales',
     author_email='',
     url='',
-    license='BSD 3-Clause',
+    license='',
     packages=find_namespace_packages(),
     package_data={'': resource_files},
     include_package_data=True,
