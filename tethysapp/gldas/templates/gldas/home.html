@@ -152,16 +152,15 @@
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <div class="row">
-            <h2 style="text-align: center">Timeseries Results <span id="request-status" class="load-status"/></h2>
+            <h2 style="text-align: center">Timeseries Results</h2>
           </div>
         </div>
         <div class="modal-body">
           <div id="chart"></div>
         </div>
         <div class="modal-footer">
-{#          todo#}
-{#          {% gizmo select_input charttype %}#}
-          <a class="btn btn-default" role="button" id="chartCSV">Save Chart as CSV</a>
+          {% gizmo select_input charttype %}
+          <a class="btn btn-success" role="button" id="chartCSV">Save Chart as CSV</a>
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>

@@ -53,7 +53,7 @@ def newchart(data):
 
     # get the timeseries, units, and message based on location type
     if data['loc_type'] == 'Point':
-        values = gm.netcdfs.point_series(files, data['variable'], data['coords'], date_pattern)
+        timeseries = gm.netcdfs.point_series(files, data['variable'], data['coords'], date_pattern)
         meta['seriesmsg'] = 'At a Point'
 
     elif data['loc_type'] == 'Polygon':
@@ -64,21 +64,21 @@ def newchart(data):
             float(coords[2][0]),
             float(coords[2][1]),
         )
-        values = gm.netcdfs.box_series(files, data['variable'], coords, date_pattern)
+        timeseries = gm.netcdfs.box_series(files, data['variable'], coords, date_pattern)
         meta['seriesmsg'] = 'In a Bounding Box'
 
     elif data['loc_type'] == 'Shapefile':
         shp = [i for i in os.listdir(user_workspace) if i.endswith('.shp')]
         shp = shp.remove('usergj.shp')
         shp = os.path.join(shp[0])
-        values = gm.netcdfs.shp_series(files, data['variable'], shp, date_pattern)
+        timeseries = gm.netcdfs.shp_series(files, data['variable'], shp, date_pattern)
         meta['seriesmsg'] = 'In User\'s Shapefile'
 
     elif data['loc_type'] == 'GeoJSON':
         shp = os.path.join(user_workspace, '__tempgj.shp')
         with open(os.path.join(user_workspace, 'usergj.geojson')) as f:
             gm.geojsons.geojson_to_shp(json.loads(f.read()), shp)
-        values = gm.netcdfs.shp_series(files, data['variable'], shp, date_pattern)
+        timeseries = gm.netcdfs.shp_series(files, data['variable'], shp, date_pattern)
         for file in glob.glob(os.path.join(user_workspace, '__tempgj.*')):
             os.remove(file)
         meta['seriesmsg'] = 'In User\'s GeoJSON'
@@ -88,57 +88,56 @@ def newchart(data):
         geojson = gm.geojsons.request_livingatlas_geojson(esri_location)
         shp = os.path.join(user_workspace, '___esri.shp')
         gm.geojsons.geojson_to_shp(geojson, shp)
-        values = gm.netcdfs.shp_series(files, data['variable'], shp, date_pattern)
+        timeseries = gm.netcdfs.shp_series(files, data['variable'], shp, date_pattern)
         for file in glob.glob(os.path.join(user_workspace, '___esri.*')):
             os.remove(file)
         meta['seriesmsg'] = 'Within ' + esri_location
 
-    dates = values['datetime'].dt.strftime('%Y-%m-%d')
+    dates = timeseries.index.strftime('%Y-%m-%d')
     dates = dates.tolist()
-    values = values['values'].tolist()
+    values = timeseries['values'].tolist()
 
     if data['stats']:
         return {
             'meta': meta,
             'timeseries': list(zip(dates, values)),
-            # 'stats': makestatplots(values, data['time']),
+            'stats': makestatplots(timeseries, data['time']),
         }
     else:
         return {
             'meta': meta,
-            'timeseries': list(zip(dates, values)),
+            'timeseries': list(zip(dates, timeseries)),
         }
 
-# todo
-# def makestatplots(values, time):
-#     df = pd.DataFrame(values, columns=['timestamp', 'values']).set_index('timestamp')
-#     months = dict((n, m) for n, m in enumerate(calendar.month_name))
-#     yearmulti = []
-#     monthmulti = []
-#     yearbox = []
-#     monthbox = []
-#
-#     if time == 'alltimes':
-#         ref_yr = 1948
-#         numyears = int(dt.datetime.now().strftime("%Y")) - ref_yr + 1  # +1 because we want the first year also
-#     else:
-#         ref_yr = int(time.replace('s', ''))
-#         numyears = 10
-#     years = [str(i + ref_yr) for i in range(numyears)]
-#
-#     for i in range(1, 13):
-#         tmp = df[df.index.month == i]['values']
-#         ymin = min(tmp)
-#         ymax = max(tmp)
-#         mean = sum(tmp) / len(tmp)
-#         monthbox.append((months[i], tmp.to_list()))
-#         monthmulti.append((months[i], ymin, mean, ymax))
-#     for year in years:
-#         tmp = df[year]['values']
-#         ymin = min(tmp)
-#         ymax = max(tmp)
-#         mean = sum(tmp) / len(tmp)
-#         yearbox.append((year, tmp.to_list()))
-#         yearmulti.append((year, ymin, mean, ymax))
-#
-#     return yearmulti, monthmulti, yearbox, monthbox
+
+def makestatplots(df, time):
+    months = dict((n, m) for n, m in enumerate(calendar.month_name))
+    yearmulti = []
+    monthmulti = []
+    yearbox = []
+    monthbox = []
+
+    if time == 'alltimes':
+        ref_yr = 1948
+        numyears = int(dt.datetime.now().strftime("%Y")) - ref_yr + 1  # +1 because we want the first year also
+    else:
+        ref_yr = int(time.replace('s', ''))
+        numyears = 10
+    years = [i + ref_yr for i in range(numyears)]
+
+    for i in range(1, 13):
+        tmp = df[df.index.month == i]['values']
+        ymin = min(tmp)
+        ymax = max(tmp)
+        mean = sum(tmp) / len(tmp)
+        monthbox.append((months[i], tmp.to_list()))
+        monthmulti.append((months[i], ymin, mean, ymax))
+    for year in years:
+        tmp = df[df.index.year == year]['values']
+        ymin = min(tmp)
+        ymax = max(tmp)
+        mean = sum(tmp) / len(tmp)
+        yearbox.append((year, tmp.to_list()))
+        yearmulti.append((year, ymin, mean, ymax))
+
+    return yearmulti, monthmulti, yearbox, monthbox

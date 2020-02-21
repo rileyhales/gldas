@@ -120,5 +120,10 @@
 <netcdf location="raw/GLDAS_NOAH025_M.A201905.021.nc4"/>
 <netcdf location="raw/GLDAS_NOAH025_M.A201906.021.nc4"/>
 <netcdf location="raw/GLDAS_NOAH025_M.A201907.021.nc4"/>
+<netcdf location="raw/GLDAS_NOAH025_M.A201908.021.nc4"/>
+<netcdf location="raw/GLDAS_NOAH025_M.A201909.021.nc4"/>
+<netcdf location="raw/GLDAS_NOAH025_M.A201910.021.nc4"/>
+<netcdf location="raw/GLDAS_NOAH025_M.A201911.021.nc4"/>
+<netcdf location="raw/GLDAS_NOAH025_M.A201912.021.nc4"/>
     </aggregation>
 </netcdf>
