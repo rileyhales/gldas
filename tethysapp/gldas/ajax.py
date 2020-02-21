@@ -81,9 +81,7 @@ def uploadgeojson(request):
 
     try:
         with open(gj_file_path, 'r') as gj:
-            gm.geojsons.geojson_to_shp(json.loads(gj.read()), os.path.join(user_workspace, 'usergj.shp'))
+            return JsonResponse(json.loads(gj.read()))
     except Exception as e:
         print(e)
         return JsonResponse({'status': 'failed'})
-
-    return JsonResponse({'status': 'succeeded'})

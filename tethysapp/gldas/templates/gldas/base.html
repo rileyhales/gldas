@@ -13,7 +13,6 @@
   <li class="title">GLDAS Data Controls</li>
     {% gizmo select_input variables %}
     {% gizmo select_input dates %}
-    {% gizmo select_input charttype %}
 
   <li class="title">Shapefile & GeoJSON Data</li>
     {% gizmo select_input regions %}
@@ -29,9 +28,8 @@
   <label for="customShpChart">Upload a Shapefile</label>
   <button class="btn btn-default btn-block" role="button" id="customShpChart">Timeseries for my own Shapefile</button>
 
-{#todo#}
-{#  <label for="customShpChart">Uploading a GeoJSON</label>#}
-{#  <button class="btn btn-default btn-block" role="button" id="customGjChart">Timeseries for my own GeoJSON</button>#}
+  <label for="customShpChart">Uploading a GeoJSON</label>
+  <button class="btn btn-default btn-block" role="button" id="customGjChart">Timeseries for my own GeoJSON</button>
 
   <br>
 

@@ -22,6 +22,8 @@ def home(request):
         options=timeintervals(),
         initial='2010s'
     )
+
+    # todo
     charttype = SelectInput(
         display_text='Choose a Plot Type',
         name='charttype',

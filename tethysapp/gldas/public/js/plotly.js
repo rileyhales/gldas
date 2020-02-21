@@ -157,18 +157,17 @@ function getShapeChart(selectedregion) {
     let data = {
         variable: $("#variables").val(),
         time: $("#dates").val(),
-        loc_type: ''
     };
 
     if (selectedregion === 'lastregion') {
         // if we want to update, change the region to the last completed region
-        data['vectordata'] = chosenRegion;
-    } else if (selectedregion === 'customshape') {
-        data['vectordata'] = selectedregion;
+        data['loc_type'] = chosenRegion;
+    } else if (selectedregion === 'Shapefile') {
+        data['loc_type'] = selectedregion;
         chosenRegion = selectedregion;
     } else {
         // otherwise, the new selection is the current region on the chart
-        data['vectordata'] = selectedregion;
+        data['loc_type'] = selectedregion;
         chosenRegion = selectedregion;
     }
 

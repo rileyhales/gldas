@@ -93,7 +93,7 @@ function regionsESRI() {
         where: where,
         onEachFeature: function (feature, layer) {
             let place = feature.properties.REGION;
-            layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'esri-regions-" + place + "'" + ')">Get timeseries for ' + place + '</a>');
+            layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'esri-" + place + "'" + ')">Get timeseries for ' + place + '</a>');
         },
     };
     if (region !== '') {params['where'] = "REGION = '" + region + "'"}
@@ -113,7 +113,7 @@ function countriesESRI() {
         outSR: 4326,
         where: where,
         onEachFeature: function (feature, layer) {
-            layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'esri-countries-" + region + "'" + ')">Get timeseries for ' + region + '</a>');
+            layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'esri-" + region + "'" + ')">Get timeseries for ' + region + '</a>');
         },
     };
     let layer = L.esri.featureLayer(params);
@@ -126,7 +126,9 @@ function countriesESRI() {
 
 ////////////////////////////////////////////////////////////////////////  USER'S CUSTOM UPLOADED SHAPEFILE
 let user_shapefile = L.geoJSON(false);
-let user_geojson = L.geoJSON(false);
+let user_geojson = L.geoJSON(false, {onEachFeature: function (feature, layer) {
+            layer.bindPopup('<a class="btn btn-default" role="button" onclick="getShapeChart(' + "'GeoJSON'" + ')">Get timeseries for my GeoJSON</a>');
+        }});
 // gets the geojson layers from geoserver wfs and updates the layer
 function getGeoServerGJ(gsworksp, shpname, gsurl) {
     let parameters = L.Util.extend({

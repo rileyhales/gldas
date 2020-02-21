@@ -64,19 +64,18 @@
             <div>Once you've selected the shapefile components, click submit to upload it.</div>
             <button type="button" class="btn btn-success" id="uploadshp">Submit</button>
 
-{#            todo#}
-{#            <h2>Upload a GeoJSON</h2>#}
-{#            Guidelines for using a geojson:#}
-{#              <ul>#}
-{#                <li>Your geojson must contain only polygon data.</li>#}
-{#                <li>It should be a text geojson file ending in ".geojson" or ".json"</li>#}
-{#                <li>Your geojson must use the WGS1984 Geographic Coordinate System or another GCS.</li>#}
-{#              </ul>#}
-{#            <div class="form-group" style="text-align: center">#}
-{#              <input type="file" class="local-file-upload" id="geojson-upload" accept="application/geo+json,.geojson,.json,application/json">#}
-{#            </div>#}
-{#            <div>Once you've selected the shapefile components, click submit to upload it.</div>#}
-{#            <button type="button" class="btn btn-success" id="uploadgj">Submit</button>#}
+            <h2>Upload a GeoJSON</h2>
+            Guidelines for using a geojson:
+              <ul>
+                <li>Your geojson must contain only polygon data.</li>
+                <li>It should be a text geojson file ending in ".geojson" or ".json"</li>
+                <li>Your geojson must use the WGS1984 Geographic Coordinate System or another GCS.</li>
+              </ul>
+            <div class="form-group" style="text-align: center">
+              <input type="file" class="local-file-upload" id="geojson-upload" accept="application/geo+json,.geojson,.json,application/json">
+            </div>
+            <div>Once you've selected the shapefile components, click submit to upload it.</div>
+            <button type="button" class="btn btn-success" id="uploadgj">Submit</button>
 
             <div id="loading" style="display: none; text-align: center"><img src="https://media.giphy.com/media/jAYUbVXgESSti/giphy.gif"></div>
         </div>
@@ -160,6 +159,8 @@
           <div id="chart"></div>
         </div>
         <div class="modal-footer">
+{#          todo#}
+{#          {% gizmo select_input charttype %}#}
           <a class="btn btn-default" role="button" id="chartCSV">Save Chart as CSV</a>
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
