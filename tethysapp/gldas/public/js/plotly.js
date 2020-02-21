@@ -1,5 +1,4 @@
 let chartdata = null;
-Plotly.newPlot('chart', [], {title: 'No Data Selected', xaxis: {range: [-100, 100]}, yaxis: {range: [-100, 100]}});
 
 function plotlyTimeseries(data) {
     let x = [];
@@ -23,6 +22,9 @@ function plotlyTimeseries(data) {
         type: 'scatter'
     };
     Plotly.newPlot('chart', [values], layout);
+    let chart = $("#chart");
+    chart.css('height', 500);
+    Plotly.Plots.resize(chart[0]);
 }
 
 function plotlyMultilineSeries(data) {
@@ -57,6 +59,9 @@ function plotlyMultilineSeries(data) {
         {x: x, y: max, name: 'Maximum', mode: 'lines+markers', type: 'scatter'},
     ];
     Plotly.newPlot('chart', values, layout);
+    let chart = $("#chart");
+    chart.css('height', 500);
+    Plotly.Plots.resize(chart[0]);
 }
 
 function plotlyBoxplotSeries(data) {
@@ -84,6 +89,9 @@ function plotlyBoxplotSeries(data) {
         })
     }
     Plotly.newPlot('chart', values, layout);
+    let chart = $("#chart");
+    chart.css('height', 500);
+    Plotly.Plots.resize(chart[0]);
 }
 
 function getDrawnChart(drawnItems) {
@@ -116,6 +124,7 @@ function getDrawnChart(drawnItems) {
             loc_type: geojson[0]['geometry']['type']
         };
 
+        $("#chart_modal").modal('show');
         // decide which ajax url you need based on drawing type
         $.ajax({
             url: '/apps/' + app + '/ajax/getChart/',
@@ -148,7 +157,7 @@ function getShapeChart(selectedregion) {
     let data = {
         variable: $("#variables").val(),
         time: $("#dates").val(),
-        loc_type: 'VectorGeometry'
+        loc_type: ''
     };
 
     if (selectedregion === 'lastregion') {
@@ -163,6 +172,7 @@ function getShapeChart(selectedregion) {
         chosenRegion = selectedregion;
     }
 
+    $("#chart_modal").modal('show');
     $.ajax({
         url: '/apps/' + app + '/ajax/getChart/',
         data: JSON.stringify(data),
@@ -223,3 +233,6 @@ function chartToCSV() {
     link.click();
     $("#a").remove()
 }
+
+// WHEN YOU CLICK ON THE DOWNLOAD BUTTON- RUN THE DOWNLOAD CSV FUNCTION
+$("#chartCSV").click(function () {chartToCSV()});

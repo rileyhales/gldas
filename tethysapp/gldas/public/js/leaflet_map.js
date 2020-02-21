@@ -2,12 +2,12 @@
 function map() {
     // create the map
     return L.map('map', {
-        zoom: 2,
-        minZoom: 1.5,
+        zoom: 4,
+        minZoom: 2,
         zoomSnap: .5,
         boxZoom: true,
         maxBounds: L.latLngBounds(L.latLng(-100.0, -270.0), L.latLng(100.0, 270.0)),
-        center: [20, 0],
+        center: [0, 0],
         timeDimension: true,
         timeDimensionControl: true,
         timeDimensionControlOptions: {
@@ -74,7 +74,8 @@ getStyle = function() {return {color: $("#gjClr").val(), opacity: $("#gjOp").val
 function styleGeoJSON() {
     let style = getStyle();
     layerRegion.setStyle(style);
-    usershape.setStyle(style);
+    user_shapefile.setStyle(style);
+    user_geojson.setStyle(style);
 }
 
 ////////////////////////////////////////////////////////////////////////  ESRI LIVING ATLAS LAYERS (FEATURE SERVER)
@@ -124,8 +125,9 @@ function countriesESRI() {
 }
 
 ////////////////////////////////////////////////////////////////////////  USER'S CUSTOM UPLOADED SHAPEFILE
+let user_shapefile = L.geoJSON(false);
+let user_geojson = L.geoJSON(false);
 // gets the geojson layers from geoserver wfs and updates the layer
-let usershape = L.geoJSON(false);
 function getGeoServerGJ(gsworksp, shpname, gsurl) {
     let parameters = L.Util.extend({
         service: 'WFS',
@@ -144,17 +146,17 @@ function getGeoServerGJ(gsworksp, shpname, gsurl) {
         url: gsurl + L.Util.getParamString(parameters),
         contentType: 'application/json',
         success: function (data) {
-            usershape.clearLayers();
+            user_shapefile.clearLayers();
             mapObj.removeLayer(drawnItems);
-            usershape.addData(data).addTo(mapObj);
+            user_shapefile.addData(data).addTo(mapObj);
             styleGeoJSON();
-            mapObj.flyToBounds(usershape.getBounds());
+            mapObj.flyToBounds(user_shapefile.getBounds());
         },
     });
 }
 
-////////////////////////////////////////////////////////////////////////  LEGEND DEFINITIONS
-let legend = L.control({position: 'topright'});
+////////////////////////////////////////////////////////////////////////  LEGEND AND LATLON CONTROLS
+let legend = L.control({position: 'bottomright'});
 legend.onAdd = function () {
     let layer = $("#variables").val();
     let wmsurl = threddsbase + $("#dates").val() + '.ncml';
@@ -181,17 +183,23 @@ latlon.onAdd = function () {
 function makeControls() {
     return L.control.layers(basemapObj, {
         'Earth Observation': layerGLDAS,
-        'Drawing': drawnItems,
-        'Uploaded Shapefile': usershape,
+        'Drawing on Map': drawnItems,
+        'Uploaded Shapefile': user_shapefile,
+        'Uploaded GeoJSON': user_geojson,
         'Region Boundaries': layerRegion,
     }).addTo(mapObj);
 }
-
 // you need to remove layers when you make changes so duplicates dont persist and accumulate
 function clearMap() {
     controlsObj.removeLayer(layerGLDAS);
     mapObj.removeLayer(layerGLDAS);
-    controlsObj.removeLayer(usershape);
+    controlsObj.removeLayer(user_shapefile);
+    controlsObj.removeLayer(user_geojson);
     controlsObj.removeLayer(layerRegion);
     mapObj.removeControl(controlsObj);
 }
+
+////////////////////////////////////////////////////////////////////////  LOAD THE MAP
+const mapObj = map();                   // used by legend and draw controls
+const basemapObj = basemaps();          // used in the make controls function
+mapObj.on("mousemove", function (event) {$("#mouse-position").html('Lat: ' + event.latlng.lat.toFixed(5) + ', Lon: ' + event.latlng.lng.toFixed(5));});

@@ -4,37 +4,6 @@ Cookies.set('instance_id', instance_id);
 function csrfSafeMethod(method){return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));}
 $.ajaxSetup({beforeSend: function (xhr, settings) {if (!csrfSafeMethod(settings.type) && !this.crossDomain) {xhr.setRequestHeader("X-CSRFToken", csrftoken);}}});
 
-////////////////////////////////////////////////////////////////////////  LOAD THE MAP
-const mapObj = map();                   // used by legend and draw controls
-const basemapObj = basemaps();          // used in the make controls function
-
-////////////////////////////////////////////////////////////////////////  DRAWING/LAYER CONTROLS, MAP EVENTS, LEGEND
-let drawnItems = new L.FeatureGroup().addTo(mapObj);      // FeatureGroup is to store editable layers
-let drawControl = new L.Control.Draw({
-    edit: {
-        featureGroup: drawnItems,
-        edit: false,
-    },
-    draw: {
-        polyline: false,
-        circlemarker: false,
-        circle: false,
-        polygon: false,
-        rectangle: true,
-    },
-});
-mapObj.addControl(drawControl);
-mapObj.on("draw:drawstart ", function () {     // control what happens when the user draws things on the map
-    drawnItems.clearLayers();
-});
-mapObj.on(L.Draw.Event.CREATED, function (event) {
-    drawnItems.addLayer(event.layer);
-    L.Draw.Event.STOP;
-    getDrawnChart(drawnItems);
-});
-
-mapObj.on("mousemove", function (event) {$("#mouse-position").html('Lat: ' + event.latlng.lat.toFixed(5) + ', Lon: ' + event.latlng.lng.toFixed(5));});
-
 let layerGLDAS = newGLDAS();            // adds the wms raster layer
 let layerRegion = regionsESRI();        // adds the world region boundaries from esri living atlas
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
@@ -73,9 +42,6 @@ function changeregions(firedfrom) {
 
 // input validation
 $(".customs").keyup(function () {this.value = this.value.replace(/i[a-z]/, '')});
-
-// chart download
-$("#chartCSV").click(function () {chartToCSV()});
 
 // data controls
 $("#variables").change(function () {clearMap();update();getDrawnChart(drawnItems);});

@@ -2,7 +2,9 @@ import ast
 import os
 import zipfile
 import subprocess
+import json
 import shutil
+import geomatics as gm
 
 from django.http import JsonResponse
 
@@ -21,11 +23,8 @@ def uploadshapefile(request):
     files = request.FILES.getlist('files')
     instance_id = request.META['HTTP_COOKIE'].split('instance_id=')[1][0:9]
     user_workspace = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
-
-    # delete old files in the directory then recreate
-    if os.path.exists(user_workspace):
-        shutil.rmtree(user_workspace)
-    os.mkdir(user_workspace)
+    if not os.path.exists(user_workspace):
+        os.mkdir(user_workspace)
 
     # write the new files to the directory
     for n, file in enumerate(files):
@@ -64,3 +63,27 @@ def uploadshapefile(request):
     subprocess.call(['bash', shellpath, v1, v2, v3, v4, v5, v6])
 
     return JsonResponse({'gsurl': gs_wfs, 'gsworksp': v5, 'shpname': v6})
+
+
+def uploadgeojson(request):
+    files = request.FILES.getlist('files')
+    instance_id = request.META['HTTP_COOKIE'].split('instance_id=')[1][0:9]
+    user_workspace = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', instance_id)
+    if not os.path.exists(user_workspace):
+        os.mkdir(user_workspace)
+    gj_file_path = os.path.join(user_workspace, 'usergj.geojson')
+
+    # write the new files to the directory
+    for n, file in enumerate(files):
+        with open(gj_file_path, 'wb') as dst:
+            for chunk in files[n].chunks():
+                dst.write(chunk)
+
+    try:
+        with open(gj_file_path, 'r') as gj:
+            gm.geojsons.geojson_to_shp(json.loads(gj.read()), os.path.join(user_workspace, 'usergj.shp'))
+    except Exception as e:
+        print(e)
+        return JsonResponse({'status': 'failed'})
+
+    return JsonResponse({'status': 'succeeded'})

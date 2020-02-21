@@ -22,7 +22,7 @@ class Gldas(TethysAppBase):
     githublink = 'https://github.com/rileyhales/gldas'
     docslink = 'https://gldas-data-tool.readthedocs.io/en/latest/index.html'
     datawebsite = 'https://disc.gsfc.nasa.gov/datasets/GLDAS_NOAH025_M_V2.1/summary?keywords=gldas'
-    version = 'v3 Sep19'
+    version = 'v4 Feb20'
 
     def url_maps(self):
         """
@@ -49,6 +49,11 @@ class Gldas(TethysAppBase):
                 url='gldas/ajax/uploadShapefile',
                 controller='gldas.ajax.uploadshapefile',
             ),
+            urlmap(
+                name='uploadGeoJSON',
+                url='gldas/ajax/uploadGeoJSON',
+                controller='gldas.ajax.uploadgeojson',
+            ),
 
             # url maps for api calls
             urlmap(
@@ -70,21 +75,18 @@ class Gldas(TethysAppBase):
                 type=CustomSetting.TYPE_STRING,
                 description="Local file path to datasets (same as used by Thredds) (e.g. /home/thredds/myDataFolder/)",
                 required=True,
-                default='/Users/rileyhales/thredds/',
+                default='/Users/rileyhales/thredds/gldas/',
             ),
             CustomSetting(
                 name='thredds_url',
                 type=CustomSetting.TYPE_STRING,
                 description="URL to the GLDAS folder on the thredds server (e.g. http://[host]/thredds/gldas/)",
                 required=True,
-                default='https://127.0.0.1:7000/thredds/wms/gldas/',
+                default='https://tethys2.byu.edu/thredds/wms/testAll/gldas/',
             )
         )
 
     def spatial_dataset_service_settings(self):
-        """
-        Example spatial_dataset_service_settings method.
-        """
         return (
             SpatialDatasetServiceSetting(
                 name='geoserver',
