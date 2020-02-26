@@ -8,17 +8,15 @@ requirements:
   skip: false
   conda:
     channels:
+      - rileyhales
       - conda-forge
     dependencies:
+      - geomatics
       - netcdf4
       - numpy
       - pandas
-      - rasterstats
-      - rasterio
       - requests
       - pyshp
-      - sphinx
-      - shpinx_rtd_theme
 
   pip:
 

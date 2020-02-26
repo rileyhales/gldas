@@ -4,14 +4,14 @@ Cookies.set('instance_id', instance_id);
 function csrfSafeMethod(method){return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));}
 $.ajaxSetup({beforeSend: function (xhr, settings) {if (!csrfSafeMethod(settings.type) && !this.crossDomain) {xhr.setRequestHeader("X-CSRFToken", csrftoken);}}});
 
-let layerGLDAS = newGLDAS();            // adds the wms raster layer
+let layerWMS = newWMS();            // adds the wms raster layer
 let layerRegion = regionsESRI();        // adds the world region boundaries from esri living atlas
 let controlsObj = makeControls();       // the layer toggle controls top-right corner
 legend.addTo(mapObj);                   // add the legend graphic to the map
 latlon.addTo(mapObj);                   // add the box showing lat and lon to the map
 ////////////////////////////////////////////////////////////////////////  EVENT LISTENERS
 function update() {
-    layerGLDAS = newGLDAS();
+    layerWMS = newWMS();
     controlsObj = makeControls();
     legend.addTo(mapObj);
 }
@@ -56,7 +56,7 @@ $("#cs_min").change(function () {if ($("#use_csrange").is(":checked")) {clearMap
 $("#cs_max").change(function () {if ($("#use_csrange").is(":checked")) {clearMap();update()}});
 $("#use_csrange").change(function () {clearMap();update()});
 $('#colorscheme').change(function () {clearMap();update();});
-$("#opacity").change(function () {layerGLDAS.setOpacity($(this).val())});
+$("#opacity").change(function () {layerWMS.setOpacity($(this).val())});
 $('#gjClr').change(function () {styleGeoJSON()});
 $("#gjOp").change(function () {styleGeoJSON()});
 $("#gjWt").change(function () {styleGeoJSON()});

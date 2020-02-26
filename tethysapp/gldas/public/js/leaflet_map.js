@@ -37,7 +37,7 @@ function basemaps() {
 }
 
 ////////////////////////////////////////////////////////////////////////  GLDAS LAYERS
-function newGLDAS() {
+function newWMS() {
     let layer = $("#variables").val();
     let wmsurl = threddsbase + $("#dates").val() + '.ncml';
     let cs_rng = bounds[layer];
@@ -184,7 +184,7 @@ latlon.onAdd = function () {
 // the layers box on the top right of the map
 function makeControls() {
     return L.control.layers(basemapObj, {
-        'Earth Observation': layerGLDAS,
+        'Earth Observation': layerWMS,
         'Drawing on Map': drawnItems,
         'Uploaded Shapefile': user_shapefile,
         'Uploaded GeoJSON': user_geojson,
@@ -193,8 +193,8 @@ function makeControls() {
 }
 // you need to remove layers when you make changes so duplicates dont persist and accumulate
 function clearMap() {
-    controlsObj.removeLayer(layerGLDAS);
-    mapObj.removeLayer(layerGLDAS);
+    controlsObj.removeLayer(layerWMS);
+    mapObj.removeLayer(layerWMS);
     controlsObj.removeLayer(user_shapefile);
     controlsObj.removeLayer(user_geojson);
     controlsObj.removeLayer(layerRegion);

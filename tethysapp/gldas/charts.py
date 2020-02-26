@@ -12,7 +12,6 @@ import json
 
 import netCDF4 as nc
 import geomatics as gm
-import pandas as pd
 
 from .options import gldas_variables
 from .app import Gldas as App
@@ -46,7 +45,7 @@ def newchart(data):
         files = [i for i in allfiles if filefilter in i and i.endswith('.nc4')]
     else:
         files = [i for i in allfiles if i.endswith('.nc4')]
-    files = [os.path.join(path, i) for i in files]
+    files = [os.path.join(path, file) for file in files]
     files.sort()
 
     meta['units'] = nc.Dataset(files[0], 'r')[data['variable']].__dict__['units']
