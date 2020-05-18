@@ -1,21 +1,13 @@
 package:
   name: gldas
-  version: 0.1
-
-about:
-  author: Riley Hales
-  description: Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution, GLDAS data sets from NASA LDAS and LIS.
-  license: BSD 3-Clause License
-  license_family: BSD
-  doc_url: https://gldas-data-tool.readthedocs.io
-  dev_url: https://github.com/rileyhales/gldas
-
-build:
-  string: r1
-  preserve_egg_dir: True
+  version: 0.3
 
 source:
   path: ../
+
+build:
+  number: 0
+  preserve_egg_dir: True
 
 requirements:
   build:
@@ -29,12 +21,16 @@ requirements:
     - rasterio
     - requests
     - pyshp
+    - geomatics==0.8
 
-outputs:
-  - name: gldas
+about:
+  home: https://github.com/rileyhales/gldas
+  summary: Shows time-animated maps and timeseries plots of monthly average, 1/4 degree resolution, GLDAS data sets from NASA LDAS and LIS.
+  license: BSD 3-Clause License
+  license_family: BSD
+  license_file: ../LICENSE
+  dev_url: https://gldas-data-tool.readthedocs.io
 
 extra:
-  copy_test_source_files: true
-  final: true
   recipe-maintainers:
     - rileyhales
