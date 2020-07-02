@@ -10,7 +10,7 @@ requirements:
     channels:
       - conda-forge
     dependencies:
-      - geomatics
+      - geomatics>=0.10
       - netcdf4
       - numpy
       - pandas

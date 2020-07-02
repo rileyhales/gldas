@@ -9,6 +9,7 @@ import datetime as dt
 import glob
 import json
 import os
+import shutil
 
 import geomatics as gm
 import netCDF4 as nc
@@ -32,7 +33,9 @@ def newchart(data):
             break
 
     user_workspace = os.path.join(os.path.dirname(__file__), 'workspaces', 'user_workspaces', data['instance_id'])
-    # date_pattern = 'GLDAS_NOAH025_M.A%Y%m.021.nc4'
+    if os.path.exists(user_workspace):
+        shutil.rmtree(user_workspace)
+    os.mkdir(user_workspace)
 
     # list then filter the available netcdfs
     path = os.path.join(App.get_custom_setting('thredds_path'), 'raw')
@@ -42,14 +45,13 @@ def newchart(data):
         files = glob.glob(os.path.join(path, f"*A{data['time'][0:4]}*.nc4"))
     else:
         files = glob.glob(os.path.join(path, "*.nc4"))
-    files = [os.path.join(path, file) for file in files]
     files.sort()
 
     meta['units'] = nc.Dataset(files[0], 'r')[data['variable']].__dict__['units']
 
     # get the timeseries, units, and message based on location type
     if data['loc_type'] == 'Point':
-        timeseries = gm.times.point_series(files, data['variable'], data['coords'], x_var='lon', y_var='lat')
+        timeseries = gm.timeseries.point(files, data['variable'], data['coords'], ('lon', 'lat'))
         meta['seriesmsg'] = 'At a Point'
 
     elif data['loc_type'] == 'Polygon':
@@ -58,21 +60,21 @@ def newchart(data):
             (float(coords[0][0]), float(coords[0][1]),),
             (float(coords[2][0]), float(coords[2][1]),),
         )
-        timeseries = gm.times.box_series(files, data['variable'], coords, x_var='lon', y_var='lat')
+        timeseries = gm.timeseries.bounding_box(files, data['variable'], coords[0], coords[1], ('lon', 'lat'))
         meta['seriesmsg'] = 'In a Bounding Box'
 
     elif data['loc_type'] == 'Shapefile':
         shp = [i for i in os.listdir(user_workspace) if i.endswith('.shp')]
         shp.remove('usergj.shp')
         shp = os.path.join(shp[0])
-        timeseries = gm.times.shp_series(files, data['variable'], shp, x_var='lon', y_var='lat')
+        timeseries = gm.timeseries.polygons(files, data['variable'], shp, ('lon', 'lat'))
         meta['seriesmsg'] = 'In User\'s Shapefile'
 
     elif data['loc_type'] == 'GeoJSON':
         shp = os.path.join(user_workspace, '__tempgj.shp')
         with open(os.path.join(user_workspace, 'usergj.geojson')) as f:
             gm.convert.geojson_to_shapefile(json.loads(f.read()), shp)
-        timeseries = gm.times.shp_series(files, data['variable'], shp, x_var='lon', y_var='lat')
+        timeseries = gm.timeseries.polygons(files, data['variable'], shp, ('lon', 'lat'))
         for file in glob.glob(os.path.join(user_workspace, '__tempgj.*')):
             os.remove(file)
         meta['seriesmsg'] = 'In User\'s GeoJSON'
@@ -80,16 +82,24 @@ def newchart(data):
     elif data['loc_type'].startswith('esri-'):
         esri_location = data['loc_type'].replace('esri-', '')
         geojson = gm.data.get_livingatlas_geojson(esri_location)
-        shp = os.path.join(user_workspace, '___esri.shp')
-        gm.convert.geojson_to_shapefile(geojson, shp)
-        timeseries = gm.times.shp_series(files, data['variable'], x_var='lon', y_var='lat')
-        for file in glob.glob(os.path.join(user_workspace, '___esri.*')):
-            os.remove(file)
+        shp = os.path.join(user_workspace, 'tmp.geojson')
+        with open(shp, 'w') as tmp:
+            tmp.write(json.dumps(geojson))
+        timeseries = gm.timeseries.polygons(files, data['variable'], shp, ('lon', 'lat'))
+        os.remove(shp)
         meta['seriesmsg'] = 'Within ' + esri_location
 
-    dates = timeseries['times'].dt.strftime('%Y-%m-%d')
+    times = []
+    for file in files:
+        try:
+            times.append(dt.datetime.strptime(os.path.basename(file), 'GLDAS_NOAH025_M.A%Y%m.021.nc4'))
+        except:
+            times.append(dt.datetime.strptime(os.path.basename(file), 'GLDAS_NOAH025_M.A%Y%m.020.nc4'))
+    timeseries['datetime'] = tuple(times)
+
+    dates = timeseries['datetime'].dt.strftime('%Y-%m-%d')
     dates = dates.tolist()
-    values = list(map(float, timeseries['values'].tolist()))
+    values = list(map(float, timeseries.values[:, 1].tolist()))
 
     if data['stats']:
         return {
@@ -100,7 +110,7 @@ def newchart(data):
     else:
         return {
             'meta': meta,
-            'timeseries': list(zip(dates, timeseries)),
+            'timeseries': list(zip(dates, values)),
         }
 
 
@@ -119,18 +129,18 @@ def makestatplots(df, time):
         numyears = 10
     years = [i + ref_yr for i in range(numyears)]
 
-    df.index = df['times']
-    del df['times']
+    df.index = df['datetime']
+    del df['datetime']
 
     for i in range(1, 13):
-        tmp = df[df.index.month == i]['values']
+        tmp = df[df.index.month == i].values
         ymin = min(tmp)
         ymax = max(tmp)
         mean = sum(tmp) / len(tmp)
         monthbox.append((months[i], list(map(float, tmp.to_list()))))
         monthmulti.append((months[i], float(ymin), float(mean), float(ymax)))
     for year in years:
-        tmp = df[df.index.year == year]['values']
+        tmp = df[df.index.year == year].values
         ymin = min(tmp)
         ymax = max(tmp)
         mean = sum(tmp) / len(tmp)
