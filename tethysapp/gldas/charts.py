@@ -137,14 +137,14 @@ def makestatplots(df, time):
         ymin = min(tmp)
         ymax = max(tmp)
         mean = sum(tmp) / len(tmp)
-        monthbox.append((months[i], list(map(float, tmp.to_list()))))
+        monthbox.append((months[i], list(map(float, tmp))))
         monthmulti.append((months[i], float(ymin), float(mean), float(ymax)))
     for year in years:
         tmp = df[df.index.year == year].values
         ymin = min(tmp)
         ymax = max(tmp)
         mean = sum(tmp) / len(tmp)
-        yearbox.append((year, list(map(float, tmp.to_list()))))
+        yearbox.append((year, list(map(float, tmp))))
         yearmulti.append((year, float(ymin), float(mean), float(ymax)))
 
     return yearmulti, monthmulti, yearbox, monthbox
