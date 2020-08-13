@@ -1,11 +1,13 @@
-from django.http import JsonResponse
-from rest_framework.decorators import api_view, authentication_classes
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+import json
 
+from django.http import JsonResponse
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes
+
+from .app import Gldas as App
+from .charts import newchart
 from .options import gldas_variables, timeintervals, worldregions, countries
 from .utilities import new_id, get_times
-from .charts import newchart
-from .app import Gldas as App
 
 
 class TimeSeries:
@@ -17,7 +19,7 @@ class TimeSeries:
         try:
             self.data['time'] = parameters['time']
             self.data['variable'] = parameters['variable']
-            self.data['location'] = parameters.getlist('location')
+            self.data['location'] = json.loads(parameters.getlist('location')[0])
         except KeyError as e:
             self.error = 'Missing parameter: ' + str(e).replace('"', '').replace("'", '')
         except Exception as e:
