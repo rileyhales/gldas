@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+import json
 
 from .options import gldas_variables, timeintervals, worldregions, countries
 from .utilities import new_id, get_times
@@ -17,7 +18,8 @@ class TimeSeries:
         try:
             self.data['time'] = parameters['time']
             self.data['variable'] = parameters['variable']
-            self.data['location'] = parameters.getlist('location')
+            self.data['location'] = json.loads(parameters.getlist('location')[0])
+            print(self.data['location'])
         except KeyError as e:
             self.error = 'Missing parameter: ' + str(e).replace('"', '').replace("'", '')
         except Exception as e:
@@ -110,7 +112,7 @@ def helpme(request):
         'required_arguments': ['time', 'variable', 'location'],
         'time': {
             'Description': 'A 4 digit year "YYYY", a decade "YYYYs", or "alltimes"',
-            'Options': get_times(),
+            # 'Options': get_times(),
         },
         'variable': {
             'Description': 'The abbreviated name of a variable used by NASA in the GLDAS data files',
@@ -127,7 +129,7 @@ def helpme(request):
     })
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @authentication_classes((TokenAuthentication, SessionAuthentication,))
 def timeseries(request):
     ts = TimeSeries(request.GET)
